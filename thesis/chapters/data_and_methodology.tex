@@ -48,23 +48,18 @@ Figure \ref{fig:ch3_pipeline} shows my point-in-time data alignment pipeline and
 \end{figure}
 
 \section{Feature Space Taxonomy and Selection}
-My feature space consists of \textbf{59 selected variables in total}:
+My empirical panel relies on \textbf{59 variables in total}, split between predictive model inputs and benchmark risk factors:
 \begin{itemize}
-    \item \textbf{53 Predictive Machine Learning Inputs}: Fed directly into the machine learning and neural network architectures across 4 distinct modalities: Technical (16), Fundamental (30), Sentiment (2), and Macro (5) \citep{gu2020empirical, cong2021textual}.
-    \item \textbf{6 Benchmark Risk Factor Betas}: Retained for baseline linear regressions and econometric risk adjustments: 5 Fama-French systematic factor betas ($Mkt-RF, SMB, HML, RMW, CMA$) plus Momentum ($MOM$) \citep{fama2015five, carhart1997on}.
+    \item \textbf{53 Predictive Machine Learning Inputs}: Fed directly into the machine learning and neural network architectures across four modalities: Technical (16), Fundamental (30), Sentiment (2), and Macro (5) \citep{gu2020empirical, cong2021textual}.
+    \item \textbf{6 Benchmark Risk Factor Betas}: Retained for baseline linear regressions and econometric risk adjustments, including the 5 Fama-French systematic factor betas ($Mkt-RF, SMB, HML, RMW, CMA$) and Momentum ($MOM$) \citep{fama2015five, carhart1997on}.
 \end{itemize}
 
 \subsection{Economic Rationale for Feature Set Size (59 Variables vs. 120+ Zoo Features)}
-A central question in financial feature engineering is why I choose a 59-variable panel (53 predictive ML inputs + 6 factor betas) rather than expanding the characteristic space to 120, 250, or 500 features. 
+When designing the characteristic space, a key decision is whether to include hundreds of candidate anomaly signals or focus on a curated panel. I deliberately choose a 59-variable feature panel rather than expanding to 120 or 250 predictors.
 
-From an economic and econometric perspective, expanding the predictor space in financial panels introduces three major drawbacks:
-\begin{enumerate}
-    \item \textbf{Characteristic Redundancy and Collinear Noise}: Financial characteristics often capture minor variations of the same underlying economic signal (for example, constructing 15 slightly different variations of price momentum or financial leverage). Expanding the feature space to hundreds of candidate variables creates high collinearity, increasing model variance without offering meaningful incremental signal \citep{freyberger2020dissecting, kozak2020shrinking}.
-    \item \textbf{Multiple Testing and False Discovery Inflation}: As \citet{harvey2016and} and \citet{harvey2020false} demonstrate, testing hundreds of candidate characteristics drastically increases false-discovery rates due to $p$-hacking. Restricting the feature set to 53 ML inputs across 4 economic modalities (Technicals, Fundamentals, Sentiment, Macro) ensures that every input maps to a recognized economic mechanism (liquidity \citep{pastor2003liquidity}, operating profitability \citep{novy2013other}, market sentiment \citep{cong2021textual}, and cost of capital \citep{fama2015five}).
-    \item \textbf{Data Availability and Sample Shrinkage}: Large feature spaces frequently suffer from missing data among smaller or historically restructured firms. Requiring 250+ complete characteristics shrinks the available cross-sectional sample size of valid stock-day observations \citep{avramov2023machine}.
-\end{enumerate}
+Including vast numbers of firm characteristics in financial panels introduces practical and statistical problems. Many raw accounting metrics simply restate similar economic signals—such as minor variations of leverage ratios or momentum lookbacks—adding collinearity and noise rather than genuine predictive content \citep{freyberger2020dissecting, kozak2020shrinking}. Furthermore, as \citet{harvey2016and} observe, testing hundreds of features increases false-discovery rates. Restricting the predictor set to 53 ML inputs grounded in four economic domains (Technical, Fundamental, Sentiment, and Macro) ensures each variable represents an established economic mechanism \citep{pastor2003liquidity, novy2013other, cong2021textual, fama2015five}. Finally, requiring hundreds of characteristics reduces cross-sectional sample coverage, as missing fundamental items force the exclusion of valid stock-day observations \citep{avramov2023machine}.
 
-Figure \ref{fig:ch3_modality_split} summarizes the feature group modality split.
+Figure \ref{fig:ch3_modality_split} displays the feature group modality classification.
 
 \begin{figure}[H]
 \centering
@@ -87,16 +82,16 @@ Figure \ref{fig:ch3_modality_split} summarizes the feature group modality split.
 \end{figure}
 
 \section{Feature Normalization and Selection Protocol}
-All raw predictor variables are transformed daily into \textbf{Cross-Sectional Ranks} mapped to the uniform interval $[0, 1]$ \citep{freyberger2020dissecting, gu2020empirical}:
+To maintain uniform scaling and stationarity, all raw characteristic variables are converted each day into \textbf{Cross-Sectional Ranks} mapped to the unit interval $[0, 1]$ \citep{freyberger2020dissecting, gu2020empirical}:
 \begin{equation}
 r_{i,t,j} = \frac{\operatorname{Rank}(X_{i,t,j}) - 1}{N_t - 1} \in [0, 1]
 \label{eq:ch3_rank}
 \end{equation}
-This rank transformation provides three distinct benefits: (1) robust protection against heavy-tailed financial outliers, (2) uniform scale invariance across different modalities, and (3) stationarity across macroeconomic regimes.
+Rank-scaling protects models from extreme financial outliers, standardizes variables across different accounting units, and keeps distributions comparable across changing market environments.
 
-To prevent data leakage, a \textbf{3-stage feature selection pipeline} (\path{scripts/select_features.py}) was executed \textbf{strictly on pre-2020 in-sample training data} (146,959 observations) \citep{lopez2018advances}. Stage 1 filtered out features with $>10\%$ missing values. Stage 2 removed collinear features with Spearman $|\rho_{j,k}| > 0.85$. Stage 3 trained an in-sample Random Forest Regressor \citep{breiman2001random} to rank and select the top 53 predictive features.
+To avoid data leakage, I perform feature selection (\path{scripts/select_features.py}) using a \textbf{three-stage protocol applied exclusively to pre-2020 training data} (146,959 observations) \citep{lopez2018advances}. The first stage removes features with missing rates above 10\%. The second stage prunes redundant variables exhibiting pairwise Spearman correlations $|\rho_{j,k}| > 0.85$. In the third stage, an in-sample Random Forest regressor \citep{breiman2001random} ranks remaining candidate variables, selecting the top 53 predictive features.
 
-Figure \ref{fig:ch3_corr_heatmap} displays the correlation matrix of selected features, while Figure \ref{fig:ch3_rf_importance} shows the Stage 3 Random Forest feature importance rankings.
+Figure \ref{fig:ch3_corr_heatmap} presents the correlation matrix of selected features, and Figure \ref{fig:ch3_rf_importance} shows the Random Forest importance rankings.
 
 \begin{figure}[H]
 \centering
