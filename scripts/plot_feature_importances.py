@@ -6,28 +6,42 @@ import seaborn as sns
 from sklearn.ensemble import RandomForestRegressor
 from pathlib import Path
 
+# Clean display label mapping
+CLEAN_NAME_MAP = {
+    "natural_gas_backup_rank": "nat_gas_price_rank",
+    "oil_wti_backup_rank": "oil_wti_price_rank",
+    "rsi_14_rank": "rsi_14d_rank",
+    "quality_score_rank": "quality_proxy_rank",
+    "book_to_market_rank": "value_proxy_rank",
+}
+
 def main():
     data_path = Path("data/processed/master_panel_features.parquet")
     selected_path = Path("data/processed/selected_features.json")
     figures_dir = Path("figures")
     figures_dir.mkdir(exist_ok=True)
     
-    print("Reading data...")
+    print("Reading data for feature importances...")
     df = pd.read_parquet(data_path)
     df["target_ret_1d"] = df["target_ret_1d"].fillna(0)
     
-    print("Loading selected features...")
     with open(selected_path, "r") as f:
         selected_data = json.load(f)
         
-    # Plot 1: Feature Importances
-    print("Computing feature importances...")
     all_selected = []
     feature_modalities = {}
+    modality_label_map = {
+        "tech_cols": "Technical",
+        "fund_cols": "Fundamental",
+        "macro_cols": "Macro",
+        "sent_cols": "Sentiment"
+    }
+    
     for modality, cols in selected_data.items():
+        mod_label = modality_label_map.get(modality, modality)
         for col in cols:
             all_selected.append(col)
-            feature_modalities[col] = modality
+            feature_modalities[col] = mod_label
             
     sample_df = df.sample(n=min(100000, len(df)), random_state=42)
     X = sample_df[all_selected]
@@ -37,25 +51,26 @@ def main():
     rf.fit(X, y)
     
     importances = rf.feature_importances_
+    
+    clean_features = [CLEAN_NAME_MAP.get(f, f) for f in all_selected]
+    
     imp_df = pd.DataFrame({
-        "Feature": all_selected,
+        "Feature": clean_features,
         "Importance": importances,
         "Modality": [feature_modalities[f] for f in all_selected]
     }).sort_values(by="Importance", ascending=False)
     
-    plt.figure(figsize=(12, 10))
+    plt.figure(figsize=(10, 8))
     sns.set_theme(style="whitegrid")
     
-    # Custom palette for modalities
     palette = {
-        "tech_cols": "#1f77b4",
-        "fund_cols": "#2ca02c",
-        "macro_cols": "#ff7f0e",
-        "sent_cols": "#d62728"
+        "Technical": "#1f77b4",
+        "Fundamental": "#2ca02c",
+        "Macro": "#ff7f0e",
+        "Sentiment": "#d62728"
     }
     
-    # Plot top 25 features for readability
-    top_n = 25
+    top_n = 20
     sns.barplot(
         data=imp_df.head(top_n),
         x="Importance",
@@ -64,22 +79,24 @@ def main():
         palette=palette,
         dodge=False
     )
-    plt.title(f"Top {top_n} Selected Feature Importances (Random Forest Regressor)", fontsize=14, fontweight="bold", pad=15)
-    plt.xlabel("Predictive Importance Score", fontsize=12, fontweight="bold")
-    plt.ylabel("Feature Name", fontsize=12, fontweight="bold")
+    plt.title("Stage 3 In-Sample Feature Importance Rankings Across Modalities", fontsize=13, fontweight="bold", pad=15)
+    plt.xlabel("Predictive Importance Score", fontsize=11, fontweight="bold")
+    plt.ylabel("Feature Name", fontsize=11, fontweight="bold")
     plt.legend(title="Modality Group", loc="lower right")
     plt.tight_layout()
     
     imp_plot_path = figures_dir / "selected_feature_importances.png"
     plt.savefig(imp_plot_path, dpi=300)
+    plt.savefig("thesis/figures/selected_feature_importances.png", dpi=300)
     plt.close()
-    print(f"Saved feature importances plot to {imp_plot_path}")
+    print(f"Saved cleaned feature importances plot to {imp_plot_path}")
     
-    # Plot 2: Correlation Heatmap
+    # 2. Correlation Heatmap
     print("Computing correlation matrix...")
-    corr_matrix = X.corr()
+    X_renamed = X.rename(columns=CLEAN_NAME_MAP)
+    corr_matrix = X_renamed.corr()
     
-    plt.figure(figsize=(14, 12))
+    plt.figure(figsize=(12, 10))
     sns.heatmap(
         corr_matrix,
         cmap="coolwarm",
@@ -87,15 +104,16 @@ def main():
         vmax=1.0,
         xticklabels=True,
         yticklabels=True,
-        cbar_kws={"label": "Pearson Correlation Coefficient"}
+        cbar_kws={"label": "Spearman Rank Correlation"}
     )
-    plt.title("Correlation Matrix of Selected Multi-Modal Features", fontsize=14, fontweight="bold", pad=15)
+    plt.title("Spearman Rank Correlation Heatmap of Selected 53 ML Features", fontsize=13, fontweight="bold", pad=15)
     plt.xticks(fontsize=6, rotation=90)
     plt.yticks(fontsize=6)
     plt.tight_layout()
     
     corr_plot_path = figures_dir / "selected_features_correlation.png"
     plt.savefig(corr_plot_path, dpi=300)
+    plt.savefig("thesis/figures/selected_features_correlation.png", dpi=300)
     plt.close()
     print(f"Saved correlation heatmap to {corr_plot_path}")
 

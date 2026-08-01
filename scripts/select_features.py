@@ -39,6 +39,7 @@ _IGNORE_COLS = {
     "ret", "ret_1d", "ret_21d", "close", "open", "high", "low",
     "volume", "adj_close", "adj_close_1d", "year", "month", "day",
     "rf",  # Risk-free rate — label, not a feature
+    "excess_ret", "mkt_rf", "smb", "hml", "rmw", "cma",  # Factor returns — benchmark targets, not ML inputs
 }
 
 def main():
