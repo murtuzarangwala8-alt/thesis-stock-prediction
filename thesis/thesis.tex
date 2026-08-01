@@ -1,0 +1,212 @@
+\documentclass[12pt, a4paper]{report}
+
+% Page Setup and Margins (Standard 1.25 in / 3.17 cm)
+\usepackage[top=1.25in, bottom=1.25in, left=1.25in, right=1.25in]{geometry}
+\usepackage{setspace}
+\setstretch{1.5}
+
+% Paragraph Formatting (6pt space after, 1.27cm indent)
+\setlength{\parskip}{6pt}
+\setlength{\parindent}{1.27cm}
+
+\raggedbottom
+\hfuzz=28pt
+\emergencystretch=2em
+
+% Fonts and Encoding (Times New Roman Body)
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{times}
+\usepackage{microtype}
+
+% Chapter and Section Headings (14pt Bold)
+\usepackage{titlesec}
+\titleformat{\chapter}[block]{\fontsize{14}{18}\bfseries\color{jpmNavy}}{\thechapter.}{0.8em}{}
+\titlespacing*{\chapter}{0pt}{12pt}{6pt}
+
+\titleformat{\section}[block]{\fontsize{14}{18}\bfseries\color{jpmNavy}}{\thesection}{0.8em}{}
+\titlespacing*{\section}{0pt}{10pt}{4pt}
+
+\titleformat{\subsection}[block]{\fontsize{12}{16}\bfseries}{\thesubsection}{0.8em}{}
+\titlespacing*{\subsection}{0pt}{8pt}{4pt}
+
+% Math and Tables
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage{array}
+\usepackage{float}
+\usepackage{graphicx}
+\usepackage{xcolor}
+
+% Color Palette
+\definecolor{jpmNavy}{HTML}{0A2240}
+\definecolor{jpmGold}{HTML}{D4AF37}
+\definecolor{jpmDark}{HTML}{23282D}
+\definecolor{jpmLight}{HTML}{F4F6F9}
+\definecolor{jpmRed}{HTML}{8B0000}
+\definecolor{jpmGreen}{HTML}{006400}
+
+% TikZ and Flowcharts
+\usepackage{tikz}
+\usetikzlibrary{shapes.geometric, arrows.meta, positioning, calc, fit}
+
+% Hyperlinks
+\usepackage{hyperref}
+\hypersetup{
+    colorlinks=true,
+    linkcolor=jpmNavy,
+    citecolor=jpmNavy,
+    urlcolor=jpmNavy
+}
+
+% Bibliography Setup
+\usepackage[round, authoryear]{natbib}
+\bibliographystyle{plainnat}
+
+\begin{document}
+
+% =========================================================
+% TITLE PAGE
+% =========================================================
+\begin{titlepage}
+\centering
+\vspace*{0.5cm}
+
+{\fontsize{14}{18}\selectfont\textbf{UNIVERSITY OF VERONA}}\\[0.2cm]
+{\fontsize{12}{16}\selectfont DEPARTMENT OF ECONOMICS}\\[0.1cm]
+{\fontsize{11}{14}\selectfont Master's Degree in Economics and Data Analysis}\\[1.5cm]
+
+\rule{\textwidth}{1.5pt}\\[0.4cm]
+{\fontsize{18}{22}\selectfont\textbf{\color{jpmNavy} DO MACHINE LEARNING MODELS IMPROVE STOCK RETURN PREDICTION?}}\\[0.3cm]
+{\fontsize{13}{16}\selectfont\textbf{\color{jpmDark} Evidence from S\&P 500 Constituent Markets and Dimension Sensitivity (2015--2024)}}\\[0.3cm]
+\rule{\textwidth}{1.5pt}\\[2.0cm]
+
+\begin{minipage}{0.45\textwidth}
+\begin{flushleft}
+{\small\textbf{Supervisor:}}\\[0.1cm]
+{\large Prof.\ Giuseppina Chesini}
+\end{flushleft}
+\end{minipage}
+\hfill
+\begin{minipage}{0.45\textwidth}
+\begin{flushright}
+{\small\textbf{Candidate:}}\\[0.1cm]
+{\large Murtuza Yusuf Rangwala}\\[0.1cm]
+{\small Matricola: VR508566}
+\end{flushright}
+\end{minipage}
+
+\vfill
+{\small Academic Year 2024/2025}
+\end{titlepage}
+
+% =========================================================
+% ABSTRACT
+% =========================================================
+\newpage
+\pagenumbering{roman}
+\setcounter{page}{1}
+
+\chapter*{Abstract}
+\addcontentsline{toc}{chapter}{Abstract}
+
+In this thesis, I investigate whether statistical machine learning and deep learning sequence architectures improve out-of-sample equity return predictions compared to classical linear asset pricing baselines. Using a point-in-time aligned dataset of S\&P 500 constituent stocks spanning 2015 through 2024 (2,516 daily cross-sections), I construct a 59-variable feature panel incorporating technical price signals, fundamental accounting metrics, sentiment indicators, macroeconomic series, and rolling risk factor betas.
+
+I evaluate models using a 5-fold expanding-window walk-forward validation scheme (2020--2024) to eliminate lookahead bias. My empirical findings demonstrate that deep sequence models outperform traditional linear models (Fama-MacBeth OLS, LASSO) and decision tree ensembles (Random Forest, XGBoost). Specifically, the custom \textbf{Temporal Fusion Deep Multimodal Gated Attention (TFDMGA)} network achieves top out-of-sample predictive accuracy ($IC = +0.0348, ICIR = 3.12$, ROC AUC $= 0.6120$, Accuracy $= 56.84\%$). A Diebold-Mariano test confirms statistical significance over standard LSTM models ($DM = 2.41, p = 0.016$).
+
+In backtested portfolios subject to 10 bps transaction costs and 1-day execution delays, an initial \$1,000 USD deposit grows to \$3,120.99 USD under the baseline LSTM strategy. Adding a 2:1 Take-Profit/Stop-Loss risk management overlay increases capital compounding to \$4,368.50 USD for LSTM and \$6,482.10 USD for TFDMGA. Finally, Fama-French 5-factor spanning regressions yield an estimated net alpha of $\hat{\alpha} = -0.18\%$ per year ($p = 0.976, R^2 = 41.2\%$). The absence of excess alpha indicates that machine learning strategy returns reflect dynamic systematic factor risk compensation rather than unpriced arbitrage.
+
+\vspace{1cm}
+\noindent \textbf{Keywords}: Machine Learning, Empirical Asset Pricing, Cross-Sectional Return Prediction, Deep Learning, Transformer Attention, Fama-French Spanning, Transaction Costs, Walk-Forward Optimization.
+
+\newpage
+
+% =========================================================
+% QURANIC DEDICATION PAGE (Arabic Calligraphy Font + Text)
+% =========================================================
+\newpage
+\thispagestyle{empty}
+\vspace*{4.0cm}
+
+\begin{center}
+\begin{minipage}{0.85\textwidth}
+\centering
+
+\includegraphics[width=0.75\textwidth]{figures/arabic_text_font.pdf}
+
+\vspace{0.6cm}
+
+{\large\textit{``And say, `My Lord, increase me in knowledge.'\,''}}\\[1.0cm]
+
+\begin{flushright}
+\textit{--- The Holy Qur'an, Surah Ta-Ha (20:114)}
+\end{flushright}
+
+\end{minipage}
+\end{center}
+
+\newpage
+
+% =========================================================
+% ACKNOWLEDGEMENTS (Strictly 1 Page)
+% =========================================================
+\chapter*{Acknowledgements}
+\addcontentsline{toc}{chapter}{Acknowledgements}
+
+\begin{singlespace}
+\setlength{\parskip}{4pt}
+
+\noindent First and foremost, I would like to express my sincere gratitude to my supervisor, \textbf{Prof.\ Giuseppina Chesini}, for her continuous guidance, support, and valuable suggestions throughout the development of this thesis. Her patience, knowledge, and encouragement helped me overcome challenges and complete this research successfully.
+
+\noindent I would like to thank all the faculty members of the \textbf{Department of Economics and Data Analysis at the University of Verona}. Each professor who taught me during this journey contributed to my academic and personal growth. I am grateful for their support, kindness, and willingness to help whenever I needed guidance.
+
+\noindent A special thank you goes to the \textbf{University of Verona} for giving a student from Mumbai, India, the opportunity to experience international education and become part of a global academic community. Coming to Italy was a life-changing decision, and this university gave me the chance to learn, grow, and discover a world beyond my own. I will always be grateful for the opportunities, memories, and experiences that I gained here.
+
+\noindent I would also like to sincerely thank \textbf{ESU Verona and the Borsa di Studio scholarship programme} for their financial support. Their assistance made my life as an international student much easier and allowed me to focus on my studies without constantly worrying about financial difficulties. This support played an important role in helping me complete my Master's journey.
+
+\noindent I want to give a special thanks to all my classmates and friends who became my family away from home. Moving to a foreign country was not easy, but your friendship, kindness, and support made Italy feel like home. The conversations, shared meals, study sessions, celebrations, and even the difficult moments we faced together are memories that I will carry with me forever. The friendships I built here are among the most valuable parts of this journey.
+
+\noindent I would also like to thank the open-source community and researchers whose work, tools, and resources contributed to making this research possible.
+
+\noindent Finally, I would like to dedicate my deepest gratitude to my family, especially my father. \textbf{My father was the first person who believed in me and supported my dream of studying abroad.} His faith in me, constant motivation, sacrifices, and encouragement gave me the strength to continue even during the hardest moments. Whenever I felt uncertain, he reminded me to believe in myself and keep moving forward. Everything I have achieved today is possible because of his support and the confidence he always had in me. I am also grateful to my mother, my sister, and my entire family for their love, prayers, patience, and support throughout this journey.
+
+\noindent Looking back, this journey from \textbf{Mumbai to Verona} has been one of the most important chapters of my life. It was not always easy, but every challenge, every late night studying, every exam, every deadline, and every small success helped me become the person I am today. The University of Verona will always hold a special place in my heart.
+
+\vspace{0.6cm}
+
+\begin{flushright}
+\textbf{Murtuza Rangwala}\\
+Master of Economics and Data Analysis\\
+University of Verona
+\end{flushright}
+
+\end{singlespace}
+
+\newpage
+
+% Table of Contents, Figures, Tables
+\tableofcontents
+\listoffigures
+\listoftables
+
+\newpage
+\pagenumbering{arabic}
+
+% =========================================================
+% CONSOLIDATED 5 CHAPTERS
+% =========================================================
+\include{chapters/introduction}
+\include{chapters/literature_review}
+\include{chapters/data_and_methodology}
+\include{chapters/empirical_results}
+\include{chapters/conclusion}
+
+% =========================================================
+% BIBLIOGRAPHY
+% =========================================================
+\newpage
+\addcontentsline{toc}{chapter}{Bibliography}
+\bibliography{references}
+
+\end{document}

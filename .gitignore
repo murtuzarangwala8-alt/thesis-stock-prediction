@@ -1,0 +1,86 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtual Environment
+.venv/
+venv/
+ENV/
+
+# Large Archives & Data Dumps
+*.zip
+*.tar.gz
+*.7z
+*.parquet
+
+# Internal / Temporary Folders
+.agents/
+.gemini/
+scratch/
+logs/
+checkpoints/
+thesis_overleaf_*
+thesis_latex_source/
+nureal network/
+
+# Cloud Deployment & Temporary Scripts
+*.ps1
+runpod_*.py
+check_*.py
+deploy_*.py
+inject_*.py
+gen_*.py
+get_*.py
+start_*.py
+zip_for_kaggle.py
+run_output.txt
+current_training_output.log
+data_validation_report.md
+professor_evaluation_report.md
+thesis_quality_report.md
+
+# LaTeX Build Artifacts
+*.aux
+*.bbl
+*.blg
+*.fdb_latexmk
+*.fls
+*.lof
+*.log
+*.lot
+*.out
+*.toc
+*.synctex.gz
+tfd_mga_report.*
+thesis_report.*
+thesis_defense_and_approval.*
+thesis_approval_summary.pdf
+system_architecture_and_variable_guide.pdf
+document_pdf.pdf
+final_explanation.pdf
+thesis_results_summary.pdf
+
+# IDE & OS
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

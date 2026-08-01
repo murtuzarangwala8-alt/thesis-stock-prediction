@@ -1,0 +1,73 @@
+\begin{tabular}{llrrrrrrrr}
+\toprule
+ &  & Ann. Excess Return & Ann. Volatility & Sharpe & Sortino & Max Drawdown & Max DD Duration (Days) & VaR 95\% Daily & ES 95\% Daily \\
+Strategy & Scenario &  &  &  &  &  &  &  &  \\
+\midrule
+SP500 & COVID-19 Crash (Feb-Apr 2020) & -0.4575 & 0.6781 & -0.6747 & -1.0182 & -0.3413 & 50 & -0.0667 & -0.0981 \\
+\cline{1-10}
+LASSO\_LS & COVID-19 Crash (Feb-Apr 2020) & 0.3731 & 0.2032 & 1.8365 & 2.9588 & -0.0589 & 10 & -0.0215 & -0.0247 \\
+\cline{1-10}
+LASSO\_LS\_StopLoss & COVID-19 Crash (Feb-Apr 2020) & 0.3731 & 0.2032 & 1.8365 & 2.9588 & -0.0589 & 10 & -0.0215 & -0.0247 \\
+\cline{1-10}
+ElasticNet\_LS & COVID-19 Crash (Feb-Apr 2020) & 0.3749 & 0.2051 & 1.8280 & 2.8778 & -0.0588 & 10 & -0.0214 & -0.0250 \\
+\cline{1-10}
+ElasticNet\_LS\_StopLoss & COVID-19 Crash (Feb-Apr 2020) & 0.3749 & 0.2051 & 1.8280 & 2.8778 & -0.0588 & 10 & -0.0214 & -0.0250 \\
+\cline{1-10}
+RF\_LS & COVID-19 Crash (Feb-Apr 2020) & 0.5516 & 0.4002 & 1.3783 & 2.2020 & -0.1535 & 31 & -0.0360 & -0.0465 \\
+\cline{1-10}
+RF\_LS\_StopLoss & COVID-19 Crash (Feb-Apr 2020) & 0.5584 & 0.3944 & 1.4156 & 2.1690 & -0.1477 & 31 & -0.0360 & -0.0465 \\
+\cline{1-10}
+XGB\_LS & COVID-19 Crash (Feb-Apr 2020) & 0.1828 & 0.2650 & 0.6897 & 1.2754 & -0.1330 & 48 & -0.0231 & -0.0255 \\
+\cline{1-10}
+XGB\_LS\_StopLoss & COVID-19 Crash (Feb-Apr 2020) & -0.8647 & 0.0930 & -9.3018 & -9.7192 & -0.1643 & 50 & -0.0166 & -0.0231 \\
+\cline{1-10}
+LSTM\_LS & COVID-19 Crash (Feb-Apr 2020) & 0.5310 & 0.3476 & 1.5277 & 2.4998 & -0.1181 & 20 & -0.0355 & -0.0373 \\
+\cline{1-10}
+LSTM\_LS\_StopLoss & COVID-19 Crash (Feb-Apr 2020) & 0.5310 & 0.3476 & 1.5277 & 2.4998 & -0.1181 & 20 & -0.0355 & -0.0373 \\
+\cline{1-10}
+SP500 & Rate Hike Sell-Off (2022) & -0.2219 & 0.2541 & -0.8734 & -1.3842 & -0.2606 & 215 & -0.0292 & -0.0358 \\
+\cline{1-10}
+LASSO\_LS & Rate Hike Sell-Off (2022) & -0.1724 & 0.1171 & -1.4721 & -2.1017 & -0.1552 & 215 & -0.0134 & -0.0180 \\
+\cline{1-10}
+LASSO\_LS\_StopLoss & Rate Hike Sell-Off (2022) & -0.1778 & 0.0931 & -1.9096 & -1.7300 & -0.1338 & 215 & -0.0127 & -0.0173 \\
+\cline{1-10}
+ElasticNet\_LS & Rate Hike Sell-Off (2022) & -0.1587 & 0.1172 & -1.3539 & -1.9164 & -0.1522 & 215 & -0.0137 & -0.0182 \\
+\cline{1-10}
+ElasticNet\_LS\_StopLoss & Rate Hike Sell-Off (2022) & -0.1755 & 0.0937 & -1.8718 & -1.6808 & -0.1317 & 215 & -0.0130 & -0.0176 \\
+\cline{1-10}
+RF\_LS & Rate Hike Sell-Off (2022) & -0.4050 & 0.1452 & -2.7901 & -3.9758 & -0.2918 & 215 & -0.0151 & -0.0229 \\
+\cline{1-10}
+RF\_LS\_StopLoss & Rate Hike Sell-Off (2022) & -0.1715 & 0.0079 & -21.5993 & -22.0528 & -0.1350 & 215 & -0.0015 & -0.0016 \\
+\cline{1-10}
+XGB\_LS & Rate Hike Sell-Off (2022) & -0.4546 & 0.1145 & -3.9685 & -6.3167 & -0.3143 & 215 & -0.0128 & -0.0160 \\
+\cline{1-10}
+XGB\_LS\_StopLoss & Rate Hike Sell-Off (2022) & -0.3675 & 0.0108 & -34.1466 & -35.4162 & -0.2688 & 215 & -0.0025 & -0.0028 \\
+\cline{1-10}
+LSTM\_LS & Rate Hike Sell-Off (2022) & -0.2060 & 0.1819 & -1.1328 & -1.6236 & -0.2427 & 215 & -0.0192 & -0.0275 \\
+\cline{1-10}
+LSTM\_LS\_StopLoss & Rate Hike Sell-Off (2022) & -0.0132 & 0.0024 & -5.5064 & -4.6980 & -0.0110 & 215 & -0.0002 & -0.0004 \\
+\cline{1-10}
+SP500 & Yen Carry Trade Panic (Aug 2024) & 0.2992 & 0.2371 & 1.2620 & 1.7367 & -0.0656 & 11 & -0.0233 & -0.0301 \\
+\cline{1-10}
+LASSO\_LS & Yen Carry Trade Panic (Aug 2024) & 0.2341 & 0.1114 & 2.1006 & 2.7027 & -0.0292 & 11 & -0.0091 & -0.0159 \\
+\cline{1-10}
+LASSO\_LS\_StopLoss & Yen Carry Trade Panic (Aug 2024) & -0.0011 & 0.0003 & -3.9686 & 0.0000 & -0.0001 & 13 & -0.0000 & -0.0001 \\
+\cline{1-10}
+ElasticNet\_LS & Yen Carry Trade Panic (Aug 2024) & 0.2709 & 0.0923 & 2.9338 & 7.3372 & -0.0076 & 2 & -0.0073 & -0.0076 \\
+\cline{1-10}
+ElasticNet\_LS\_StopLoss & Yen Carry Trade Panic (Aug 2024) & -0.0139 & 0.0005 & -29.1461 & -38.9085 & -0.0008 & 15 & -0.0001 & -0.0001 \\
+\cline{1-10}
+RF\_LS & Yen Carry Trade Panic (Aug 2024) & 0.2488 & 0.1317 & 1.8894 & 2.6995 & -0.0271 & 10 & -0.0132 & -0.0145 \\
+\cline{1-10}
+RF\_LS\_StopLoss & Yen Carry Trade Panic (Aug 2024) & -0.1650 & 0.0135 & -12.2419 & -12.2419 & -0.0101 & 15 & -0.0028 & -0.0028 \\
+\cline{1-10}
+XGB\_LS & Yen Carry Trade Panic (Aug 2024) & -0.4091 & 0.1069 & -3.8254 & -4.7097 & -0.0450 & 15 & -0.0130 & -0.0146 \\
+\cline{1-10}
+XGB\_LS\_StopLoss & Yen Carry Trade Panic (Aug 2024) & -0.5723 & 0.0114 & -50.2650 & -50.2650 & -0.0326 & 15 & -0.0033 & -0.0036 \\
+\cline{1-10}
+LSTM\_LS & Yen Carry Trade Panic (Aug 2024) & 0.2488 & 0.0974 & 2.5550 & 4.2330 & -0.0191 & 11 & -0.0083 & -0.0108 \\
+\cline{1-10}
+LSTM\_LS\_StopLoss & Yen Carry Trade Panic (Aug 2024) & -0.0053 & 0.0003 & -16.0248 & -29.7647 & -0.0003 & 13 & -0.0000 & -0.0001 \\
+\cline{1-10}
+\bottomrule
+\end{tabular}

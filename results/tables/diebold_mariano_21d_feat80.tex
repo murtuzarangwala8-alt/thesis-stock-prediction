@@ -1,0 +1,28 @@
+\begin{table}[H]
+    \centering
+    \caption{Diebold-Mariano Predictive Accuracy Comparison (21-Day Horizon, 80 Features)}
+    \label{tab:diebold_mariano}
+    \resizebox{\textwidth}{!}{
+    \begin{tabular}{lcccccccccc}
+    \toprule
+    Model & L-Cls & EN-Cls & RF-Cls & XGB-Cls & TFT-Cls & L-Reg & EN-Reg & RF-Reg & XGB-Reg & TFT-Reg \\
+    \midrule
+    L-Cls & -- & $<0.001$ & $<0.001$ & $<0.001$ & 0.351 & $<0.001$ & $<0.001$ & $<0.001$ & $<0.001$ & 0.028 \\
+    EN-Cls & -8.19 & -- & 0.002 & $<0.001$ & $<0.001$ & $<0.001$ & $<0.001$ & $<0.001$ & $<0.001$ & 0.020 \\
+    RF-Cls & -6.90 & -3.17 & -- & 0.170 & $<0.001$ & $<0.001$ & $<0.001$ & 0.680 & 0.692 & $<0.001$ \\
+    XGB-Cls & -8.43 & -4.61 & -1.37 & -- & $<0.001$ & $<0.001$ & $<0.001$ & 0.333 & 0.236 & $<0.001$ \\
+    TFT-Cls & 0.93 & 6.79 & 7.05 & 8.51 & -- & $<0.001$ & $<0.001$ & $<0.001$ & $<0.001$ & 0.004 \\
+    L-Reg & 7.15 & 11.09 & 10.18 & 11.73 & 7.70 & -- & 1.000 & $<0.001$ & $<0.001$ & $<0.001$ \\
+    EN-Reg & 7.15 & 11.09 & 10.18 & 11.73 & 7.70 & 0.00 & -- & $<0.001$ & $<0.001$ & $<0.001$ \\
+    RF-Reg & -7.25 & -3.47 & -0.41 & 0.97 & -7.52 & -10.89 & -10.89 & -- & 0.993 & $<0.001$ \\
+    XGB-Reg & -7.86 & -3.86 & -0.40 & 1.19 & -8.17 & -11.78 & -11.78 & -0.01 & -- & $<0.001$ \\
+    TFT-Reg & -2.20 & 2.33 & 4.52 & 5.84 & -2.90 & -7.88 & -7.88 & 5.18 & 5.39 & -- \\
+    \bottomrule
+    \end{tabular}
+    }
+    \vspace{0.1cm}
+    \begin{flushleft}
+    \scriptsize
+    \textit{Note:} This table presents pairwise Diebold-Mariano test statistics (lower triangle) and p-values (upper triangle) comparing the directional forecast errors of all 10 models. A positive statistic indicates that the row model outperforms the column model. Standard errors are adjusted using the Newey-West HAC covariance estimator with 8 lags.
+    \end{flushleft}
+\end{table}

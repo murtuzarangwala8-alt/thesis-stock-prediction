@@ -1,0 +1,44 @@
+\chapter{Conclusion \& Future Extensions}
+\label{ch:conclusion}
+
+\section{Summary of Research Findings}
+In this thesis, I conducted an empirical investigation into whether statistical machine learning and deep learning models improve cross-sectional stock return prediction across S\&P 500 constituent equities over the ten-year period from 2015 through 2024 \citep{gu2020empirical, chen2023deep}. By constructing a point-in-time aligned panel free from lookahead and survivorship bias \citep{mclean2016does}, evaluating models across 5 expanding-window walk-forward test folds (2020--2024) \citep{lopez2018advances}, accounting for 10 bps transaction cost drag \citep{novy2016taxonomy}, and estimating Fama-French five-factor spanning regressions \citep{fama2015five, carhart1997on}, my study provides answers to all four core research questions:
+
+\begin{enumerate}
+    \item \textbf{Statistical Performance of Deep Sequence Encoders (RQ1)}: Non-linear sequence-based deep learning models outperform traditional linear regressions (Fama-MacBeth OLS, LASSO) and static tree classifiers (Random Forest, XGBoost). The proposed \textbf{TFDMGA network achieves high out-of-sample predictive accuracy}, yielding a daily Information Coefficient of \textbf{$IC = +0.0348$}, an annualized \textbf{$ICIR = 3.12$}, a ROC AUC of \textbf{$0.6120$}, and a directional accuracy of \textbf{$56.84\%$}. A \citet{diebold1995comparing} test with \citet{harvey1997testing} small-sample corrections indicates statistical significance over standard LSTM models ($DM = 2.41, p = 0.016$).
+
+    \item \textbf{Value of Multi-Modal Feature Fusion (RQ2)}: Combining multi-frequency feature modalities (16 Technical, 30 Fundamental, 2 Sentiment, 5 Macro = 53 ML features) through a directed ring attention cascade ($\text{Technical} \leftarrow \text{Sentiment} \leftarrow \text{Fundamental} \leftarrow \text{Macro}$) \citep{vaswani2017attention} and dynamic macro gating \citep{lim2021temporal} produces higher out-of-sample signal stability compared to single-modality models \citep{cong2021textual}. Sentiment indicators and price momentum drive high-frequency signal directionality, while quarterly accounting quality provides structural drawdown defense.
+
+    \item \textbf{Trading Performance \& Risk Overlays (RQ3)}: Under 10 bps transaction costs and 1-day lagged execution \citep{novy2016taxonomy, avramov2023machine}, an initial \textbf{\$1,000 USD deposit} (Jan 2020) grows to \textbf{\$3,120.99 USD} under the baseline LSTM $Q_5$ long strategy. When paired with a 2:1 Take-Profit/Stop-Loss (TPSL) dynamic risk management overlay, drawdowns during macro stress periods (2020 COVID market decline, 2022 Fed rate hikes) are reduced, allowing capital to compound to \textbf{\$4,368.50 USD} for LSTM and \textbf{\$6,482.10 USD} for TFDMGA.
+
+    \item \textbf{Econometric Factor Spanning \& Market Efficiency (RQ4)}: Fama-French 5-factor spanning regressions yield an estimated net strategy alpha of \textbf{$\hat{\alpha} = -0.18\%$} per year ($p = 0.976, R^2 = 41.2\%$) \citep{fama2015five, newey1987simple}. Because net alpha is statistically indistinguishable from zero, 100\% of the strategy's return generation is accounted for by systematic factor exposures ($Mkt-RF, SMB, HML, RMW, CMA$). This suggests that machine learning models function as \textbf{dynamic factor allocation engines} \citep{kelly2019characteristics, kozak2020shrinking} rather than discoverers of unpriced market arbitrage, maintaining consistency with market efficiency \citep{fama1970efficient}.
+\end{enumerate}
+
+\section{Theoretical and Practical Implications}
+The empirical conclusions of this study carry several implications for quantitative finance practitioners and academic researchers:
+
+\begin{itemize}
+    \item \textbf{For Empirical Asset Pricing}: The collapse of LASSO under linear MSE loss highlights the importance of rank-based loss functions ($\mathcal{L}_{\text{rank}}, \mathcal{L}_{\operatorname{IC}}$) when training machine learning architectures on noisy financial return targets \citep{tibshirani1996regression, kozak2020shrinking, gu2020empirical}.
+    \item \textbf{For Institutional Asset Managers}: Daily alpha signals experience turnover drag ($\approx 13\%$ daily turnover). Incorporating dynamic risk management rules (such as 2:1 TPSL circuit breakers) is essential for preserving capital and converting statistical predictions into tradeable wealth compounding \citep{novy2016taxonomy, frazzini2014betting}.
+    \item \textbf{For Market Efficiency Debates}: Demonstrating that deep learning model returns are spanned by systematic Fama-French factors provides insight into why ML strategies generate positive returns. Machine learning does not violate market efficiency \citep{fama1970efficient}; rather, it automates dynamic factor rotation across macroeconomic regimes \citep{kelly2019characteristics, chen2023deep}.
+\end{itemize}
+
+\section{Limitations of the Study}
+While this thesis adheres to standard backtesting protocols \citep{lopez2018advances}, certain empirical limitations exist:
+\begin{enumerate}
+    \item \textbf{Execution Slippage \& Market Impact}: Transaction costs were modeled using fixed round-trip friction levels (5, 10, 20 bps). Real-world execution of large institutional orders introduces non-linear square-root market impact drag \citep{novy2016taxonomy}.
+    \item \textbf{Universe Limitation}: The empirical panel is restricted to U.S. Large-Cap S\&P 500 equities. Smaller, less liquid mid-cap or small-cap stocks may present different return patterns along with higher transaction costs \citep{avramov2023machine, hou2020replicating}.
+\end{enumerate}
+
+\section{Future Research Extensions}
+The empirical baseline established in this thesis provides several avenues for future research extensions:
+
+\begin{description}
+    \item[\textbf{Extension 1:}] \textbf{Spatio-Temporal Graph Neural Networks} -- Extending the stock sequence encoders in TFDMGA to a Spatio-Temporal Graph Attention Network (GAT), modeling stocks as graph nodes with dynamic edge weights $A_{ij,t}$ to capture cross-sectional supply chain linkages, industry spillovers, and dynamic return correlations \citep{vaswani2017attention, chen2023deep}.
+
+    \item[\textbf{Extension 2:}] \textbf{Macro-Conditioned Hyper-LoRA Attention} -- Conditioning Transformer attention projections ($W_Q, W_K, W_V$) on macroeconomic regimes using Hypernetworks and Low-Rank Adaptation (LoRA) to allow dynamic adjustment to changing macroeconomic environments \citep{lim2021temporal}.
+
+    \item[\textbf{Extension 3:}] \textbf{Continuous Deep Reinforcement Learning with Differentiable QP Layers} -- Replacing decile portfolio sorting with a continuous Deep Reinforcement Learning (DRL) agent (PPO) coupled with a differentiable Quadratic Programming solver layer (\path{cvxpylayers}) to optimize continuous portfolio weights directly against non-linear Sharpe ratio rewards \citep{lopez2020machine, novy2016taxonomy}.
+
+    \item[\textbf{Extension 4:}] \textbf{Conditional Variational Autoencoder Factor Extraction} -- Developing a probabilistic Conditional Variational Autoencoder (CVAE) to extract non-linear latent factor spaces from high-dimensional characteristics \citep{gu2021autoencoder, kelly2019characteristics, chen2023deep}.
+\end{description}

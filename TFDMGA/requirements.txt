@@ -1,0 +1,29 @@
+# TFDMGA — Production Dependencies
+# Install with: pip install -r requirements.txt
+#
+# Tested on: RunPod RTX 4090 / PyTorch 2.8 / CUDA latest / Python 3.12
+
+# ── Core deep learning ────────────────────────────────────────────────────────
+torch>=2.0.0                  # minimum for torch.compile, fused AdamW, SDPA
+# Note: on RunPod, torch is pre-installed in the container image.
+# If you need to reinstall: pip install torch==2.8.0 --index-url https://download.pytorch.org/whl/cu124
+
+# ── Scientific computing ──────────────────────────────────────────────────────
+numpy>=1.26.0
+pandas>=2.1.0
+scipy>=1.11.0
+pyarrow>=14.0.0              # parquet I/O for pandas
+
+# ── Hyperparameter optimisation ───────────────────────────────────────────────
+optuna>=3.5.0
+optuna-dashboard>=0.14.0     # optional: web UI for Optuna study monitoring
+
+# ── Logging & monitoring ──────────────────────────────────────────────────────
+tensorboard>=2.15.0
+tqdm>=4.66.0
+
+# ── Plotting ──────────────────────────────────────────────────────────────────
+matplotlib>=3.8.0
+
+# ── Utilities ────────────────────────────────────────────────────────────────
+psutil>=5.9.0                # system/CPU memory monitoring (optional)

@@ -1,0 +1,63 @@
+{
+  "tech_cols": [
+    "return_on_equity_rank",
+    "return_on_inv_capital_rank",
+    "tot_return_index_gross_dvds_rank",
+    "volatility_90d_rank",
+    "mom_1d_rank",
+    "mom_5d_rank",
+    "mom_21d_rank",
+    "mom_63d_rank",
+    "mom_126d_rank",
+    "mom_252d_rank",
+    "rsi_14_rank",
+    "macd_hist_rank",
+    "bb_pct_b_rank",
+    "vol_5d_rank",
+    "vol_126d_rank",
+    "vol_ratio_rank"
+  ],
+  "fund_cols": [
+    "excess_ret",
+    "mkt_rf",
+    "rmw",
+    "px_volume_rank",
+    "beta_rmw_5f_252d_rank",
+    "cma",
+    "smb",
+    "pt_upside_rank",
+    "beta_cma_5f_252d_rank",
+    "beta_mkt_252d_rank",
+    "price",
+    "piotroski_f_score_rank",
+    "natural_gas_backup_rank",
+    "cur_mkt_cap_rank",
+    "beta_252d_rank",
+    "beta_hml_5f_252d_rank",
+    "bs_tot_liab2_rank",
+    "quality_score_rank",
+    "net_profit_margin_rank",
+    "hml",
+    "cf_dvd_paid_rank",
+    "book_to_market_rank",
+    "hold_recs_rank",
+    "beta_smb_5f_252d_rank",
+    "eqy_free_float_pct_rank",
+    "dvd_payout_ratio_rank",
+    "ev_to_t12m_ebitda_rank",
+    "acct_rcv_days_rank",
+    "eqy_sh_out_rank",
+    "pb_ratio_rank"
+  ],
+  "macro_cols": [
+    "short_term_borrow_rank",
+    "tax_rate_reported_rank",
+    "oil_wti_backup_rank",
+    "fed_funds_rank",
+    "earnings_yield_rank"
+  ],
+  "sent_cols": [
+    "sentiment_news",
+    "sentiment_social"
+  ]
+}
