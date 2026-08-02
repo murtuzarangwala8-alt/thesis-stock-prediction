@@ -59,11 +59,15 @@ def main():
         print(f"  {row['ticker']:<8} ${row['price']:<11.2f} {row['daily_change_pct']:+6.2f}%      {row['mom_21d']*100:+7.2f}%       {row['tfdmga_score']:+.4f}")
     print("-" * 80)
 
-    # 3. Calculate Position Sizing & Submit Live Orders to Alpaca
-    cash = min(summary.get('cash', 1000.0), 10000.0)  # Allocate up to $10,000 USD for live trade test
-    alloc_per_stock = cash / len(top_picks)
+    # 3. Calculate Proportional Position Sizing across Full Account Equity
+    equity = summary.get('equity', 100000.0)
+    cash_avail = summary.get('cash', equity)
     
-    print(f"\n  [ALPACA ORDER EXECUTION] Submitting Bracket Orders ($ {alloc_per_stock:,.2f} USD per stock)...")
+    # Allocate 95% of total equity equally across the 5 top Q5 picks (20% per stock)
+    alloc_per_stock = min(cash_avail * 0.95, equity * 0.95) / len(top_picks)
+    
+    print(f"\n  [ALPACA PROPORTIONAL SIZING] Account Equity: ${equity:,.2f} USD")
+    print(f"  [ALPACA ORDER EXECUTION] Allocating ${alloc_per_stock:,.2f} USD per stock across {len(top_picks)} picks...")
     orders_submitted = []
     
     for _, row in top_picks.iterrows():
