@@ -10,11 +10,11 @@ from pathlib import Path
 root_dir = Path(__file__).resolve().parent
 sys.path.insert(0, str(root_dir))
 
-from src.alpaca_broker import AlpacaBroker, HAS_ALPACA
+from src.alpaca_broker import AlpacaBroker
 
 def main():
     print("=" * 80)
-    print("  🚀 ALPACA BROKERAGE AUTOMATED LIVE / PAPER TRADER")
+    print("  *** ALPACA BROKERAGE AUTOMATED LIVE / PAPER TRADER ***")
     print("=" * 80)
     
     # Check if keys are set in environment
@@ -36,11 +36,11 @@ def main():
     summary = broker.get_account_summary()
     
     if summary.get('status') == 'ERROR':
-        print(f"\n  ❌ Connection Error: {summary.get('error')}")
+        print(f"\n  [ERROR] Connection Error: {summary.get('error')}")
         print("  Please check your API Key ID and Secret Key and try again.")
         return
         
-    print("\n  ✅ SUCCESS! CONNECTED TO ALPACA BROKERAGE ACCOUNT:")
+    print("\n  [SUCCESS] CONNECTED TO ALPACA BROKERAGE ACCOUNT:")
     print(f"  Account Mode   : {summary.get('mode')}")
     print(f"  Account Status : {summary.get('status')}")
     print(f"  Total Equity   : ${summary.get('equity', 0.0):,.2f} USD")
