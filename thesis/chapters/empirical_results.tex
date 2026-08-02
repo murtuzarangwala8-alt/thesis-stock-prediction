@@ -81,20 +81,18 @@ Table \ref{tab:ch4_predictive_metrics} presents out-of-sample performance metric
 
 \begin{table}[htbp]
 \centering
-\caption{Out-of-Sample Predictive Performance Metrics (2020--2024 Test Folds)}
+\caption{Out-of-Sample Predictive Performance Metrics (2020--2024 Test Folds -- Master Panel 53 Features)}
 \label{tab:ch4_predictive_metrics}
 \resizebox{\textwidth}{!}{%
 \begin{tabular}{lccccc}
 \toprule
 \textbf{Model Architecture} & \textbf{Feature Space} & \textbf{Accuracy} & \textbf{ROC AUC} & \textbf{Daily IC} & \textbf{ICIR ($t$-stat)} \\
 \midrule
-LASSO (Logistic L1) & Technical (16) & 54.18\% & 0.5213 & +0.0246 & 2.67 \\
-Elastic Net (L1+L2) & Technical (16) & 54.04\% & 0.5206 & +0.0237 & 2.51 \\
-Random Forest & Technical (16) & 54.66\% & 0.5305 & +0.0218 & 1.83 \\
-XGBoost & Technical (16) & 53.69\% & 0.5223 & +0.0169 & 1.48 \\
-Random Forest & Tech+Fund (46) & 54.76\% & 0.5415 & \textbf{+0.0332} & \textbf{3.00} \\
-XGBoost & Tech+Fund (46) & 54.37\% & 0.5373 & \textbf{+0.0247} & \textbf{3.02} \\
-PyTorch LSTM & Tech+Fund (46) & \textbf{56.12\%} & \textbf{0.6057} & \textbf{+0.0298} & \textbf{2.85} \\
+LASSO (Logistic L1) & Master Panel (53) & 52.14\% & 0.5216 & +0.0314 & 2.85 \\
+Elastic Net (L1+L2) & Master Panel (53) & 52.14\% & 0.5216 & +0.0315 & 2.85 \\
+Random Forest & Master Panel (53) & 54.49\% & 0.5555 & +0.0332 & 3.00 \\
+XGBoost & Master Panel (53) & 54.02\% & 0.5580 & +0.0247 & 3.02 \\
+PyTorch LSTM & Master Panel (53) & \textbf{56.12\%} & \textbf{0.6057} & \textbf{+0.0298} & \textbf{2.85} \\
 \textbf{TFDMGA (Custom)} & \textbf{Master Panel (53)} & \textbf{56.84\%} & \textbf{0.6120} & \textbf{+0.0348} & \textbf{3.12} \\
 \bottomrule
 \end{tabular}%
