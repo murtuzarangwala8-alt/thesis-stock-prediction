@@ -9,6 +9,12 @@
 \setlength{\parskip}{6pt}
 \setlength{\parindent}{1.27cm}
 
+% Widow and Orphan Line Prevention Penalties
+\widowpenalty=10000
+\clubpenalty=10000
+\brokenpenalty=10000
+\displaywidowpenalty=10000
+
 \raggedbottom
 \hfuzz=28pt
 \emergencystretch=2em
@@ -19,15 +25,24 @@
 \usepackage{times}
 \usepackage{microtype}
 
+% Custom Needspace Package for Orphan Heading Prevention
+\usepackage{needspace}
+
+% Float Placement Parameters (prevent float page pushing & white gaps)
+\renewcommand{\topfraction}{0.85}
+\renewcommand{\bottomfraction}{0.80}
+\renewcommand{\textfraction}{0.15}
+\renewcommand{\floatpagefraction}{0.75}
+
 % Chapter and Section Headings (14pt Bold)
 \usepackage{titlesec}
 \titleformat{\chapter}[block]{\fontsize{14}{18}\bfseries\color{jpmNavy}}{\thechapter.}{0.8em}{}
 \titlespacing*{\chapter}{0pt}{12pt}{6pt}
 
-\titleformat{\section}[block]{\fontsize{14}{18}\bfseries\color{jpmNavy}}{\thesection}{0.8em}{}
+\titleformat{\section}[block]{\needspace{4\baselineskip}\fontsize{14}{18}\bfseries\color{jpmNavy}}{\thesection}{0.8em}{}
 \titlespacing*{\section}{0pt}{10pt}{4pt}
 
-\titleformat{\subsection}[block]{\fontsize{12}{16}\bfseries}{\thesubsection}{0.8em}{}
+\titleformat{\subsection}[block]{\needspace{3\baselineskip}\fontsize{12}{16}\bfseries}{\thesubsection}{0.8em}{}
 \titlespacing*{\subsection}{0pt}{8pt}{4pt}
 
 % Math and Tables

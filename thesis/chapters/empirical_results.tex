@@ -7,7 +7,7 @@ Before evaluating nonlinear machine learning architectures, I examine baseline l
 \section{Contemporaneous Fama-MacBeth OLS Baseline}
 Table \ref{tab:ch4_fama_macbeth} presents the daily cross-sectional Fama-MacBeth regression parameter estimates \citep{fama1973risk}, Newey-West HAC standard errors ($L = 8$ lags) \citep{newey1987simple}, and corresponding $t$-statistics with Shanken corrections \citep{shanken1992on} over the 2015--2024 period.
 
-\begin{table}[H]
+\begin{table}[htbp]
 \centering
 \caption{Fama-MacBeth Daily Cross-Sectional Regression Risk Premia (2015--2024)}
 \label{tab:ch4_fama_macbeth}
@@ -56,16 +56,20 @@ To understand which feature modalities influence nonlinear predictions, I calcul
 
 Figure \ref{fig:ch4_shap_bar} presents the global SHAP mean absolute feature importances, while Figure \ref{fig:ch4_shap_summary} displays the SHAP summary beeswarm plot illustrating directional feature impacts.
 
-\begin{figure}[H]
+\begin{figure}[htbp]
 \centering
-\includegraphics[width=0.85\textwidth]{figures/shap_bar_plot_21d_feattech_fund.png}
+\vspace{-0.2cm}
+\includegraphics[width=0.80\textwidth]{figures/shap_bar_plot_21d_feattech_fund.png}
+\vspace{-0.2cm}
 \caption{Global SHAP Mean Absolute Feature Importance Rankings (21-Day Horizon)}
 \label{fig:ch4_shap_bar}
 \end{figure}
 
-\begin{figure}[H]
+\begin{figure}[htbp]
 \centering
-\includegraphics[width=0.85\textwidth]{figures/shap_summary_plot_21d_feattech_fund.png}
+\vspace{-0.2cm}
+\includegraphics[width=0.80\textwidth]{figures/shap_summary_plot_21d_feattech_fund.png}
+\vspace{-0.2cm}
 \caption{SHAP Summary Beeswarm Plot Illustrating Feature Value Impact on Model Predictions}
 \label{fig:ch4_shap_summary}
 \end{figure}
@@ -75,7 +79,7 @@ As shown in Figures \ref{fig:ch4_shap_bar} and \ref{fig:ch4_shap_summary}, short
 \section{Out-of-Sample Predictive Evaluation}
 Table \ref{tab:ch4_predictive_metrics} presents out-of-sample performance metrics across the model lineup on the 21-day holding horizon across the 5 expanding-window walk-forward test folds (2020--2024).
 
-\begin{table}[H]
+\begin{table}[htbp]
 \centering
 \caption{Out-of-Sample Predictive Performance Metrics (2020--2024 Test Folds)}
 \label{tab:ch4_predictive_metrics}
@@ -102,7 +106,7 @@ Deep sequence architectures (LSTM and TFDMGA) achieve higher out-of-sample predi
 \section{Ablation Study of Neural Architecture Components}
 To isolate the incremental contribution of each component within the TFDMGA architecture, I conduct a systematic ablation study. Table \ref{tab:ch4_ablation_study} reports the out-of-sample predictive metrics across model variants evaluated on the 21-day holding horizon.
 
-\begin{table}[H]
+\begin{table}[htbp]
 \centering
 \caption{Systematic Component Ablation Study of the TFDMGA Network}
 \label{tab:ch4_ablation_study}
@@ -111,7 +115,7 @@ To isolate the incremental contribution of each component within the TFDMGA arch
 \toprule
 \textbf{Model Architecture Variant} & \textbf{Daily IC} & \textbf{ICIR ($t$-stat)} & \textbf{Accuracy} & \textbf{ROC AUC} & \textbf{Incremental IC Loss} \\
 \midrule
-\textbf{Full TFDMGA (Complete Model)} & \textbf{+0.0348} & \textbf{3.12} & \textbf{56.84\%} & \textbf{0.6120} & ,  \\
+\textbf{Full TFDMGA (Complete Model)} & \textbf{+0.0348} & \textbf{3.12} & \textbf{56.84\%} & \textbf{0.6120} & --- \\
 $-$ Macro Dynamic Gating (Static Uniform Weights) & +0.0312 & 2.91 & 55.90\% & 0.5980 & $-$0.0036 \\
 $-$ Ring Attention (Naive Concatenation) & +0.0305 & 2.86 & 55.45\% & 0.5910 & $-$0.0043 \\
 $-$ Causal TCN Encoders (Linear Projections) & +0.0291 & 2.70 & 54.80\% & 0.5820 & $-$0.0057 \\
@@ -132,7 +136,7 @@ The ablation results indicate that each component contributes to performance:
 \section{Robustness Checks and Sensitivity Analysis}
 To evaluate signal stability, Table \ref{tab:ch4_horizon_sensitivity} presents performance across alternative prediction horizons, rebalance frequencies, and transaction cost friction grids \citep{novy2016taxonomy, avramov2023machine}.
 
-\begin{table}[H]
+\begin{table}[htbp]
 \centering
 \caption{Predictive Accuracy and Account Compounding Across Prediction Horizons and Fees}
 \label{tab:ch4_horizon_sensitivity}
@@ -153,7 +157,7 @@ To evaluate signal stability, Table \ref{tab:ch4_horizon_sensitivity} presents p
 \section{Portfolio Construction \& Execution Friction}
 Figure \ref{fig:ch4_portfolio_flowchart} shows the decile portfolio sorting, 1-day execution buffer delay, and weight drift turnover rebalancing framework \citep{lopez2018advances, novy2016taxonomy}.
 
-\begin{figure}[H]
+\begin{figure}[htbp]
 \centering
 \resizebox{\textwidth}{!}{%
 \begin{tikzpicture}[
@@ -180,7 +184,7 @@ Figure \ref{fig:ch4_portfolio_flowchart} shows the decile portfolio sorting, 1-d
 \section{Transaction Cost Sensitivity \& \$1,000 USD Account Compounding}
 Table \ref{tab:ch4_account_growth} documents the cumulative compounding trajectory of an initial \textbf{\$1,000 USD deposit} (January 1, 2020 to December 31, 2024) across models and fee levels \citep{novy2016taxonomy, frazzini2014betting}.
 
-\begin{table}[H]
+\begin{table}[htbp]
 \centering
 \caption{\$1,000 USD Account Growth Under Transaction Cost Scenarios (2020--2024)}
 \label{tab:ch4_account_growth}
@@ -203,30 +207,38 @@ LSTM + 2:1 TPSL Risk Overlay & \textbf{\$4,625.10} & \textbf{\$4,494.30} & \text
 
 Figure \ref{fig:ch4_cum_ret} plots out-of-sample cumulative returns, Figure \ref{fig:ch4_sharpe} displays rolling Sharpe ratios, and Figures \ref{fig:ch4_tpsl} and \ref{fig:ch4_drawdown} illustrate stop-loss drawdown mitigation curves.
 
-\begin{figure}[H]
+\begin{figure}[htbp]
 \centering
-\includegraphics[width=0.85\textwidth]{figures/equity_curves_comparison_21d.png}
+\vspace{-0.2cm}
+\includegraphics[width=0.80\textwidth]{figures/equity_curves_comparison_21d.png}
+\vspace{-0.2cm}
 \caption{Out-of-Sample Cumulative Return Trajectories (Net 10 bps, 2020--2024 Folds)}
 \label{fig:ch4_cum_ret}
 \end{figure}
 
-\begin{figure}[H]
+\begin{figure}[htbp]
 \centering
-\includegraphics[width=0.85\textwidth]{figures/rolling_sharpe_21d_feattech_fund.png}
+\vspace{-0.2cm}
+\includegraphics[width=0.80\textwidth]{figures/rolling_sharpe_21d_feattech_fund.png}
+\vspace{-0.2cm}
 \caption{Rolling 126-Day Annualized Sharpe Ratios across Model Architectures}
 \label{fig:ch4_sharpe}
 \end{figure}
 
-\begin{figure}[H]
+\begin{figure}[htbp]
 \centering
-\includegraphics[width=0.85\textwidth]{figures/stop_loss_impact_curves.png}
+\vspace{-0.2cm}
+\includegraphics[width=0.80\textwidth]{figures/stop_loss_impact_curves.png}
+\vspace{-0.2cm}
 \caption{Impact of 2:1 Take-Profit/Stop-Loss Risk Overlay (+4\% / -2\%) on Portfolio Returns}
 \label{fig:ch4_tpsl}
 \end{figure}
 
-\begin{figure}[H]
+\begin{figure}[htbp]
 \centering
-\includegraphics[width=0.85\textwidth]{figures/stress_drawdown_mitigation.png}
+\vspace{-0.2cm}
+\includegraphics[width=0.80\textwidth]{figures/stress_drawdown_mitigation.png}
+\vspace{-0.2cm}
 \caption{Maximum Drawdown Mitigation During Macro Stress Periods (COVID 2020 \& Fed Hikes 2022)}
 \label{fig:ch4_drawdown}
 \end{figure}
@@ -234,7 +246,7 @@ Figure \ref{fig:ch4_cum_ret} plots out-of-sample cumulative returns, Figure \ref
 \section{Fama-French 5-Factor Spanning Regressions}
 Table \ref{tab:ch4_spanning} presents the Fama-French 5-factor spanning regressions evaluated net of 10 bps fees \citep{fama2015five, newey1987simple}.
 
-\begin{table}[H]
+\begin{table}[htbp]
 \centering
 \caption{Fama-French 5-Factor Spanning Regressions with Newey-West HAC Errors}
 \label{tab:ch4_spanning}

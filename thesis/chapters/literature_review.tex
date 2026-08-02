@@ -16,8 +16,6 @@ In this chapter, I synthesize the asset pricing literature around six key themat
     \item \textbf{Financial ML Protocols \& Overfitting Mitigation}: Backtesting rules, expanding walk-forward splits, microstructural frictions, and transaction cost frameworks.
 \end{enumerate}
 
-, 
-
 \section{Theoretical Asset Pricing Foundations}
 
 \subsection{Equilibrium Foundations: The CAPM and Arbitrage Pricing Theory}
@@ -80,8 +78,6 @@ R_{i,t} - R_{f,t} &= \alpha_i + \beta_{i,1} (R_{m,t} - R_{f,t}) + \beta_{i,2}\, 
 \end{align}
 where $RMW_t$ (Robust Minus Weak) measures the profit margin return differential, and $CMA_t$ (Conservative Minus Aggressive) captures investment intensity differentials. Grounded theoretically in the dividend discount model, \citet{fama2015five} showed that holding book-to-market fixed, higher expected earnings imply higher expected returns, while higher expected investment rates lower expected returns. Concurrently, \citet{hou2015digesting} established the $q$-factor model ($Mkt, ME, I/A, ROE$), showing that investment and profitability factors derived from q-theory span a wide range of cross-sectional anomalies.
 
-, 
-
 \section{The Factor Zoo Controversy, Multiple Testing, and Shrinkage}
 
 \subsection{The Proliferation of Anomalies and Cochrane's "Factor Zoo"}
@@ -114,8 +110,6 @@ When the SDF is parameterized as a linear combination of a high dimensional vect
 \end{equation}
 \citet{kozak2020shrinking} showed that while unregularized models tend to overfit high-frequency sample noise, penalized SDF estimation extracts a low-dimensional principal component structure that spans expected returns while shrinking noise coefficients to zero.
 
-, 
-
 \section{High-Dimensional SDF Estimation \& Characteristic Interactions}
 
 \subsection{Non-Parametric Characteristic Pruning via Group LASSO}
@@ -135,8 +129,6 @@ where $c_{i,j,t}$ represents the rank-transformed characteristic $j$ for firm $i
 \citet{chinco2019sparse} examined sparse return predictability at high frequencies, showing that LASSO regression identifies transient, cross-asset predictive signals that standard time series estimators miss. Grounding model selection in econometric diagnostics, \citet{lewellen2010skeptical} provided a critique of cross-sectional asset pricing tests. They showed that testing multifactor models on strong factor-structure portfolios (such as standard 25 Size-B/M sorted portfolios) produces artificially inflated cross-sectional $R^2$ values. They prescribed rigorous diagnostic standards: expanding test portfolios beyond Size-B/M, forcing theoretical factor risk premia to equal sample factor means, and reporting confidence intervals for cross-sectional $R^2$.
 
 Expanding structural factor selection, \citet{feng2020taming} and \citet{giglio2021test} developed double-testing econometric frameworks combining LASSO factor selection with two-pass regressions. They showed that high dimensional regularization enables researchers to evaluate whether a newly proposed factor adds incremental explanatory power to the existing universe of 300+ factors without suffering from omitted variable bias or data mining contamination.
-
-, 
 
 \section{Machine Learning and Deep Learning Paradigms}
 
@@ -179,8 +171,6 @@ providing transparent economic interpretation of nonlinear asset pricing models.
 
 \subsection{Economic Frictions and Limits to Arbitrage}
 While machine learning models achieve notable statistical $R_{\text{oos}}^2$, \citet{avramov2023machine} investigated whether these return forecast gains survive real-world economic frictions. Avramov, Cheng, and Metzker showed that machine learning return predictability is heavily concentrated in illiquid, microcap stocks with high distress risk, high transaction costs, and borrowing constraints. When portfolios exclude microcaps or account for realistic execution costs, out-of-sample profits decline significantly. This highlights the importance of integrating microstructural frictions into financial machine learning evaluation.
-
-, 
 
 \section{Financial Time-Series Econometrics \& Inference}
 
@@ -226,8 +216,6 @@ T_k^{\text{SPA}} = \max_{k=1, \dots, K} \frac{\sqrt{T} \bar{d}_k}{\hat{\omega}_k
 \end{equation}
 where $\hat{\omega}_k^2$ is a consistent estimator of the asymptotic variance of $\sqrt{T}\bar{d}_k$. Hansen showed that the SPA test exhibits higher power and robustness against uninformative candidate models, serving as a useful diagnostic for quantitative model comparison.
 
-, 
-
 \section{Financial ML Protocols \& Overfitting Mitigation}
 
 \subsection{Methodological Pitfalls in Financial Machine Learning}
@@ -256,12 +244,10 @@ where $\tau_i$ represents effective bid-ask spreads and market impact costs. Hig
 
 Furthermore, execution realism mandates an execution delay: trading signals generated at market close on day $t$ cannot be executed until day $t+1$ close or open. In addition, leverage constraints and margin costs \citep{frazzini2014betting} restrict short-selling capacity on distressed equities, reinforcing the necessity of evaluating long-only and cost-adjusted long-short performance.
 
-, 
-
 \section{Synthesis of Core Literature Benchmarks}
 Table \ref{tab:ch2_lit_synthesis_comprehensive} provides a synthesis of the literature that anchors the theoretical framing, model architecture, feature engineering, econometric estimation, and validation of this thesis.
 
-\begin{table}[H]
+\begin{table}[htbp]
 \centering
 \caption{Comprehensive Synthesis of Core Literature Benchmarks}
 \label{tab:ch2_lit_synthesis_comprehensive}

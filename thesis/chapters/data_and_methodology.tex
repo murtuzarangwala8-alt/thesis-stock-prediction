@@ -22,7 +22,7 @@ To guard against survivorship bias, my asset universe tracks historical point-in
 
 Figure \ref{fig:ch3_pipeline} shows my point-in-time data alignment pipeline and staleness truncation flowchart.
 
-\begin{figure}[H]
+\begin{figure}[htbp]
 \centering
 \resizebox{\textwidth}{!}{%
 \begin{tikzpicture}[
@@ -61,7 +61,7 @@ Including vast numbers of firm characteristics in financial panels introduces pr
 
 Figure \ref{fig:ch3_modality_split} displays the feature group modality classification.
 
-\begin{figure}[H]
+\begin{figure}[htbp]
 \centering
 \resizebox{\textwidth}{!}{%
 \begin{tikzpicture}[
@@ -93,16 +93,20 @@ To avoid data leakage, I perform feature selection (\path{scripts/select_feature
 
 Figure \ref{fig:ch3_corr_heatmap} presents the correlation matrix of selected features, and Figure \ref{fig:ch3_rf_importance} shows the Random Forest importance rankings.
 
-\begin{figure}[H]
+\begin{figure}[htbp]
 \centering
-\includegraphics[width=0.82\textwidth]{./figures/selected_features_correlation.png}
+\vspace{-0.2cm}
+\includegraphics[width=0.80\textwidth]{./figures/selected_features_correlation.png}
+\vspace{-0.2cm}
 \caption{Spearman Rank Correlation Heatmap of Selected 53 ML Features}
 \label{fig:ch3_corr_heatmap}
 \end{figure}
 
-\begin{figure}[H]
+\begin{figure}[htbp]
 \centering
-\includegraphics[width=0.82\textwidth]{./figures/selected_feature_importances.png}
+\vspace{-0.2cm}
+\includegraphics[width=0.80\textwidth]{./figures/selected_feature_importances.png}
+\vspace{-0.2cm}
 \caption{Stage 3 Random Forest Feature Importance Rankings across Modalities}
 \label{fig:ch3_rf_importance}
 \end{figure}
@@ -420,7 +424,7 @@ The \textbf{Temporal Fusion Deep Multimodal Gated Attention (TFDMGA)} network is
 
 Figure \ref{fig:ch3_tfdmga_arch} shows the complete neural network architecture of the TFDMGA model.
 
-\begin{figure}[H]
+\begin{figure}[htbp]
 \centering
 \resizebox{\textwidth}{!}{%
 \begin{tikzpicture}[
@@ -678,7 +682,7 @@ To eliminate backtest overfitting and lookahead contamination, model training an
 
 Figure \ref{fig:ch3_walk_forward_scheme} presents the expanding-window walk-forward validation structure.
 
-\begin{figure}[H]
+\begin{figure}[htbp]
 \centering
 \resizebox{\textwidth}{!}{%
 \begin{tikzpicture}[
@@ -752,7 +756,7 @@ Combining out-of-sample predictions across test blocks yields a continuous 5-yea
 
 Table \ref{tab:ch3_hyperparameter_grid} summarizes the hyperparameter search spaces and optimal tuned configurations across the model lineup.
 
-\begin{table}[H]
+\begin{table}[htbp]
 \centering
 \caption{Hyperparameter Search Space and Optimal Tuned Parameters Across Models}
 \label{tab:ch3_hyperparameter_grid}
@@ -798,7 +802,7 @@ Deep learning models (PyTorch LSTM and TFDMGA) are trained using the AdamW optim
 
 To assess the computational requirements of training and deploying the TFDMGA architecture, Table \ref{tab:ch3_resource_profile} documents the model parameter count, FLOPs, memory footprint, and training runtime across hardware configurations.
 
-\begin{table}[H]
+\begin{table}[htbp]
 \centering
 \caption{Computational Complexity, Parameter Count, and Resource Execution Profile}
 \label{tab:ch3_resource_profile}
