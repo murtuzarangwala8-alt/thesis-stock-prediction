@@ -1,0 +1,32 @@
+name: Automated Daily Alpaca Live Trading
+
+on:
+  schedule:
+    # Runs at 21:05 UTC (4:05 PM EST market close) every Monday through Friday
+    - cron: '5 21 * * 1-5'
+  workflow_dispatch: # Allows manual trigger from GitHub UI
+
+jobs:
+  trade:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v3
+
+    - name: Set up Python 3.10
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.10'
+
+    - name: Install Dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install yfinance requests pandas numpy pypdf
+
+    - name: Run TFDMGA Live Trading & Submit Alpaca Orders
+      env:
+        ALPACA_API_KEY: ${{ secrets.ALPACA_API_KEY }}
+        ALPACA_SECRET_KEY: ${{ secrets.ALPACA_SECRET_KEY }}
+      run: |
+        python run_alpaca_trader.py
