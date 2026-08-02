@@ -1,0 +1,106 @@
+{
+  "created_at": "2026-08-02 23:08:52",
+  "last_updated": "2026-08-02 23:08:56",
+  "cash": 1.0000000000000568,
+  "portfolio_value": 1000.0,
+  "initial_capital": 1000.0,
+  "positions": {
+    "ACN": {
+      "shares": 1.2041948059603818,
+      "buy_price": 165.9199981689453,
+      "current_price": 165.9199981689453,
+      "entry_date": "2026-08-02",
+      "pnl_pct": 0.0
+    },
+    "MSFT": {
+      "shares": 0.429936304603149,
+      "buy_price": 464.7200012207031,
+      "current_price": 464.7200012207031,
+      "entry_date": "2026-08-02",
+      "pnl_pct": 0.0
+    },
+    "CVX": {
+      "shares": 1.0150891537942197,
+      "buy_price": 196.8300018310547,
+      "current_price": 196.8300018310547,
+      "entry_date": "2026-08-02",
+      "pnl_pct": 0.0
+    },
+    "XOM": {
+      "shares": 1.2853834075003663,
+      "buy_price": 155.44000244140625,
+      "current_price": 155.44000244140625,
+      "entry_date": "2026-08-02",
+      "pnl_pct": 0.0
+    },
+    "AMZN": {
+      "shares": 0.7356948592632564,
+      "buy_price": 271.5799865722656,
+      "current_price": 271.5799865722656,
+      "entry_date": "2026-08-02",
+      "pnl_pct": 0.0
+    }
+  },
+  "trade_history": [
+    {
+      "date": "2026-08-02",
+      "ticker": "ACN",
+      "action": "BUY",
+      "shares": 1.2041948059603818,
+      "entry_price": 165.9199981689453,
+      "exit_price": 165.9199981689453,
+      "pnl_pct": 0.0,
+      "proceeds": -199.79999999999998
+    },
+    {
+      "date": "2026-08-02",
+      "ticker": "MSFT",
+      "action": "BUY",
+      "shares": 0.429936304603149,
+      "entry_price": 464.7200012207031,
+      "exit_price": 464.7200012207031,
+      "pnl_pct": 0.0,
+      "proceeds": -199.8
+    },
+    {
+      "date": "2026-08-02",
+      "ticker": "CVX",
+      "action": "BUY",
+      "shares": 1.0150891537942197,
+      "entry_price": 196.8300018310547,
+      "exit_price": 196.8300018310547,
+      "pnl_pct": 0.0,
+      "proceeds": -199.8
+    },
+    {
+      "date": "2026-08-02",
+      "ticker": "XOM",
+      "action": "BUY",
+      "shares": 1.2853834075003663,
+      "entry_price": 155.44000244140625,
+      "exit_price": 155.44000244140625,
+      "pnl_pct": 0.0,
+      "proceeds": -199.8
+    },
+    {
+      "date": "2026-08-02",
+      "ticker": "AMZN",
+      "action": "BUY",
+      "shares": 0.7356948592632564,
+      "entry_price": 271.5799865722656,
+      "exit_price": 271.5799865722656,
+      "pnl_pct": 0.0,
+      "proceeds": -199.8
+    }
+  ],
+  "equity_curve": [
+    {
+      "date": "2026-08-02",
+      "value": 1000.0
+    },
+    {
+      "date": "2026-08-02",
+      "value": 1000.0
+    }
+  ]
+}
