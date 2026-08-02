@@ -1,55 +1,55 @@
 """
 Alpaca Brokerage API Integration Module.
 Provides live automated execution for Alpaca Paper Trading and Live Brokerage Accounts.
-Supports order submission, account balance checks, and bracket orders (Take-Profit / Stop-Loss).
+Uses direct REST API endpoints for zero-dependency reliability and zero version conflicts.
 """
 
 import os
 import json
+import requests
 from pathlib import Path
-
-# Optional dependency: alpaca-trade-api or requests fallback
-try:
-    import alpaca_trade_api as tradeapi
-    HAS_ALPACA = True
-except ImportError:
-    HAS_ALPACA = False
 
 class AlpacaBroker:
     """
-    Connects TFDMGA Trading Signals directly to Alpaca Brokerage API.
+    Connects TFDMGA Trading Signals directly to Alpaca Brokerage REST API.
     Supports both Paper Trading (demo) and Live Trading modes.
     """
     def __init__(self, api_key: str = None, api_secret: str = None, paper: bool = True):
         self.paper = paper
-        self.api_key = api_key or os.environ.get("ALPACA_API_KEY", "YOUR_ALPACA_KEY_HERE")
-        self.api_secret = api_secret or os.environ.get("ALPACA_SECRET_KEY", "YOUR_ALPACA_SECRET_HERE")
-        self.base_url = "https://paper-api.alpaca.markets" if paper else "https://api.alpaca.markets"
+        self.api_key = api_key or os.environ.get("ALPACA_API_KEY", "")
+        self.api_secret = api_secret or os.environ.get("ALPACA_SECRET_KEY", "")
+        self.base_url = "https://paper-api.alpaca.markets/v2" if paper else "https://api.alpaca.markets/v2"
         
-        if HAS_ALPACA and self.api_key != "YOUR_ALPACA_KEY_HERE":
-            self.api = tradeapi.REST(self.api_key, self.api_secret, self.base_url, api_version='v2')
-        else:
-            self.api = None
+        self.headers = {
+            "APCA-API-KEY-ID": self.api_key,
+            "APCA-API-SECRET-KEY": self.api_secret,
+            "Content-Type": "application/json"
+        }
 
     def get_account_summary(self):
-        """Fetches live broker account equity, cash, and buying power."""
-        if not self.api:
+        """Fetches live broker account equity, cash, and buying power via REST API."""
+        if not self.api_key or not self.api_secret:
             return {
-                'mode': 'Simulated (Add Alpaca Keys to Connect Live Broker)',
+                'mode': 'Simulated (Set $env:ALPACA_API_KEY & $env:ALPACA_SECRET_KEY)',
                 'equity': 1000.0,
                 'cash': 1000.0,
                 'buying_power': 4000.0,
                 'status': 'DISCONNECTED'
             }
         try:
-            account = self.api.get_account()
-            return {
-                'mode': 'Alpaca Paper Account' if self.paper else 'Alpaca Live Brokerage Account',
-                'equity': float(account.equity),
-                'cash': float(account.cash),
-                'buying_power': float(account.buying_power),
-                'status': account.status
-            }
+            url = f"{self.base_url}/account"
+            resp = requests.get(url, headers=self.headers, timeout=10)
+            if resp.status_code == 200:
+                data = resp.json()
+                return {
+                    'mode': 'Alpaca Paper Account' if self.paper else 'Alpaca Live Account',
+                    'equity': float(data.get('equity', 0.0)),
+                    'cash': float(data.get('cash', 0.0)),
+                    'buying_power': float(data.get('buying_power', 0.0)),
+                    'status': data.get('status', 'ACTIVE')
+                }
+            else:
+                return {'error': f"HTTP {resp.status_code}: {resp.text}", 'status': 'ERROR'}
         except Exception as e:
             return {'error': str(e), 'status': 'ERROR'}
 
@@ -57,31 +57,44 @@ class AlpacaBroker:
         """
         Submits a bracket market order to Alpaca with automatic 2:1 Take-Profit and Stop-Loss.
         """
-        if not self.api:
-            print(f"[ALPACA SIMULATOR] Submit Order: BUY {qty:.2f} {ticker} (TP: +{take_profit_pct*100}%, SL: -{stop_loss_pct*100}%)")
+        if not self.api_key or not self.api_secret:
+            print(f"[ALPACA SIMULATOR] BUY {qty:.2f} {ticker}")
             return {'status': 'SIMULATED'}
 
         try:
-            # Get latest quote to estimate limit prices for bracket order
-            last_trade = self.api.get_latest_trade(ticker)
-            price = last_trade.price
+            # Get latest trade price for bracket limit/stop calculation
+            quote_url = f"https://data.alpaca.markets/v2/stocks/{ticker}/trades/latest"
+            q_resp = requests.get(quote_url, headers=self.headers, timeout=5)
+            if q_resp.status_code == 200:
+                price = float(q_resp.json().get('trade', {}).get('p', 100.0))
+            else:
+                price = 100.0
+
             tp_price = round(price * (1.0 + take_profit_pct), 2)
             sl_price = round(price * (1.0 - stop_loss_pct), 2)
 
-            order = self.api.submit_order(
-                symbol=ticker,
-                qty=qty,
-                side='buy',
-                type='market',
-                time_in_force='gtc',
-                order_class='bracket',
-                take_profit={'limit_price': tp_price},
-                stop_loss={'stop_price': sl_price}
-            )
-            print(f"[ALPACA LIVE BROKER] Bracket Order Submitted for {ticker}: ID {order.id}")
-            return {'status': 'SUBMITTED', 'order_id': order.id}
+            order_payload = {
+                "symbol": ticker,
+                "qty": str(round(qty, 2)),
+                "side": "buy",
+                "type": "market",
+                "time_in_force": "gtc",
+                "order_class": "bracket",
+                "take_profit": {"limit_price": tp_price},
+                "stop_loss": {"stop_price": sl_price}
+            }
+
+            order_url = f"{self.base_url}/orders"
+            resp = requests.post(order_url, headers=self.headers, json=order_payload, timeout=10)
+            if resp.status_code in [200, 201]:
+                data = resp.json()
+                print(f"  [ALPACA BROKER] Bracket Order Submitted for {ticker}: ID {data.get('id')}")
+                return {'status': 'SUBMITTED', 'order_id': data.get('id')}
+            else:
+                print(f"  [ALPACA ERROR] Order failed for {ticker}: {resp.text}")
+                return {'error': resp.text, 'status': 'FAILED'}
         except Exception as e:
-            print(f"[ALPACA ERROR] Order failed for {ticker}: {e}")
+            print(f"  [ALPACA ERROR] Exception for {ticker}: {e}")
             return {'error': str(e), 'status': 'FAILED'}
 
 def print_alpaca_instructions():
@@ -89,14 +102,13 @@ def print_alpaca_instructions():
     print("=" * 80)
     print("  [CONNECT] HOW TO CONNECT YOUR THESIS PIPELINE TO A LIVE BROKER (ALPACA)")
     print("=" * 80)
-    print("  Step 1: Sign up for a free account at https://alpaca.markets")
-    print("  Step 2: Go to your Alpaca Dashboard and click 'Generate API Keys' (Paper Trading)")
-    print("  Step 3: Set your environment variables in PowerShell / terminal:")
-    print("          $env:ALPACA_API_KEY = 'your_api_key'")
-    print("          $env:ALPACA_SECRET_KEY = 'your_secret_key'")
-    print("  Step 4: Install official SDK: pip install alpaca-trade-api")
-    print("  Step 5: Run your broker execution script:")
-    print("          python scripts/alpaca_live_trader.py")
+    print("  Step 1: Navigate to project folder in PowerShell:")
+    print("          cd \"C:\\Users\\murta\\Desktop\\thesis final 2.0\"")
+    print("  Step 2: Set your Alpaca keys:")
+    print("          $env:ALPACA_API_KEY = \"PK7CTKCFHUILHXNFV2Q3JXQRIF\"")
+    print("          $env:ALPACA_SECRET_KEY = \"4KZpTxcaJyDzGDEzpnM2xbHEEqZfyWq6B86PEvT6vm5j\"")
+    print("  Step 3: Run your broker execution script:")
+    print("          python run_alpaca_trader.py")
     print("=" * 80)
 
 if __name__ == "__main__":
