@@ -1,53 +1,89 @@
 """
 Run Live Alpaca Paper / Live Brokerage Automated Trader.
-Connects your TFDMGA model predictions directly to your official Alpaca Brokerage Account.
+Fetches 53 live data points, scores S&P 500 equities using TFDMGA,
+and submits automated Bracket Orders (+4% TP / -2% SL) directly to Alpaca.
 """
 import os
 import sys
-import getpass
+import datetime
+import pandas as pd
+import numpy as np
 from pathlib import Path
 
 root_dir = Path(__file__).resolve().parent
 sys.path.insert(0, str(root_dir))
 
 from src.alpaca_broker import AlpacaBroker
+from scripts.live_paper_trader import LivePaperTrader
 
 def main():
     print("=" * 80)
-    print("  *** ALPACA BROKERAGE AUTOMATED LIVE / PAPER TRADER ***")
+    print("  *** TFDMGA LIVE ALPACA AUTOMATED ORDER EXECUTION ENGINE ***")
     print("=" * 80)
     
-    # Check if keys are set in environment
     api_key = os.environ.get("ALPACA_API_KEY")
     api_secret = os.environ.get("ALPACA_SECRET_KEY")
     
     if not api_key or not api_secret:
-        print("\n  [ALPACA KEY CONFIGURATION]")
-        print("  API Key and Secret Key not detected in environment variables.")
-        api_key = input("  Enter your Alpaca API Key ID (e.g. PK...): ").strip()
-        api_secret = getpass.getpass("  Enter your Alpaca Secret Key (hidden input): ").strip()
-        
-        # Save to environment for current session
-        os.environ["ALPACA_API_KEY"] = api_key
-        os.environ["ALPACA_SECRET_KEY"] = api_secret
+        print("Error: ALPACA_API_KEY or ALPACA_SECRET_KEY not set in environment.")
+        return
 
-    print("\n  Connecting to Alpaca Brokerage API (Paper Trading Mode)...")
+    # 1. Connect to Alpaca Brokerage
     broker = AlpacaBroker(api_key=api_key, api_secret=api_secret, paper=True)
     summary = broker.get_account_summary()
     
     if summary.get('status') == 'ERROR':
-        print(f"\n  [ERROR] Connection Error: {summary.get('error')}")
-        print("  Please check your API Key ID and Secret Key and try again.")
+        print(f"  [ERROR] Connection failed: {summary.get('error')}")
         return
         
-    print("\n  [SUCCESS] CONNECTED TO ALPACA BROKERAGE ACCOUNT:")
     print(f"  Account Mode   : {summary.get('mode')}")
-    print(f"  Account Status : {summary.get('status')}")
     print(f"  Total Equity   : ${summary.get('equity', 0.0):,.2f} USD")
     print(f"  Cash Balance   : ${summary.get('cash', 0.0):,.2f} USD")
     print(f"  Buying Power   : ${summary.get('buying_power', 0.0):,.2f} USD")
+    print("-" * 80)
+
+    # 2. Fetch Live Market Data & Compute 53-Feature Signals
+    trader_data_engine = LivePaperTrader()
+    data = trader_data_engine.fetch_live_market_data()
+    if not data:
+        print("  [ERROR] Could not fetch live market data.")
+        return
+        
+    df_sig = trader_data_engine.compute_live_signals(data)
+    
+    print("\n  [TFDMGA MODEL LIVE SIGNAL TOP PICKS (S&P 500 Long Q5 Candidates)]:")
+    top_picks = df_sig.head(5)
+    print(f"  {'Ticker':<8} {'Price ($)':<12} {'1D Chg (%)':<12} {'21D Mom (%)':<14} {'TFDMGA Score':<12}")
+    print("  " + "-" * 65)
+    for _, row in top_picks.iterrows():
+        print(f"  {row['ticker']:<8} ${row['price']:<11.2f} {row['daily_change_pct']:+6.2f}%      {row['mom_21d']*100:+7.2f}%       {row['tfdmga_score']:+.4f}")
+    print("-" * 80)
+
+    # 3. Calculate Position Sizing & Submit Live Orders to Alpaca
+    cash = min(summary.get('cash', 1000.0), 10000.0)  # Allocate up to $10,000 USD for live trade test
+    alloc_per_stock = cash / len(top_picks)
+    
+    print(f"\n  [ALPACA ORDER EXECUTION] Submitting Bracket Orders ($ {alloc_per_stock:,.2f} USD per stock)...")
+    orders_submitted = []
+    
+    for _, row in top_picks.iterrows():
+        ticker = row['ticker']
+        price = row['price']
+        qty = max(1.0, round(alloc_per_stock / price, 2))
+        
+        res = broker.submit_bracket_order(
+            ticker=ticker,
+            qty=qty,
+            take_profit_pct=0.04,  # +4.0% Take Profit
+            stop_loss_pct=0.02     # -2.0% Stop Loss
+        )
+        orders_submitted.append({'ticker': ticker, 'qty': qty, 'status': res.get('status')})
+        
+    print("\n" + "=" * 80)
+    print("  *** LIVE ORDER EXECUTION COMPLETE ***")
+    print(f"  Total Orders Processed : {len(orders_submitted)}")
+    print("  Risk Protocol Attached : 2:1 Take-Profit (+4.0%) / Stop-Loss (-2.0%)")
     print("=" * 80)
-    print("\n  Your TFDMGA model pipeline is ready to submit automated bracket orders!")
 
 if __name__ == "__main__":
     main()

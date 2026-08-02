@@ -73,12 +73,13 @@ class AlpacaBroker:
             tp_price = round(price * (1.0 + take_profit_pct), 2)
             sl_price = round(price * (1.0 - stop_loss_pct), 2)
 
+            qty_int = int(max(1, round(qty)))
             order_payload = {
                 "symbol": ticker,
-                "qty": str(round(qty, 2)),
+                "qty": str(qty_int),
                 "side": "buy",
                 "type": "market",
-                "time_in_force": "gtc",
+                "time_in_force": "day",
                 "order_class": "bracket",
                 "take_profit": {"limit_price": tp_price},
                 "stop_loss": {"stop_price": sl_price}
