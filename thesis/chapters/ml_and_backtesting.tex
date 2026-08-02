@@ -43,7 +43,7 @@ To isolate the incremental contribution of each component within the TFDMGA arch
 \toprule
 \textbf{Model Architecture Variant} & \textbf{Daily IC} & \textbf{ICIR ($t$-stat)} & \textbf{Accuracy} & \textbf{ROC AUC} & \textbf{Incremental IC Loss} \\
 \midrule
-\textbf{Full TFDMGA (Complete Model)} & \textbf{+0.0348} & \textbf{3.12} & \textbf{56.84\%} & \textbf{0.6120} & --- \\
+\textbf{Full TFDMGA (Complete Model)} & \textbf{+0.0348} & \textbf{3.12} & \textbf{56.84\%} & \textbf{0.6120} & ,  \\
 $-$ Macro Dynamic Gating (Static Uniform Weights) & +0.0312 & 2.91 & 55.90\% & 0.5980 & $-$0.0036 \\
 $-$ Ring Attention (Naive Concatenation) & +0.0305 & 2.86 & 55.45\% & 0.5910 & $-$0.0043 \\
 $-$ Causal TCN Encoders (Linear Projections) & +0.0291 & 2.70 & 54.80\% & 0.5820 & $-$0.0057 \\
@@ -57,7 +57,7 @@ $-$ Sentiment Modality (Tech + Fund + Macro Only) & +0.0332 & 3.00 & 56.40\% & 0
 The ablation results indicate that each component contributes to performance:
 \begin{enumerate}
     \item \textbf{Causal TCN Encoders}: Removing TCN encoders \citep{bai2018empirical} causes the largest single drop in IC ($-0.0057$), indicating the benefit of temporal feature extraction over raw sequences.
-    \item \textbf{Ring Attention Cascade}: Replacing Ring Attention \citep{vaswani2017attention} with vector concatenation reduces IC by $-0.0043$, suggesting that cross-modal domain hierarchy prevents a single modality from dominating.
+    \item \textbf{Ring Attention Cascade}: Replacing Ring Attention \citep{vaswani2017attention} with vector concatenation reduces IC by $-0.0043$, suggesting that crossmodal domain hierarchy prevents a single modality from dominating.
     \item \textbf{Macro Dynamic Gating}: Disabling dynamic macro gating \citep{lim2021temporal} reduces IC by $-0.0036$, highlighting the role of adaptive regime weighting.
 \end{enumerate}
 

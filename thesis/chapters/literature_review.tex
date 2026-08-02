@@ -2,21 +2,21 @@
 \label{ch:literature_review}
 
 \section{Introduction}
-Understanding stock return predictability requires tracing the evolution of empirical asset pricing over the past six decades. Early academic frameworks established that asset prices in competitive markets reflect available information \citep{fama1970efficient}, modeling expected excess returns as linear functions of systematic risk exposures \citep{sharpe1964capital, lintner1965valuation}. Subsequent econometric advances operationalized these principles through multi-factor cross-sectional regression models \citep{fama1973risk, ross1976arbitrage, fama1993common, fama2015five}.
+Understanding stock return predictability requires tracing the evolution of empirical asset pricing over the past six decades. Early academic frameworks established that asset prices in competitive markets reflect available information \citep{fama1970efficient}, modeling expected excess returns as linear functions of systematic risk exposures \citep{sharpe1964capital, lintner1965valuation}. Subsequent econometric advances operationalized these principles through multifactor cross-sectional regression models \citep{fama1973risk, ross1976arbitrage, fama1993common, fama2015five}.
 
-However, the rapid expansion of financial data led to what \citet{cochrane2011discount} famously termed the ``factor zoo''—a proliferation of over 300 candidate anomaly variables claiming to generate alpha. In response, modern financial econometrics has developed along two primary paths: (i) statistical auditing of data-mining inflation and false discovery rates \citep{harvey2016and, harvey2020false, hou2020replicating}, and (ii) high-dimensional regularized estimation and non-parametric machine learning \citep{kozak2020shrinking, freyberger2020dissecting, gu2020empirical, chen2023deep}.
+However, the rapid expansion of financial data led to what \citet{cochrane2011discount} famously termed the ``factor zoo'', a proliferation of over 300 candidate anomaly variables claiming to generate alpha. In response, modern financial econometrics has developed along two primary paths: (i) statistical auditing of data-mining inflation and false discovery rates \citep{harvey2016and, harvey2020false, hou2020replicating}, and (ii) high dimensional regularized estimation and nonparametric machine learning \citep{kozak2020shrinking, freyberger2020dissecting, gu2020empirical, chen2023deep}.
 
 In this chapter, I synthesize the asset pricing literature around six key thematic pillars that ground the theoretical framework, model architectures, feature selection, and statistical inference used in this thesis:
 \begin{enumerate}
-    \item \textbf{Theoretical Asset Pricing Foundations}: From the single-factor equilibrium of CAPM and APT to the multi-factor models of Fama-French, Carhart, and Pastor-Stambaugh.
-    \item \textbf{The Factor Zoo, Multiple Testing, and Shrinkage}: Multiple testing inflation, false discovery rates, and high-dimensional regularized SDF estimation.
-    \item \textbf{High-Dimensional SDF Estimation \& Characteristic Interactions}: Non-parametric characteristic selection, latent factor models, and dynamic risk loadings.
-    \item \textbf{Machine Learning \& Deep Learning Paradigms}: Non-linear empirical asset pricing, instrumented principal components, and deep sequence SDF models.
+    \item \textbf{Theoretical Asset Pricing Foundations}: From the single factor equilibrium of CAPM and APT to the multifactor models of Fama-French, Carhart, and Pastor-Stambaugh.
+    \item \textbf{The Factor Zoo, Multiple Testing, and Shrinkage}: Multiple testing inflation, false discovery rates, and high dimensional regularized SDF estimation.
+    \item \textbf{High-Dimensional SDF Estimation \& Characteristic Interactions}: Nonparametric characteristic selection, latent factor models, and dynamic risk loadings.
+    \item \textbf{Machine Learning \& Deep Learning Paradigms}: Nonlinear empirical asset pricing, instrumented principal components, and deep sequence SDF models.
     \item \textbf{Financial Time-Series Econometrics \& Inference}: HAC covariance estimation, out-of-sample forecast accuracy tests, and data-mining diagnostics.
     \item \textbf{Financial ML Protocols \& Overfitting Mitigation}: Backtesting rules, expanding walk-forward splits, microstructural frictions, and transaction cost frameworks.
 \end{enumerate}
 
----
+, 
 
 \section{Theoretical Asset Pricing Foundations}
 
@@ -40,7 +40,7 @@ where $f_{k,t}$ represent mean-zero common macroeconomic risk factors, $\beta_{i
 \end{equation}
 
 \subsection{The Fama-MacBeth Two-Pass Regression Framework}
-To empirically test whether factor loadings explain the cross-section of expected returns, \citet{fama1973risk} established the classic two-pass regression methodology. In the first pass, time-series regressions are conducted for each asset $i$ over an estimation window $T_1$ to estimate factor loadings $\hat{\beta}_{i,k}$:
+To empirically test whether factor loadings explain the cross-section of expected returns, \citet{fama1973risk} established the classic two-pass regression methodology. In the first pass, time series regressions are conducted for each asset $i$ over an estimation window $T_1$ to estimate factor loadings $\hat{\beta}_{i,k}$:
 \begin{equation}
 R_{i,t} - R_{f,t} = \alpha_i + \sum_{k=1}^{K} \beta_{i,k} f_{k,t} + \epsilon_{i,t}, \quad t = 1, \dots, T_1
 \label{eq:ch2_fm_first_pass}
@@ -58,7 +58,7 @@ The point estimates of factor risk premia $\bar{\gamma}_k$ and their standard er
 While standard Fama-MacBeth standard errors assume cross-sectional independence and zero serial correlation, modern implementations incorporate Heteroskedasticity and Autocorrelation Consistent (HAC) corrections \citep{newey1987simple} and \citet{shanken1992on} corrections for generated regressor error in $\hat{\beta}_{i,k}$.
 
 \subsection{Multi-Factor Models: Fama-French, Carhart, and Pastor-Stambaugh}
-Empirical challenges to the single-factor CAPM increased during the late 1980s and early 1990s as cross-sectional anomalies emerged. \citet{fama1992cross} showed that firm size (market capitalization) and book-to-market equity ratio ($B/M$) absorbed much of the cross-sectional explanatory power of market beta. To formalize these empirical findings, \citet{fama1993common} introduced the Fama-French Three-Factor Model:
+Empirical challenges to the single factor CAPM increased during the late 1980s and early 1990s as cross-sectional anomalies emerged. \citet{fama1992cross} showed that firm size (market capitalization) and book-to-market equity ratio ($B/M$) absorbed much of the cross-sectional explanatory power of market beta. To formalize these empirical findings, \citet{fama1993common} introduced the Fama-French Three-Factor Model:
 \begin{equation}
 R_{i,t} - R_{f,t} = \alpha_i + \beta_{i,1} (R_{m,t} - R_{f,t}) + \beta_{i,2} SMB_t + \beta_{i,3} HML_t + e_{i,t}
 \label{eq:ch2_ff3}
@@ -80,7 +80,7 @@ R_{i,t} - R_{f,t} &= \alpha_i + \beta_{i,1} (R_{m,t} - R_{f,t}) + \beta_{i,2}\, 
 \end{align}
 where $RMW_t$ (Robust Minus Weak) measures the profit margin return differential, and $CMA_t$ (Conservative Minus Aggressive) captures investment intensity differentials. Grounded theoretically in the dividend discount model, \citet{fama2015five} showed that holding book-to-market fixed, higher expected earnings imply higher expected returns, while higher expected investment rates lower expected returns. Concurrently, \citet{hou2015digesting} established the $q$-factor model ($Mkt, ME, I/A, ROE$), showing that investment and profitability factors derived from q-theory span a wide range of cross-sectional anomalies.
 
----
+, 
 
 \section{The Factor Zoo Controversy, Multiple Testing, and Shrinkage}
 
@@ -100,12 +100,12 @@ The main statistical cause of factor zoo inflation was analyzed by \citet{harvey
 Extending this framework, \citet{harvey2020false} introduced Bayesian FDR frameworks that account for prior belief distributions on true alpha. In a large replication audit, \citet{hou2020replicating} re-examined 452 cross-sectional anomalies under microcap exclusions and value-weighted portfolio rules. They showed that 65\% of published anomalies fail to achieve statistical significance at standard $|t| > 1.96$ thresholds, and over 85\% fail under the $|t| > 3.0$ threshold proposed by \citet{harvey2016and}.
 
 \subsection{High-Dimensional Regularized SDF Estimation}
-To address the factor zoo problem structurally, econometricians re-framed asset pricing as a high-dimensional regularized Stochastic Discount Factor (SDF) estimation problem. In a stochastic discount factor framework, an asset pricing model specifies a scalar pricing kernel $M_{t+1}$ such that for all excess returns $R_{i,t+1}$:
+To address the factor zoo problem structurally, econometricians re-framed asset pricing as a high dimensional regularized Stochastic Discount Factor (SDF) estimation problem. In a stochastic discount factor framework, an asset pricing model specifies a scalar pricing kernel $M_{t+1}$ such that for all excess returns $R_{i,t+1}$:
 \begin{equation}
 \mathbb{E}_t \left[ M_{t+1} R_{i,t+1} \right] = 0
 \label{eq:ch2_sdf_fundamental}
 \end{equation}
-When the SDF is parameterized as a linear combination of a high-dimensional vector of $K$ candidate characteristics or factor returns $\mathbf{z}_{t+1}$, i.e., $M_{t+1} = 1 - \mathbf{b}^T (\mathbf{z}_{t+1} - \mathbb{E}[\mathbf{z}_{t+1}])$, unregularized sample estimators fail due to multicollinearity and $K \approx T$ sample noise.
+When the SDF is parameterized as a linear combination of a high dimensional vector of $K$ candidate characteristics or factor returns $\mathbf{z}_{t+1}$, i.e., $M_{t+1} = 1 - \mathbf{b}^T (\mathbf{z}_{t+1} - \mathbb{E}[\mathbf{z}_{t+1}])$, unregularized sample estimators fail due to multicollinearity and $K \approx T$ sample noise.
 
 \citet{kozak2020shrinking} showed that shrinking the factor weighting vector $\mathbf{b}$ via combined $L_1$ (LASSO) and $L_2$ (Ridge) regularization yields robust, out-of-sample optimal SDF estimators. The regularized SDF objective function is formulated as:
 \begin{equation}
@@ -114,36 +114,36 @@ When the SDF is parameterized as a linear combination of a high-dimensional vect
 \end{equation}
 \citet{kozak2020shrinking} showed that while unregularized models tend to overfit high-frequency sample noise, penalized SDF estimation extracts a low-dimensional principal component structure that spans expected returns while shrinking noise coefficients to zero.
 
----
+, 
 
 \section{High-Dimensional SDF Estimation \& Characteristic Interactions}
 
 \subsection{Non-Parametric Characteristic Pruning via Group LASSO}
-Parallel to regularized linear SDFs, \citet{freyberger2020dissecting} developed a non-parametric model to systematically select which firm characteristics provide incremental predictive power for expected returns. Using non-parametric B-spline expansions and Group LASSO penalties, their estimator models expected returns as:
+Parallel to regularized linear SDFs, \citet{freyberger2020dissecting} developed a nonparametric model to systematically select which firm characteristics provide incremental predictive power for expected returns. Using nonparametric B-spline expansions and Group LASSO penalties, their estimator models expected returns as:
 \begin{equation}
 \mathbb{E}_t[R_{i,t+1}] = \sum_{j=1}^{J} g_j(c_{i,j,t}) + \epsilon_{i,t+1}
 \label{eq:ch2_freyberger_nonparametric}
 \end{equation}
-where $c_{i,j,t}$ represents the rank-transformed characteristic $j$ for firm $i$ at time $t$, and $g_j(\cdot)$ is a non-linear continuous function. The Group LASSO penalty penalizes the vector of spline coefficients for each characteristic simultaneously:
+where $c_{i,j,t}$ represents the rank-transformed characteristic $j$ for firm $i$ at time $t$, and $g_j(\cdot)$ is a nonlinear continuous function. The Group LASSO penalty penalizes the vector of spline coefficients for each characteristic simultaneously:
 \begin{equation}
 \min_{\{g_j\}} \left\{ \frac{1}{NT} \sum_{i=1}^{N} \sum_{t=1}^{T} \left( R_{i,t+1} - \sum_{j=1}^{J} g_j(c_{i,j,t}) \right)^2 + \lambda \sum_{j=1}^{J} \sqrt{\text{dim}(g_j)} \|g_j\|_2 \right\}
 \label{eq:ch2_group_lasso}
 \end{equation}
-\citet{freyberger2020dissecting} showed that out of more than 50 published characteristics, only a small subset (such as short-term momentum, market capitalization, operating profitability, and asset growth) retain independent predictive power once non-linearities and characteristic redundancies are penalized.
+\citet{freyberger2020dissecting} showed that out of more than 50 published characteristics, only a small subset (such as short term momentum, market capitalization, operating profitability, and asset growth) retain independent predictive power once non-linearities and characteristic redundancies are penalized.
 
 \subsection{Sparse Signals and Latent Factor Shrinkage}
-\citet{chinco2019sparse} examined sparse return predictability at high frequencies, showing that LASSO regression identifies transient, cross-asset predictive signals that standard time-series estimators miss. Grounding model selection in econometric diagnostics, \citet{lewellen2010skeptical} provided a critique of cross-sectional asset pricing tests. They showed that testing multi-factor models on strong factor-structure portfolios (such as standard 25 Size-B/M sorted portfolios) produces artificially inflated cross-sectional $R^2$ values. They prescribed rigorous diagnostic standards: expanding test portfolios beyond Size-B/M, forcing theoretical factor risk premia to equal sample factor means, and reporting confidence intervals for cross-sectional $R^2$.
+\citet{chinco2019sparse} examined sparse return predictability at high frequencies, showing that LASSO regression identifies transient, cross-asset predictive signals that standard time series estimators miss. Grounding model selection in econometric diagnostics, \citet{lewellen2010skeptical} provided a critique of cross-sectional asset pricing tests. They showed that testing multifactor models on strong factor-structure portfolios (such as standard 25 Size-B/M sorted portfolios) produces artificially inflated cross-sectional $R^2$ values. They prescribed rigorous diagnostic standards: expanding test portfolios beyond Size-B/M, forcing theoretical factor risk premia to equal sample factor means, and reporting confidence intervals for cross-sectional $R^2$.
 
-Expanding structural factor selection, \citet{feng2020taming} and \citet{giglio2021test} developed double-testing econometric frameworks combining LASSO factor selection with two-pass regressions. They showed that high-dimensional regularization enables researchers to evaluate whether a newly proposed factor adds incremental explanatory power to the existing universe of 300+ factors without suffering from omitted variable bias or data mining contamination.
+Expanding structural factor selection, \citet{feng2020taming} and \citet{giglio2021test} developed double-testing econometric frameworks combining LASSO factor selection with two-pass regressions. They showed that high dimensional regularization enables researchers to evaluate whether a newly proposed factor adds incremental explanatory power to the existing universe of 300+ factors without suffering from omitted variable bias or data mining contamination.
 
----
+, 
 
 \section{Machine Learning and Deep Learning Paradigms}
 
 \subsection{Empirical Asset Pricing Benchmark: Gu, Kelly, and Xiu (2020)}
-The landmark study by \citet{gu2020empirical} established a primary theoretical and empirical benchmark for financial machine learning. Analyzing a panel of over 30,000 U.S. equities over 60 years (1957--2016) with 94 firm-level characteristics and 8 macroeconomic indicators, Gu, Kelly, and Xiu evaluated a range of machine learning architectures: Linear OLS, LASSO, ElasticNet, Principal Component Regression (PCR), Partial Least Squares (PLS), Random Forests, Gradient Boosted Decision Trees (GBDT), and multi-layer Feedforward Neural Networks (MLP).
+The landmark study by \citet{gu2020empirical} established a primary theoretical and empirical benchmark for financial machine learning. Analyzing a panel of over 30,000 U.S. equities over 60 years (1957--2016) with 94 firm-level characteristics and 8 macroeconomic indicators, Gu, Kelly, and Xiu evaluated a range of machine learning architectures: Linear OLS, LASSO, ElasticNet, Principal Component Regression (PCR), Partial Least Squares (PLS), Random Forests, Gradient Boosted Decision Trees (GBDT), and multilayer Feedforward Neural Networks (MLP).
 
-The non-linear forecasting panel model is defined as:
+The nonlinear forecasting panel model is defined as:
 \begin{equation}
 R_{i,t+1} = g^*(\mathbf{x}_{i,t}) + \epsilon_{i,t+1}, \quad \mathbf{x}_{i,t} = \mathbf{c}_{i,t} \otimes \mathbf{d}_t
 \label{eq:ch2_gk_model}
@@ -152,8 +152,8 @@ where $\mathbf{c}_{i,t}$ is a $p$-dimensional vector of firm characteristics, $\
 
 \citet{gu2020empirical} highlighted three main empirical findings:
 \begin{enumerate}
-    \item \textbf{Non-Linear Model Performance}: Non-linear models (GBDT, Neural Networks) outperform linear models in out-of-sample predictive $R_{\text{oos}}^2$, doubling the annualized Sharpe ratios of long-short hedge portfolios.
-    \item \textbf{Importance of Interaction Terms}: A main source of machine learning gain comes from automatically capturing non-linear characteristic interactions (such as the interaction of size with short-term momentum and liquidity).
+    \item \textbf{Non-Linear Model Performance}: Nonlinear models (GBDT, Neural Networks) outperform linear models in out-of-sample predictive $R_{\text{oos}}^2$, doubling the annualized Sharpe ratios of long-short hedge portfolios.
+    \item \textbf{Importance of Interaction Terms}: A main source of machine learning gain comes from automatically capturing nonlinear characteristic interactions (such as the interaction of size with short term momentum and liquidity).
     \item \textbf{Neural Network Architecture}: Shallow neural architectures with 1 to 3 hidden layers achieve better performance compared to deeper networks, as excessive depth can lead to overfitting on low signal-to-noise equity return data.
 \end{enumerate}
 
@@ -168,19 +168,19 @@ where $\mathbf{z}_{i,t}$ is a vector of observable firm characteristics, $\mathb
 \citet{kelly2019characteristics} showed that firm characteristics serve as proxies for time-varying factor risk exposures. Consequently, machine learning return predictors predicting $R_{i,t+1} = g(\mathbf{z}_{i,t})$ are implicitly estimating dynamic latent factor models with time-varying risk loadings.
 
 \subsection{Deep Learning and Non-Parametric SDF Estimation}
-Extending ML to advanced deep architectures, \citet{chen2023deep} developed deep neural network models that estimate non-parametric asset pricing SDFs directly from high-dimensional equity panels. By parameterizing factor loadings $\beta(\mathbf{c}_{i,t})$ as non-linear functions of firm characteristics using Deep Neural Networks (DNNs) combined with Generative Adversarial Networks (GANs), Chen, Pelger, and Zhu showed that deep learning captures macroeconomic regime shifts and structural non-linearities that linear factor models may miss.
+Extending ML to advanced deep architectures, \citet{chen2023deep} developed deep neural network models that estimate nonparametric asset pricing SDFs directly from high dimensional equity panels. By parameterizing factor loadings $\beta(\mathbf{c}_{i,t})$ as nonlinear functions of firm characteristics using Deep Neural Networks (DNNs) combined with Generative Adversarial Networks (GANs), Chen, Pelger, and Zhu showed that deep learning captures macroeconomic regime shifts and structural non-linearities that linear factor models may miss.
 
-Similarly, \citet{cong2021textual} incorporated multi-modal deep learning architectures to process accounting signals alongside high-dimensional textual information. To help explain the predictions of deep neural networks, \citet{lundberg2017unified} introduced SHapley Additive exPlanations (SHAP), based on cooperative game theory. SHAP decomposes a model prediction $f(\mathbf{x})$ into additive feature contributions:
+Similarly, \citet{cong2021textual} incorporated multimodal deep learning architectures to process accounting signals alongside high dimensional textual information. To help explain the predictions of deep neural networks, \citet{lundberg2017unified} introduced SHapley Additive exPlanations (SHAP), based on cooperative game theory. SHAP decomposes a model prediction $f(\mathbf{x})$ into additive feature contributions:
 \begin{equation}
 f(\mathbf{x}) = \phi_0 + \sum_{j=1}^{M} \phi_j \mathbf{x}_j
 \label{eq:ch2_shap}
 \end{equation}
-providing transparent economic interpretation of non-linear asset pricing models.
+providing transparent economic interpretation of nonlinear asset pricing models.
 
 \subsection{Economic Frictions and Limits to Arbitrage}
 While machine learning models achieve notable statistical $R_{\text{oos}}^2$, \citet{avramov2023machine} investigated whether these return forecast gains survive real-world economic frictions. Avramov, Cheng, and Metzker showed that machine learning return predictability is heavily concentrated in illiquid, microcap stocks with high distress risk, high transaction costs, and borrowing constraints. When portfolios exclude microcaps or account for realistic execution costs, out-of-sample profits decline significantly. This highlights the importance of integrating microstructural frictions into financial machine learning evaluation.
 
----
+, 
 
 \section{Financial Time-Series Econometrics \& Inference}
 
@@ -226,12 +226,12 @@ T_k^{\text{SPA}} = \max_{k=1, \dots, K} \frac{\sqrt{T} \bar{d}_k}{\hat{\omega}_k
 \end{equation}
 where $\hat{\omega}_k^2$ is a consistent estimator of the asymptotic variance of $\sqrt{T}\bar{d}_k$. Hansen showed that the SPA test exhibits higher power and robustness against uninformative candidate models, serving as a useful diagnostic for quantitative model comparison.
 
----
+, 
 
 \section{Financial ML Protocols \& Overfitting Mitigation}
 
 \subsection{Methodological Pitfalls in Financial Machine Learning}
-In financial machine learning, standard statistical cross-validation techniques (such as standard randomized $K$-fold CV) can fail. As detailed by \citet{lopez2018advances}, financial time-series data violate the independent and identically distributed (i.i.d.) assumption. Applying naive cross-validation induces several methodological problems:
+In financial machine learning, standard statistical cross-validation techniques (such as standard randomized $K$-fold CV) can fail. As detailed by \citet{lopez2018advances}, financial time series data violate the independent and identically distributed (i.i.d.) assumption. Applying naive cross-validation induces several methodological problems:
 \begin{enumerate}
     \item \textbf{Lookahead Leakage}: Using future information (such as future target returns or lookahead normalized features) during training.
     \item \textbf{Serial Memory Contamination}: Overlapping target return windows (such as multi-day cumulative returns) allow training samples to overlap with test samples, leaking labels across folds.
@@ -252,11 +252,11 @@ A gap between academic backtests and practical trading is execution friction. \c
 \text{Net Return}_{i,t+1} = R_{i,t+1} - \tau_i \cdot \text{Turnover}_{i,t}
 \label{eq:ch2_novy_marx_cost}
 \end{equation}
-where $\tau_i$ represents effective bid-ask spreads and market impact costs. High-turnover strategies (such as short-term reversal or high-frequency anomaly signals) incur transaction costs that can exceed 50--100 basis points per trade, reducing gross alphas.
+where $\tau_i$ represents effective bid-ask spreads and market impact costs. High-turnover strategies (such as short term reversal or high-frequency anomaly signals) incur transaction costs that can exceed 50--100 basis points per trade, reducing gross alphas.
 
 Furthermore, execution realism mandates an execution delay: trading signals generated at market close on day $t$ cannot be executed until day $t+1$ close or open. In addition, leverage constraints and margin costs \citep{frazzini2014betting} restrict short-selling capacity on distressed equities, reinforcing the necessity of evaluating long-only and cost-adjusted long-short performance.
 
----
+, 
 
 \section{Synthesis of Core Literature Benchmarks}
 Table \ref{tab:ch2_lit_synthesis_comprehensive} provides a synthesis of the literature that anchors the theoretical framing, model architecture, feature engineering, econometric estimation, and validation of this thesis.
@@ -271,25 +271,25 @@ Table \ref{tab:ch2_lit_synthesis_comprehensive} provides a synthesis of the lite
 \textbf{Thematic Domain} & \textbf{Key Literature Citation} & \textbf{Core Theoretical / Econometric Finding} & \textbf{Implementation in Thesis} \\
 \midrule
 \multirow{4}{*}{\shortstack[l]{Asset Pricing\\Foundations}} 
-& \citet{sharpe1964capital}, \citet{lintner1965valuation} & Single-factor CAPM equilibrium; market beta linear pricing & Baseline risk benchmark \\
+& \citet{sharpe1964capital}, \citet{lintner1965valuation} & Single factor CAPM equilibrium; market beta linear pricing & Baseline risk benchmark \\
 & \citet{fama1973risk} & Two-pass cross-sectional regression methodology & Baseline linear factor risk premia \\
-& \citet{ross1976arbitrage} & Arbitrage Pricing Theory (APT); multi-factor space & Linear multi-factor baseline \\
+& \citet{ross1976arbitrage} & Arbitrage Pricing Theory (APT); multifactor space & Linear multifactor baseline \\
 & \citet{fama1993common}, \citet{fama2015five} & 3-Factor and 5-Factor models ($Mkt, SMB, HML, RMW, CMA$) & Econometric spanning regressions \\
-& \citet{carhart1997on}, \citet{pastor2003liquidity} & Price momentum ($WML$) and aggregate market liquidity factors & Extended multi-factor benchmark \\
+& \citet{carhart1997on}, \citet{pastor2003liquidity} & Price momentum ($WML$) and aggregate market liquidity factors & Extended multifactor benchmark \\
 \midrule
 \multirow{4}{*}{\shortstack[l]{Factor Zoo \&\\Shrinkage}} 
-& \citet{cochrane2011discount} & Factor zoo diagnosis; lack of unified factor structure & High-dimensional model motivation \\
+& \citet{cochrane2011discount} & Factor zoo diagnosis; lack of unified factor structure & High dimensional model motivation \\
 & \citet{harvey2016and}, \citet{harvey2020false} & Multiple testing bias; minimum hurdle rate $|t| > 3.0$ & Feature auditing threshold \\
 & \citet{hou2020replicating}, \citet{mclean2016does} & 65\%+ anomaly replication failure; post-publication decay & Microcap exclusions \& value weighting \\
 & \citet{kozak2020shrinking} & Regularized $L_1/L_2$ SDF shrinkage in high dimensions & Penalized Ridge/ElasticNet baselines \\
-& \citet{freyberger2020dissecting} & Non-parametric Group LASSO characteristic pruning & Rank-normalized feature selection \\
+& \citet{freyberger2020dissecting} & Nonparametric Group LASSO characteristic pruning & Rank-normalized feature selection \\
 \midrule
 \multirow{4}{*}{\shortstack[l]{Machine Learning\\\& Deep Learning}} 
-& \citet{gu2020empirical} & Non-linear ML performance; interaction terms; 1--3 layer networks & Experimental lineup design \\
+& \citet{gu2020empirical} & Nonlinear ML performance; interaction terms; 1--3 layer networks & Experimental lineup design \\
 & \citet{kelly2019characteristics} & Instrumented PCA (IPCA); characteristics as dynamic betas & Latent dynamic factor framing \\
-& \citet{chen2023deep} & Deep learning non-parametric SDF estimation via GANs & Sequence model architecture \\
+& \citet{chen2023deep} & Deep learning nonparametric SDF estimation via GANs & Sequence model architecture \\
 & \citet{avramov2023machine} & ML gains concentrated in illiquid hard-to-arbitrage stocks & Size-stratified empirical evaluation \\
-& \citet{lundberg2017unified} & SHAP additive feature attribution for non-linear models & Model interpretability framework \\
+& \citet{lundberg2017unified} & SHAP additive feature attribution for nonlinear models & Model interpretability framework \\
 \midrule
 \multirow{4}{*}{\shortstack[l]{Time-Series\\Econometrics}} 
 & \citet{newey1987simple} & HAC robust standard errors; Bartlett kernel weighting & Fama-MacBeth HAC t-statistics \\
@@ -306,4 +306,4 @@ Table \ref{tab:ch2_lit_synthesis_comprehensive} provides a synthesis of the lite
 \end{table}
 
 \section{Summary}
-In conclusion, the evolution of empirical asset pricing shows a clear transition from simple linear factor models toward regularized high-dimensional estimation and non-parametric deep sequence architectures. By synthesizing the theoretical insights of factor pricing, the statistical rigor of multiple testing adjustments, the predictive capability of deep sequence networks, and empirical validation protocols, this thesis builds a framework for cross-sectional stock return prediction.
+In conclusion, the evolution of empirical asset pricing shows a clear transition from simple linear factor models toward regularized high dimensional estimation and nonparametric deep sequence architectures. By synthesizing the theoretical insights of factor pricing, the statistical rigor of multiple testing adjustments, the predictive capability of deep sequence networks, and empirical validation protocols, this thesis builds a framework for cross-sectional stock return prediction.

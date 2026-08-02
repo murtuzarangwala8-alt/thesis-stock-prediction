@@ -2,12 +2,12 @@
 \label{ch:methodology}
 
 \section{Introduction}
-To evaluate whether non-linear machine learning models and deep sequence architectures provide genuine predictive value over traditional factor pricing models in cross-sectional equity markets, I design an econometric and deep learning methodology. The empirical model portfolio spans classical benchmark regressions, regularized linear shrinkage estimators, decision tree ensembles, baseline recurrent sequence models, and a neural network architecture: the \textbf{Temporal Fusion Deep Multimodal Gated Attention (TFDMGA)} network.
+To evaluate whether nonlinear machine learning models and deep sequence architectures provide genuine predictive value over traditional factor pricing models in cross-sectional equity markets, I design an econometric and deep learning methodology. The empirical model portfolio spans classical benchmark regressions, regularized linear shrinkage estimators, decision tree ensembles, baseline recurrent sequence models, and a neural network architecture: the \textbf{Temporal Fusion Deep Multimodal Gated Attention (TFDMGA)} network.
 
 Predicting cross-sectional stock returns presents four main econometric and algorithmic challenges:
 \begin{enumerate}
     \item \textbf{High-Dimensionality and Multicollinearity}: Financial characteristics exhibit strong cross-sectional correlations, rendering unregularized ordinary least squares (OLS) unstable and prone to sample overfitting.
-    \item \textbf{Non-Linearity and Feature Interactions}: Factor interactions (such as momentum conditional on volatility or valuation conditional on market regime) are non-linear and difficult to specify \textit{a priori} using traditional linear equations.
+    \item \textbf{Non-Linearity and Feature Interactions}: Factor interactions (such as momentum conditional on volatility or valuation conditional on market regime) are nonlinear and difficult to specify \textit{a priori} using traditional linear equations.
     \item \textbf{Multimodal Heterogeneity}: Financial input signals originate from distinct modalities (technical price trends, fundamental accounting ratios, news sentiment indicators, and macroeconomic state variables) operating across differing sampling frequencies and noise levels.
     \item \textbf{Macroeconomic Regime Sensitivity}: Factor risk premia change across economic regimes (expansionary vs. contractionary, high vs. low market volatility), requiring adaptive model capacity that can re-weight predictive modalities.
 \end{enumerate}
@@ -17,7 +17,7 @@ In this chapter, I present step-by-step mathematical proofs and equation derivat
 \section{Baseline Econometric \& Machine Learning Formulations}
 \label{sec:ch4_baselines}
 
-To establish comparative benchmarks, I formulate four distinct model classes: linear factor regressions with robust covariance estimation, regularized linear shrinkage estimators, non-linear tree ensembles, and recurrent neural network sequence encoders.
+To establish comparative benchmarks, I formulate four distinct model classes: linear factor regressions with robust covariance estimation, regularized linear shrinkage estimators, nonlinear tree ensembles, and recurrent neural network sequence encoders.
 
 \subsection{Fama-MacBeth 2-Pass Linear Regression \& Newey-West HAC Estimation}
 \label{subsec:ch4_fama_macbeth}
@@ -37,7 +37,7 @@ For each individual stock $i \in \{1, \dots, N_t\}$ on trading day $t$, factor l
 $}
 \end{equation}
 
-The first-pass time-series Ordinary Least Squares (OLS) regression for stock $i$ is formulated as:
+The first-pass time series Ordinary Least Squares (OLS) regression for stock $i$ is formulated as:
 \begin{equation}
 \mathbf{R}_{i,t} = \mathbf{F}_t \boldsymbol{\beta}_{i,t} + \boldsymbol{\epsilon}_{i,t}
 \label{eq:ch4_pass1_ols}
@@ -120,7 +120,7 @@ and the test statistic for factor significance testing is evaluated as $t(\bar{\
 \subsection{Regularized Linear Models: ElasticNet, LASSO, \& Ridge}
 \label{subsec:ch4_elasticnet_lasso_ridge}
 
-High-dimensional cross-sectional asset pricing settings with $P$ characteristic features suffer from multicollinearity and sample overfitting under standard OLS. Regularized linear models introduce penalty structures to constrain coefficient magnitudes and perform feature selection \citep{kozak2020shrinking}.
+High dimensional cross-sectional asset pricing settings with $P$ characteristic features suffer from multicollinearity and sample overfitting under standard OLS. Regularized linear models introduce penalty structures to constrain coefficient magnitudes and perform feature selection \citep{kozak2020shrinking}.
 
 \subsubsection{ElasticNet Objective Function}
 Let $\mathbf{y} \in \mathbb{R}^N$ denote the vector of standardized forward returns across all asset-day observations, and let $\mathbf{X} \in \mathbb{R}^{N \times P}$ denote the matrix of standardized stock characteristics. The ElasticNet estimator \citep{zou2005regularization} solves the convex optimization problem:
@@ -143,7 +143,7 @@ Because the $L_1$ norm is non-differentiable at $\beta_j = 0$, optimization requ
 
 To derive the coordinate descent update rule for feature $j$, assume that the columns of $\mathbf{X}$ are standardized such that $\mathbf{x}_j^T \mathbf{x}_j = N$. Isolate feature $j$ by defining the partial residual vector $\mathbf{r}^{(j)} = \mathbf{y} - \sum_{k \neq j} \mathbf{x}_k \beta_k$. The unregularized OLS update for $\beta_j$ given fixed $\boldsymbol{\beta}_{-j}$ is $\hat{\beta}_j^{\text{OLS}} = \frac{1}{N} \mathbf{x}_j^T \mathbf{r}^{(j)}$.
 
-The first-order optimality condition for the ElasticNet objective requires $0 \in \partial_{\beta_j} \mathcal{L}_{\text{EN}}(\boldsymbol{\beta})$:
+The first order optimality condition for the ElasticNet objective requires $0 \in \partial_{\beta_j} \mathcal{L}_{\text{EN}}(\boldsymbol{\beta})$:
 \begin{equation}
 -\frac{1}{N} \mathbf{x}_j^T (\mathbf{y} - \mathbf{X}\boldsymbol{\beta}) + \lambda(1-\alpha)\beta_j + \lambda \alpha v_j = 0, \quad \text{where } v_j \in \partial |\beta_j|
 \end{equation}
@@ -207,7 +207,7 @@ This shows that Ridge regression shrinks the OLS parameter vector along the prin
 \subsection{Non-Linear Tree Ensembles: Random Forest \& XGBoost}
 \label{subsec:ch4_tree_ensembles}
 
-Decision tree ensembles map high-dimensional characteristic spaces into predicted returns by partitioning features into hyper-rectangular regions \citep{gu2020empirical}.
+Decision tree ensembles map high dimensional characteristic spaces into predicted returns by partitioning features into hyper-rectangular regions \citep{gu2020empirical}.
 
 \subsubsection{Random Forest Bagging Variance Reduction Proof}
 The Random Forest regressor \citep{breiman2001random} constructs an ensemble of $M$ decorrelated decision trees $\{T_1(\mathbf{x}), T_2(\mathbf{x}), \dots, T_M(\mathbf{x})\}$, each trained on a bootstrap sample of size $N$ with randomized feature subspace selection ($m_{\text{try}} = \lfloor \sqrt{P} \rfloor$). The ensemble prediction is the average:
@@ -255,12 +255,12 @@ where $l(\cdot, \cdot)$ is a differentiable convex loss function, and the tree c
 \label{eq:ch4_xgb_reg}
 \end{equation}
 
-Applying a second-order Taylor expansion to the loss function around the previous iteration forecast $\hat{y}_i^{(m-1)}$:
+Applying a second order Taylor expansion to the loss function around the previous iteration forecast $\hat{y}_i^{(m-1)}$:
 \begin{equation}
 l\left( y_i, \hat{y}_i^{(m-1)} + f_m(\mathbf{x}_i) \right) \approx l\left( y_i, \hat{y}_i^{(m-1)} \right) + g_i f_m(\mathbf{x}_i) + \frac{1}{2} h_i f_m(\mathbf{x}_i)^2
 \label{eq:ch4_taylor_loss}
 \end{equation}
-where the first-order gradient $g_i$ and second-order Hessian $h_i$ are defined as:
+where the first order gradient $g_i$ and second order Hessian $h_i$ are defined as:
 \begin{equation}
 g_i = \frac{\partial l\left( y_i, \hat{y}_i^{(m-1)} \right)}{\partial \hat{y}_i^{(m-1)}}, \quad h_i = \frac{\partial^2 l\left( y_i, \hat{y}_i^{(m-1)} \right)}{\partial \left(\hat{y}_i^{(m-1)}\right)^2}
 \label{eq:ch4_grad_hessian}
@@ -305,7 +305,7 @@ where $\gamma$ acts as a penalty threshold requiring the improvement in loss red
 \subsection{Baseline Sequence Encoder: PyTorch LSTM}
 \label{subsec:ch4_lstm}
 
-To encode temporal patterns across a sequential lookback window of $T = 20$ trading days, I use a multi-layer Long Short-Term Memory (LSTM) network \citep{hochreiter1997long}.
+To encode temporal patterns across a sequential lookback window of $T = 20$ trading days, I use a multilayer Long Short-Term Memory (LSTM) network \citep{hochreiter1997long}.
 
 For input vector $\mathbf{x}_t \in \mathbb{R}^{d_{\text{in}}}$ at sequence step $t \in \{1, \dots, T\}$, previous hidden state $\mathbf{h}_{t-1} \in \mathbb{R}^D$, and previous cell state $\mathbf{c}_{t-1} \in \mathbb{R}^D$, the PyTorch LSTM cell equations are formulated as:
 \begin{align}
@@ -446,12 +446,12 @@ This shows that a 3-layer TCN stack with $K=3$ covers 15 trading days of tempora
 \subsection{Sequential Directed Ring Attention Cascade}
 \label{subsec:ch4_ring_attention}
 
-To capture inter-modal cross-attentive dependencies without generating $O(M^2)$ combinatorial explosion across $M=4$ modalities, TFDMGA structures multi-modal cross-attention into a \textbf{Sequential Directed Ring Attention Cascade}:
+To capture inter-modal cross-attentive dependencies without generating $O(M^2)$ combinatorial explosion across $M=4$ modalities, TFDMGA structures multimodal cross-attention into a \textbf{Sequential Directed Ring Attention Cascade}:
 \begin{equation}
 \text{Technical} \leftarrow \text{Sentiment} \leftarrow \text{Fundamental} \leftarrow \text{Macro} \leftarrow \text{Technical}
 \end{equation}
 
-For any directed cross-modal pair where target modality representation $\mathbf{H}_{\mathcal{B}}$ is updated by source modality representation $\mathbf{H}_{\mathcal{A}}$:
+For any directed crossmodal pair where target modality representation $\mathbf{H}_{\mathcal{B}}$ is updated by source modality representation $\mathbf{H}_{\mathcal{A}}$:
 
 First, Query ($\mathbf{Q}_{\mathcal{B}}$), Key ($\mathbf{K}_{\mathcal{A}}$), and Value ($\mathbf{V}_{\mathcal{A}}$) tensors are linearly projected using weight matrices $\mathbf{W}_Q, \mathbf{W}_K, \mathbf{W}_V \in \mathbb{R}^{D \times D}$:
 \begin{equation}
@@ -486,7 +486,7 @@ The market regime dynamic gating network computes time-varying trust weights $\m
 
 Let $\tilde{\mathbf{H}}_{\text{macro}} \in \mathbb{R}^{B \times T \times D}$ denote the macro representation. Average pooling across sequence length $T$ yields global macro state vector $\bar{\mathbf{h}}_{\text{macro}} = \frac{1}{T} \sum_{t=1}^T \tilde{\mathbf{H}}_{\text{macro}}(t) \in \mathbb{R}^D$.
 
-Raw modality trust scores $\mathbf{s} = [s_{\text{tech}}, s_{\text{fund}}, s_{\text{sent}}]^T \in \mathbb{R}^3$ are computed via a 2-layer Multi-Layer Perceptron (MLP) with ReLU non-linear activation:
+Raw modality trust scores $\mathbf{s} = [s_{\text{tech}}, s_{\text{fund}}, s_{\text{sent}}]^T \in \mathbb{R}^3$ are computed via a 2-layer Multi-Layer Perceptron (MLP) with ReLU nonlinear activation:
 \begin{equation}
 \mathbf{s} = \mathbf{W}_{g2} \cdot \text{ReLU}\left( \mathbf{W}_{g1} \bar{\mathbf{h}}_{\text{macro}} + \mathbf{b}_{g1} \right) + \mathbf{b}_{g2}
 \label{eq:ch4_gating_mlp}

@@ -2,7 +2,7 @@
 \label{ch:empirical_results}
 
 \section{Introduction}
-Before evaluating non-linear machine learning architectures, I examine baseline linear factor regressions and investigate feature interpretability in this chapter. I analyze the Fama-MacBeth 2-pass OLS estimates \citep{fama1973risk, newey1987simple}, present a mathematical derivation of LASSO coefficient shrinkage under noise ($\hat{\boldsymbol{\beta}} = \mathbf{0}, \operatorname{Var}(\hat{y})=0, IC = \text{NaN}$) alongside its empirical cross-validation reconciliation \citep{tibshirani1996regression, kozak2020shrinking}, and use SHAP (SHapley Additive exPlanations) values to interpret feature importance across market regimes \citep{lundberg2017unified, gu2020empirical}.
+Before evaluating nonlinear machine learning architectures, I examine baseline linear factor regressions and investigate feature interpretability in this chapter. I analyze the Fama-MacBeth 2-pass OLS estimates \citep{fama1973risk, newey1987simple}, present a mathematical derivation of LASSO coefficient shrinkage under noise ($\hat{\boldsymbol{\beta}} = \mathbf{0}, \operatorname{Var}(\hat{y})=0, IC = \text{NaN}$) alongside its empirical cross-validation reconciliation \citep{tibshirani1996regression, kozak2020shrinking}, and use SHAP (SHapley Additive exPlanations) values to interpret feature importance across market regimes \citep{lundberg2017unified, gu2020empirical}.
 
 \section{Contemporaneous Fama-MacBeth OLS Baseline}
 Table \ref{tab:ch4_fama_macbeth} presents the daily cross-sectional Fama-MacBeth regression parameter estimates \citep{fama1973risk}, Newey-West HAC standard errors ($L = 8$ lags) \citep{newey1987simple}, and corresponding $t$-statistics with Shanken corrections \citep{shanken1992on} over the 2015--2024 period.
@@ -28,7 +28,7 @@ Momentum Beta ($\beta_{MOM}$) & $+0.00007$ & $0.00006$ & $+1.167$ & $0.243$ \\
 }
 \end{table}
 
-The empirical results show that linear factor risk premia at daily frequencies are statistically indistinguishable from zero ($p > 0.05$). Individual daily stock returns are dominated by idiosyncratic noise ($\sim 95\%$ of daily variance) \citep{fama1993common, fama2015five}, indicating that static linear factor models have limited explanatory power for daily returns and highlighting the motivation for non-linear machine learning models \citep{gu2020empirical, chen2023deep}.
+The empirical results show that linear factor risk premia at daily frequencies are statistically indistinguishable from zero ($p > 0.05$). Individual daily stock returns are dominated by idiosyncratic noise ($\sim 95\%$ of daily variance) \citep{fama1993common, fama2015five}, indicating that static linear factor models have limited explanatory power for daily returns and highlighting the motivation for nonlinear machine learning models \citep{gu2020empirical, chen2023deep}.
 
 \section{Mathematical Derivation \& Empirical Reconciliation of LASSO Shrinkage Collapse}
 Under daily return noise and cross-sectional MSE loss, regularized LASSO regressions can shrink all coefficients to zero \citep{tibshirani1996regression, kozak2020shrinking}. Consider the cross-sectional LASSO objective function on trading day $t$:
@@ -52,7 +52,7 @@ When predictions collapse to a constant mean ($\hat{y}_{i,t+1} = \bar{y}_{t+1}$)
 \noindent \textbf{Reconciliation with Empirical Pipeline Results}: This mathematical derivation illustrates the limiting case of unconstrained $L_1$ shrinkage under high return noise when penalty $\lambda > \lambda_{\text{max}}$. In my empirical pipeline (reported in Table \ref{tab:ch4_predictive_metrics}), LASSO and ElasticNet models are optimized via 5-fold walk-forward cross-validation. Hyperparameter tuning selects an optimal penalty intensity $\lambda^* = 1.42 \times 10^{-3}$ and a balanced Logistic ElasticNet ratio ($\alpha = 0.50$), which constrains shrinkage to prevent total zero-collapse. By maintaining a non-zero prediction variance ($\operatorname{Var}(\hat{y}) > 0$), the tuned cross-validated LASSO model achieves a positive out-of-sample Information Coefficient of $IC = +0.0246$ and $54.18\%$ accuracy \citep{zou2005regularization}.
 
 \section{SHAP Feature Interpretability Analysis}
-To understand which feature modalities influence non-linear predictions, I calculate SHAP (SHapley Additive exPlanations) values for the top-performing models \citep{lundberg2017unified}.
+To understand which feature modalities influence nonlinear predictions, I calculate SHAP (SHapley Additive exPlanations) values for the top-performing models \citep{lundberg2017unified}.
 
 Figure \ref{fig:ch4_shap_bar} presents the global SHAP mean absolute feature importances, while Figure \ref{fig:ch4_shap_summary} displays the SHAP summary beeswarm plot illustrating directional feature impacts.
 
@@ -70,7 +70,7 @@ Figure \ref{fig:ch4_shap_bar} presents the global SHAP mean absolute feature imp
 \label{fig:ch4_shap_summary}
 \end{figure}
 
-As shown in Figures \ref{fig:ch4_shap_bar} and \ref{fig:ch4_shap_summary}, short-term price momentum (\texttt{mom\_21d\_rank}) and relative strength (\texttt{rsi\_14d\_rank}) drive high-frequency predictive directionality \citep{jegadeesh1993returns, carhart1997on}, followed by fundamental operating quality (\texttt{quality\_proxy\_rank}) and valuation metrics (\texttt{value\_proxy\_rank}). Macroeconomic commodity inputs (\texttt{nat\_gas\_price\_rank}, \texttt{oil\_wti\_price\_rank}) and volatility signals (\texttt{vol\_5d\_rank}, \texttt{beta\_252d\_rank}) provide structural drawdown defense during market regime shifts \citep{novy2013other, fama2015five}.
+As shown in Figures \ref{fig:ch4_shap_bar} and \ref{fig:ch4_shap_summary}, short term price momentum (\texttt{mom\_21d\_rank}) and relative strength (\texttt{rsi\_14d\_rank}) drive high-frequency predictive directionality \citep{jegadeesh1993returns, carhart1997on}, followed by fundamental operating quality (\texttt{quality\_proxy\_rank}) and valuation metrics (\texttt{value\_proxy\_rank}). Macroeconomic commodity inputs (\texttt{nat\_gas\_price\_rank}, \texttt{oil\_wti\_price\_rank}) and volatility signals (\texttt{vol\_5d\_rank}, \texttt{beta\_252d\_rank}) provide structural drawdown defense during market regime shifts \citep{novy2013other, fama2015five}.
 
 \section{Out-of-Sample Predictive Evaluation}
 Table \ref{tab:ch4_predictive_metrics} presents out-of-sample performance metrics across the model lineup on the 21-day holding horizon across the 5 expanding-window walk-forward test folds (2020--2024).
@@ -111,7 +111,7 @@ To isolate the incremental contribution of each component within the TFDMGA arch
 \toprule
 \textbf{Model Architecture Variant} & \textbf{Daily IC} & \textbf{ICIR ($t$-stat)} & \textbf{Accuracy} & \textbf{ROC AUC} & \textbf{Incremental IC Loss} \\
 \midrule
-\textbf{Full TFDMGA (Complete Model)} & \textbf{+0.0348} & \textbf{3.12} & \textbf{56.84\%} & \textbf{0.6120} & --- \\
+\textbf{Full TFDMGA (Complete Model)} & \textbf{+0.0348} & \textbf{3.12} & \textbf{56.84\%} & \textbf{0.6120} & ,  \\
 $-$ Macro Dynamic Gating (Static Uniform Weights) & +0.0312 & 2.91 & 55.90\% & 0.5980 & $-$0.0036 \\
 $-$ Ring Attention (Naive Concatenation) & +0.0305 & 2.86 & 55.45\% & 0.5910 & $-$0.0043 \\
 $-$ Causal TCN Encoders (Linear Projections) & +0.0291 & 2.70 & 54.80\% & 0.5820 & $-$0.0057 \\
@@ -125,7 +125,7 @@ $-$ Sentiment Modality (Tech + Fund + Macro Only) & +0.0332 & 3.00 & 56.40\% & 0
 The ablation results indicate that each component contributes to performance:
 \begin{enumerate}
     \item \textbf{Causal TCN Encoders}: Removing TCN encoders \citep{bai2018empirical} causes the largest single drop in IC ($-0.0057$), indicating the benefit of temporal feature extraction over raw sequences.
-    \item \textbf{Ring Attention Cascade}: Replacing Ring Attention \citep{vaswani2017attention} with vector concatenation reduces IC by $-0.0043$, suggesting that cross-modal domain hierarchy prevents a single modality from dominating.
+    \item \textbf{Ring Attention Cascade}: Replacing Ring Attention \citep{vaswani2017attention} with vector concatenation reduces IC by $-0.0043$, suggesting that crossmodal domain hierarchy prevents a single modality from dominating.
     \item \textbf{Macro Dynamic Gating}: Disabling dynamic macro gating \citep{lim2021temporal} reduces IC by $-0.0036$, highlighting the role of adaptive regime weighting.
 \end{enumerate}
 
@@ -254,4 +254,4 @@ PyTorch LSTM LS & $-$0.36\% & $-$0.06 & 39.0\% & $-$0.427 & $-$7.14 & +0.486 & +
 }
 \end{table}
 
-Table \ref{tab:ch4_spanning} reveals a clear econometric distinction between linear penalized models and deep sequence architectures. For high-turnover linear penalized strategies (LASSO and ElasticNet), net returns after 10 bps transaction fees suffer severe turnover decay, producing statistically significant negative net alphas ($\hat{\alpha} \approx -16.5\%, t \approx -2.01, p < 0.05$). These linear models are unspanned in a negative sense—generating net underperformance net of trading frictions. By contrast, deep sequence models (PyTorch LSTM and TFDMGA) effectively manage execution drag, yielding net strategy alphas that are statistically indistinguishable from zero ($\hat{\alpha} = -0.18\%, t = -0.03, p = 0.976$). The 5-factor model accounts for 41.2\% of TFDMGA's return variance, with positive factor loadings on operating profitability ($RMW$ beta $= +0.512, t = +9.12$). This confirms that deep sequence architectures function as dynamic factor allocation engines rather than discoverers of unpriced market arbitrage \citep{fama2015five, kelly2019characteristics}.
+Table \ref{tab:ch4_spanning} reveals a clear econometric distinction between linear penalized models and deep sequence architectures. For high-turnover linear penalized strategies (LASSO and ElasticNet), net returns after 10 bps transaction fees suffer severe turnover decay, producing statistically significant negative net alphas ($\hat{\alpha} \approx -16.5\%, t \approx -2.01, p < 0.05$). These linear models are unspanned in a negative sense, generating net underperformance net of trading frictions. By contrast, deep sequence models (PyTorch LSTM and TFDMGA) effectively manage execution drag, yielding net strategy alphas that are statistically indistinguishable from zero ($\hat{\alpha} = -0.18\%, t = -0.03, p = 0.976$). The 5-factor model accounts for 41.2\% of TFDMGA's return variance, with positive factor loadings on operating profitability ($RMW$ beta $= +0.512, t = +9.12$). This confirms that deep sequence architectures function as dynamic factor allocation engines rather than discoverers of unpriced market arbitrage \citep{fama2015five, kelly2019characteristics}.

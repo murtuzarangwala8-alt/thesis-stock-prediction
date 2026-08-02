@@ -58,7 +58,7 @@
 \end{center}
 
 \begin{abstract}
-    This document presents a concise summary of the empirical findings, model formulations, and significance diagnostics of the master's thesis. We conduct a rigorous comparative study between traditional econometric benchmarks and modern machine learning/deep learning architectures in forecasting stock excess returns for S\&P 500 constituents from 2015 to 2024. The empirical framework implements a 3-stage feature selection engine to select the cleanest 59 features. We evaluate gradient boosted decision trees (\textbf{XGBoost}), causal recurrent sequences (\textbf{LSTM}), and a custom multi-modal deep learning architecture, the \textbf{Temporal Fusion Deep Multimodal Gated Attention Network (TFDMGA-TS)}. All results are lookahead-free, net of transaction costs, and verified using Newey-West HAC standard errors and Jobson-Korkie tests.
+    This document presents a concise summary of the empirical findings, model formulations, and significance diagnostics of the master's thesis. We conduct a rigorous comparative study between traditional econometric benchmarks and modern machine learning/deep learning architectures in forecasting stock excess returns for S\&P 500 constituents from 2015 to 2024. The empirical framework implements a 3-stage feature selection engine to select the cleanest 59 features. We evaluate gradient boosted decision trees (\textbf{XGBoost}), causal recurrent sequences (\textbf{LSTM}), and a custom multimodal deep learning architecture, the \textbf{Temporal Fusion Deep Multimodal Gated Attention Network (TFDMGA-TS)}. All results are lookahead free, net of transaction costs, and verified using Newey-West HAC standard errors and Jobson-Korkie tests.
 \end{abstract}
 
 \section{Introduction and Research Design}
@@ -107,14 +107,14 @@ beta\_cma\_5f\_252d & -0.0001 & 0.0001 & -1.2369 & 0.2161 \\
 We formulate the prediction task using three key architectures optimized over the 59-feature space:
 \begin{enumerate}
     \item \textbf{XGBoost (Extreme Gradient Boosting)}:
-    An ensemble of decision trees trained sequentially. At step $k$, it minimizes a regularized objective using a second-order Taylor expansion:
+    An ensemble of decision trees trained sequentially. At step $k$, it minimizes a regularized objective using a second order Taylor expansion:
     \begin{equation}
         \mathcal{L}^{(k)} \approx \sum_{i=1}^{M} \left[ l(y_i, \hat{y}_i^{(k-1)}) + g_i f_k(\mathbf{x}_i) + \frac{1}{2} h_i f_k^2(\mathbf{x}_i) \right] + \Omega(f_k)
     \end{equation}
-    where $g_i$ and $h_i$ are the first and second-order derivatives of the loss function, and $\Omega(f_k) = \gamma T + \frac{1}{2}\lambda \sum w_j^2$ penalizes tree complexity.
+    where $g_i$ and $h_i$ are the first and second order derivatives of the loss function, and $\Omega(f_k) = \gamma T + \frac{1}{2}\lambda \sum w_j^2$ penalizes tree complexity.
     
     \item \textbf{LSTM (Long Short-Term Memory)}:
-    To capture short-term temporal sequences, the recurrent architecture processes sequential indicators using input ($i_t$), forget ($f_t$), output ($o_t$), and cell memory ($c_t$) gates:
+    To capture short term temporal sequences, the recurrent architecture processes sequential indicators using input ($i_t$), forget ($f_t$), output ($o_t$), and cell memory ($c_t$) gates:
     \begin{align}
         f_t &= \sigma(W_f \mathbf{x}_t + U_f h_{t-1} + b_f) \\
         i_t &= \sigma(W_i \mathbf{x}_t + U_i h_{t-1} + b_i) \\
@@ -123,7 +123,7 @@ We formulate the prediction task using three key architectures optimized over th
         o_t &= \sigma(W_o \mathbf{x}_t + U_o h_{t-1} + b_o) \\
         h_t &= o_t \odot \tanh(c_t)
     \end{align}
-    This recurrence enables the model to preserve long-term price dependencies while avoiding vanishing gradients.
+    This recurrence enables the model to preserve long term price dependencies while avoiding vanishing gradients.
     
     \item \textbf{TFDMGA-TS (Temporal Fusion Deep Multimodal Gated Attention Network)}:
     Our custom deep multimodal neural network. Features are split into Technical ($\mathbf{x}_{\text{tech}}$), Fundamental ($\mathbf{x}_{\text{fund}}$), and Macroeconomic ($\mathbf{x}_{\text{macro}}$) streams:
@@ -232,9 +232,9 @@ To provide full empirical transparency, Table~\ref{tab:complete_59_feature_roste
     (20 Features) & \texttt{mom\_1d\_rank} & Yahoo Finance & 1-day stock return. Captures daily microstructure signals. \\
     & \texttt{beta\_hml\_5f\_252d\_rank} & Ken French & Fama-French HML value factor loading. \\
     & \texttt{tot\_return\_index\_gross\_dvds\_rank} & Bloomberg & Total gross return index adjusted for dividends. \\
-    & \texttt{vol\_5d\_rank} & Yahoo Finance & 5-day rolling volatility. Captures short-term variance. \\
+    & \texttt{vol\_5d\_rank} & Yahoo Finance & 5-day rolling volatility. Captures short term variance. \\
     & \texttt{beta\_252d\_rank} & Yahoo Finance & 252-day OLS market beta proxy. \\
-    & \texttt{vol\_126d\_rank} & Yahoo Finance & 126-day rolling volatility. Captures long-term risk. \\
+    & \texttt{vol\_126d\_rank} & Yahoo Finance & 126-day rolling volatility. Captures long term risk. \\
     & \texttt{mom\_5d\_rank} & Yahoo Finance & 5-day cumulative return momentum. \\
     & \texttt{mom\_21d\_rank} & Yahoo Finance & 21-day cumulative return momentum. \\
     & \texttt{beta\_mkt\_252d\_rank} & Yahoo Finance & 252-day rolling market beta rank. \\
@@ -280,7 +280,7 @@ To provide full empirical transparency, Table~\ref{tab:complete_59_feature_roste
     & \texttt{capital\_expend\_rank} & Bloomberg & Capital expenditures. Reinvestment rate proxy. \\
     & \texttt{ev\_to\_t12m\_ebitda\_rank} & Bloomberg & Enterprise Value-to-EBITDA ratio rank. \\
     \midrule
-    \textbf{Macro} & \texttt{short\_term\_borrow\_rank} & Bloomberg & Short-term debt borrowing interest rate. \\
+    \textbf{Macro} & \texttt{short\_term\_borrow\_rank} & Bloomberg & Short term debt borrowing interest rate. \\
     (7 Features) & \texttt{tax\_rate\_reported\_rank} & Bloomberg & Effective corporate tax rate rank. \\
     & \texttt{oil\_wti\_backup\_rank} & Spot Price & WTI Crude oil closing price. Global energy cost proxy. \\
     & \texttt{fed\_funds\_rank} & Fed Reserve & Effective Federal Funds rate. Monetary policy proxy. \\

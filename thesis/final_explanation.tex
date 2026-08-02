@@ -101,7 +101,7 @@ The exact auditable feature dictionary, sources, frequencies, and data alignment
     
     \midrule
     \multicolumn{5}{r}{{Continued on next page}} \\
-    \footnotetext{Note: All features are rank-normalized daily to eliminate time-series drift.}
+    \footnotetext{Note: All features are rank-normalized daily to eliminate time series drift.}
     \endfoot
     
     \bottomrule
@@ -117,7 +117,7 @@ The exact auditable feature dictionary, sources, frequencies, and data alignment
     & Analyst Consensus (Buy/Hold Recs, Upside, Analyst Count) & Daily & Bloomberg & Aligned to daily Bloomberg consensus updates on $t-1$. \\
     & Commodity (Natural Gas Backup) & Daily & Spot Price & Daily Spot Price closing rank on $t-1$. \\
     \midrule
-    \textbf{Macro} & Policy Rates (Fed Funds, RF, Short-term borrow) & Daily & Fed Reserve & Effective rate published on day $t-1$. \\
+    \textbf{Macro} & Policy Rates (Fed Funds, RF, Short term borrow) & Daily & Fed Reserve & Effective rate published on day $t-1$. \\
     (7 Features) & inflation (Tax Rate, Earnings Yield) & Daily/Monthly & Bloomberg & Last published value aligned to $t-1$. \\
     & Commodity (WTI Crude Oil Backup) & Daily & Spot Price & Spot closing price rank on $t-1$. \\
     & Market Return (Mkt-RF) & Daily & Ken French & Factor value published on day $t-1$. \\
@@ -137,7 +137,7 @@ The fundamental branch contains exactly 30 features, which are:
 \end{enumerate}
 
 \section{Look-Ahead-Bias Protection and Target Formulation}
-To guarantee that the models are evaluated in a lookahead-free environment, we enforce a strict temporal separation. 
+To guarantee that the models are evaluated in a lookahead free environment, we enforce a strict temporal separation. 
 Let $\mathcal{I}_{t-1}$ denote the information set containing all data publicly available up to the market close of trading day $t-1$. The feature vector $\mathbf{X}_{i,t-1}$ is constructed entirely from variables in $\mathcal{I}_{t-1}$. 
 The prediction $\hat{y}_{i,t}$ is made at day $t-1$ using $\mathbf{X}_{i,t-1}$:
 \begin{equation}
@@ -150,7 +150,7 @@ The target variable $y_{i,t}^{(k)}$ is the future forward excess return of stock
 This formulation ensures that the feature matrix $\mathbf{X}_{t-1}$ is fully realized and locked *before* the return target period begins, eliminating lookahead leakage. For classification tasks, the target is converted to a binary indicator: $y_{i,t,\text{binary}}^{(k)} = \mathbb{I}(y_{i,t}^{(k)} > 0)$.
 
 \section{Predictive Models and Formulations}
-We evaluate several architectures, starting with linear factor baselines and progressing to non-linear neural networks:
+We evaluate several architectures, starting with linear factor baselines and progressing to nonlinear neural networks:
 
 \subsection{Fama-MacBeth 2-Pass OLS Regression}
 A traditional asset pricing model. Pass 1 estimates rolling 252-day stock factor loadings (betas). Pass 2 runs daily cross-sectional regressions to estimate factor premiums ($\lambda_t$):
@@ -160,14 +160,14 @@ A traditional asset pricing model. Pass 1 estimates rolling 252-day stock factor
 Because Fama-MacBeth operates strictly on factor loadings, we add an **OLS Baseline** that regresses returns directly on the 59 individual features to compare the factor pricing information set against the individual characteristics information set.
 
 \subsection{XGBoost (Extreme Gradient Boosting)}
-An ensemble of weak decision trees. The model minimizes a regularized objective function using a second-order Taylor expansion:
+An ensemble of weak decision trees. The model minimizes a regularized objective function using a second order Taylor expansion:
 \begin{equation}
     \mathcal{L}^{(k)} \approx \sum_{i=1}^{M} \left[ l(y_i, \hat{y}_i^{(k-1)}) + g_i f_k(\mathbf{x}_i) + \frac{1}{2} h_i f_k^2(\mathbf{x}_i) \right] + \gamma T + \frac{1}{2}\lambda \sum_{j=1}^{T} w_j^2
 \end{equation}
-where $g_i$ and $h_i$ are the first and second-order gradients of the loss function, and $T$ is the number of leaves.
+where $g_i$ and $h_i$ are the first and second order gradients of the loss function, and $T$ is the number of leaves.
 
 \subsection{LSTM (Long Short-Term Memory)}
-A recurrent neural network designed for sequential time-series patterns. The gating mechanism helps mitigate the vanishing-gradient problem and enables the model to retain information over longer temporal horizons:
+A recurrent neural network designed for sequential time series patterns. The gating mechanism helps mitigate the vanishing-gradient problem and enables the model to retain information over longer temporal horizons:
 \begin{align}
     f_t &= \sigma(W_f \mathbf{x}_t + U_f h_{t-1} + b_f) \\
     i_t &= \sigma(W_i \mathbf{x}_t + U_i h_{t-1} + b_i) \\
@@ -332,7 +332,7 @@ The TFDMGA-TS architecture introduces three core innovations that resolve limita
     This forces the model to refine technical sequences conditioned on sentiment and fundamentals, preventing any single dominant modality from collapsing the attention gradients.
     
     \item \textbf{Dynamic Macro-Conditioned Softmax Gating}:
-    To the best of our knowledge, the combination of causal temporal encoders, cyclic cross-modal information exchange, and macro-conditioned dynamic fusion has not been systematically evaluated in a stock-return prediction setting. The gating network is conditioned strictly on macroeconomic and interest-rate factors (e.g., Fed Funds Rate, WTI Oil Price, short-term borrowing costs). As empirically demonstrated in Section 6, this enables the network to dynamically shift attention toward defensive corporate fundamentals during market crises.
+    To the best of our knowledge, the combination of causal temporal encoders, cyclic crossmodal information exchange, and macro-conditioned dynamic fusion has not been systematically evaluated in a stock-return prediction setting. The gating network is conditioned strictly on macroeconomic and interest-rate factors (e.g., Fed Funds Rate, WTI Oil Price, short term borrowing costs). As empirically demonstrated in Section 6, this enables the network to dynamically shift attention toward defensive corporate fundamentals during market crises.
     
     \item \textbf{Strict Lookahead-Free Walk-Forward Guardrails}:
     We enforce absolute replication integrity by applying 1-day prediction lags and aligning quarterly accounting reports strictly to their public release dates (using Bloomberg Point-in-Time announcement logs) rather than fiscal quarter-ends, eliminating any backward information leakage.
