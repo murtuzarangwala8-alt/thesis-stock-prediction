@@ -434,26 +434,29 @@ Figure \ref{fig:ch3_tfdmga_arch} shows the complete neural network architecture 
 \begin{tikzpicture}[
     scale=0.85, transform shape,
     node distance=1.0cm and 1.2cm,
-    modbox/.style={draw=jpmNavy, fill=jpmLight, rectangle, rounded corners=5pt, align=center, inner sep=6pt, font=\scriptsize\bfseries, text=jpmNavy, minimum width=2.5cm, minimum height=1.0cm},
-    tcnbox/.style={draw=jpmGold, fill=white, rectangle, rounded corners=4pt, align=center, inner sep=6pt, font=\scriptsize\bfseries, text=jpmDark, minimum width=2.5cm, minimum height=0.9cm},
-    ringbox/.style={draw=jpmNavy, fill=jpmNavy!10!white, rectangle, rounded corners=5pt, align=center, inner sep=6pt, font=\scriptsize\bfseries, text=jpmNavy, minimum width=8.5cm, minimum height=1.1cm},
-    gatebox/.style={draw=jpmRed, fill=jpmRed!10!white, rectangle, rounded corners=5pt, align=center, inner sep=6pt, font=\scriptsize\bfseries, text=jpmRed, minimum width=8.5cm, minimum height=1.1cm},
-    fusebox/.style={draw=jpmGreen!80!black, fill=jpmGreen!10!white, rectangle, rounded corners=5pt, align=center, inner sep=6pt, font=\scriptsize\bfseries, text=jpmGreen!80!black, minimum width=8.5cm, minimum height=1.0cm},
-    headbox/.style={draw=jpmNavy, fill=jpmNavy, rectangle, rounded corners=5pt, align=center, inner sep=6pt, font=\scriptsize\bfseries, text=white, minimum width=2.4cm, minimum height=0.9cm},
+    modbox/.style={draw=jpmNavy, fill=jpmLight, rectangle, rounded corners=5pt, align=center, inner sep=6pt, font=\scriptsize\bfseries, text=jpmNavy, minimum width=2.8cm, minimum height=1.0cm},
+    tcnbox/.style={draw=jpmGold, fill=white, rectangle, rounded corners=4pt, align=center, inner sep=6pt, font=\scriptsize\bfseries, text=jpmDark, minimum width=2.8cm, minimum height=0.9cm},
+    ringbox/.style={draw=jpmNavy, fill=jpmNavy!10!white, rectangle, rounded corners=5pt, align=center, inner sep=8pt, font=\small\bfseries, text=jpmNavy, minimum width=13.0cm, minimum height=1.2cm},
+    gatebox/.style={draw=jpmRed, fill=jpmRed!10!white, rectangle, rounded corners=5pt, align=center, inner sep=8pt, font=\small\bfseries, text=jpmRed, minimum width=13.0cm, minimum height=1.2cm},
+    fusebox/.style={draw=jpmGreen!80!black, fill=jpmGreen!10!white, rectangle, rounded corners=5pt, align=center, inner sep=8pt, font=\small\bfseries, text=jpmGreen!80!black, minimum width=13.0cm, minimum height=1.1cm},
+    headbox/.style={draw=jpmNavy, fill=jpmNavy, rectangle, rounded corners=5pt, align=center, inner sep=6pt, font=\scriptsize\bfseries, text=white, minimum width=3.2cm, minimum height=0.9cm},
     arrow/.style={-Stealth, thick, draw=jpmNavy}
 ]
 
 \node (x_tech) [modbox] {Raw Technicals\\$\mathbf{x}_{\text{tech}} \in \mathbb{R}^{B \times T \times 16}$};
-\node (x_fund) [modbox, right=0.8cm of x_tech] {Raw Fundamentals\\$\mathbf{x}_{\text{fund}} \in \mathbb{R}^{B \times T \times 30}$};
-\node (x_sent) [modbox, right=0.8cm of x_fund] {Raw Sentiment\\$\mathbf{x}_{\text{sent}} \in \mathbb{R}^{B \times T \times 2}$};
-\node (x_macro) [modbox, right=0.8cm of x_sent] {Raw Macro\\$\mathbf{x}_{\text{macro}} \in \mathbb{R}^{B \times T \times 5}$};
+\node (x_fund) [modbox, right=0.6cm of x_tech] {Raw Fundamentals\\$\mathbf{x}_{\text{fund}} \in \mathbb{R}^{B \times T \times 30}$};
+\node (x_sent) [modbox, right=0.6cm of x_fund] {Raw Sentiment\\$\mathbf{x}_{\text{sent}} \in \mathbb{R}^{B \times T \times 2}$};
+\node (x_macro) [modbox, right=0.6cm of x_sent] {Raw Macro\\$\mathbf{x}_{\text{macro}} \in \mathbb{R}^{B \times T \times 5}$};
 
 \node (tcn_tech) [tcnbox, below=0.8cm of x_tech] {Causal TCN Encoder\\(Dim $D = 64$)};
 \node (tcn_fund) [tcnbox, below=0.8cm of x_fund] {Causal TCN Encoder\\(Dim $D = 64$)};
 \node (tcn_sent) [tcnbox, below=0.8cm of x_sent] {Causal TCN Encoder\\(Dim $D = 64$)};
 \node (tcn_macro) [tcnbox, below=0.8cm of x_macro] {Causal TCN Encoder\\(Dim $D = 64$)};
 
-\node (ring) [ringbox, below=1.2cm of $(tcn_fund.south)!0.5!(tcn_sent.south)$] {
+% Center central cascade boxes across all 4 columns
+\coordinate (center_top) at ($(tcn_fund.south)!0.5!(tcn_sent.south)$);
+
+\node (ring) [ringbox, below=1.0cm of center_top] {
     \textbf{Sequential Directed Cross-Modal Ring Attention Cascade}\\
     $\text{Technical} \leftarrow \text{Sentiment} \leftarrow \text{Fundamental} \leftarrow \text{Macro} \leftarrow \text{Technical}$
 };
@@ -469,22 +472,26 @@ Figure \ref{fig:ch3_tfdmga_arch} shows the complete neural network architecture 
 };
 
 \node (head21) [headbox, below=1.0cm of fuse] {Monthly Head\\$\hat{y}_{21\text{d}}$ (21-Day Return)};
-\node (head1) [headbox, left=0.8cm of head21] {Daily Head\\$\hat{y}_{1\text{d}}$ (1-Day Return)};
-\node (head126) [headbox, right=0.8cm of head21] {Six-Month Head\\$\hat{y}_{126\text{d}}$ (126-Day Return)};
+\node (head1) [headbox, left=1.0cm of head21] {Daily Head\\$\hat{y}_{1\text{d}}$ (1-Day Return)};
+\node (head126) [headbox, right=1.0cm of head21] {Six-Month Head\\$\hat{y}_{126\text{d}}$ (126-Day Return)};
 
+% Draw clean straight downward arrows from encoders into ring attention box
 \draw [arrow] (x_tech) -- (tcn_tech);
 \draw [arrow] (x_fund) -- (tcn_fund);
 \draw [arrow] (x_sent) -- (tcn_sent);
 \draw [arrow] (x_macro) -- (tcn_macro);
-\draw [arrow] (tcn_tech) -- (ring.north -| tcn_tech);
-\draw [arrow] (tcn_fund) -- (ring.north -| tcn_fund);
-\draw [arrow] (tcn_sent) -- (ring.north -| tcn_sent);
-\draw [arrow] (tcn_macro) -- (ring.north -| tcn_macro);
+
+\draw [arrow] (tcn_tech.south) -- (tcn_tech.south |- ring.north);
+\draw [arrow] (tcn_fund.south) -- (tcn_fund.south |- ring.north);
+\draw [arrow] (tcn_sent.south) -- (tcn_sent.south |- ring.north);
+\draw [arrow] (tcn_macro.south) -- (tcn_macro.south |- ring.north);
+
 \draw [arrow] (ring) -- (gate);
 \draw [arrow] (gate) -- (fuse);
-\draw [arrow] (fuse.south -| head1) -- (head1);
-\draw [arrow] (fuse.south -| head21) -- (head21);
-\draw [arrow] (fuse.south -| head126) -- (head126);
+
+\draw [arrow] (fuse.south -| head1.north) -- (head1.north);
+\draw [arrow] (fuse.south -| head21.north) -- (head21.north);
+\draw [arrow] (fuse.south -| head126.north) -- (head126.north);
 
 \end{tikzpicture}%
 }
