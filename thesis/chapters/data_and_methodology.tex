@@ -82,12 +82,16 @@ Figure \ref{fig:ch3_modality_split} displays the feature group modality classifi
 \end{figure}
 
 \section{Feature Normalization and Selection Protocol}
-To maintain uniform scaling and stationarity, all raw characteristic variables are converted each day into \textbf{Cross-Sectional Ranks} mapped to the unit interval $[0, 1]$ \citep{freyberger2020dissecting, gu2020empirical}:
+To maintain uniform scaling and stationarity, raw characteristic variables are converted each day into \textbf{Cross-Sectional Ranks} mapped to the unit interval $[0, 1]$ \citep{freyberger2020dissecting, gu2020empirical}:
 \begin{equation}
 r_{i,t,j} = \frac{\operatorname{Rank}(X_{i,t,j}) - 1}{N_t - 1} \in [0, 1]
 \label{eq:ch3_rank}
 \end{equation}
 Rank-scaling protects models from extreme financial outliers, standardizes variables across different accounting units, and keeps distributions comparable across changing market environments.
+
+Importantly, cross-sectional rank normalization in Equation (\ref{eq:ch3_rank}) is applied strictly to firm-level characteristics (Technical and Fundamental features). Macroeconomic state variables ($x_{\text{macro}}$) and news/social sentiment indicators are \textbf{not} rank-normalized cross-sectionally across stocks on day $t$ — doing so would reduce their cross-sectional variance to zero, as macro variables are uniform across all assets on a given trading day. Instead, macro state variables are normalized temporally across time or processed directly by the 3-Way Macro Dynamic Gating network.
+
+To guarantee zero lookahead leakage and zero overnight gap contamination, return targets $y_{i,t+1}$ in training and evaluation are strictly computed from $P_{i, t+1, \text{open}}$ to $P_{i, t+2, \text{open}}$ (or $P_{i, t+1, \text{close}}$ to $P_{i, t+2, \text{close}}$ following execution at $t+1$), matching the 1-day execution buffer delay ($\text{shift}(-2)$).
 
 To avoid data leakage, I perform feature selection (\path{scripts/select_features.py}) using a \textbf{three-stage protocol applied exclusively to pre-2020 training data} (146,959 observations) \citep{lopez2018advances}. The first stage removes features with missing rates above 10\%. The second stage prunes redundant variables exhibiting pairwise Spearman correlations $|\rho_{j,k}| > 0.85$. In the third stage, an in-sample Random Forest regressor \citep{breiman2001random} ranks remaining candidate variables, selecting the top 53 predictive features.
 
@@ -795,7 +799,7 @@ Table \ref{tab:ch3_hyperparameter_grid} summarizes the hyperparameter search spa
 }
 \end{table}
 
-Deep learning models (PyTorch LSTM and TFDMGA) are trained using the AdamW optimizer \citep{loshchilov2018decoupled} with Cosine Annealing learning rate scheduling, Automatic Mixed Precision (bfloat16), batch size 512, and validation early stopping with 15 epochs patience.
+Deep learning models (PyTorch LSTM and TFDMGA) are trained using the AdamW optimizer \citep{loshchilov2018decoupled} with Cosine Annealing learning rate scheduling, Automatic Mixed Precision (\texttt{bfloat16}) hardware acceleration \citep{kalamkar2019bfloat16}, batch size 512, and validation early stopping with 15 epochs patience.
 
 \section{Computational Complexity and Resource Profile}
 \label{sec:ch3_computational_complexity}
