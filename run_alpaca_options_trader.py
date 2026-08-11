@@ -16,16 +16,18 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 from src.alpaca_options_broker import AlpacaOptionsBroker
 from src.tfdmga_reinforcement_learner import TFDMGAReinforcementLearner
+from src.options_trailing_ratchet import OptionsTrailingRatchet
 from scripts.live_paper_trader import LivePaperTrader
 
 def main():
     print("=" * 80)
-    print("  *** TFDMGA AGGRESSIVE LIVE OPTIONS & SHORT REINFORCEMENT LEARNING TRADER ***")
+    print("  *** TFDMGA TRAILING RATCHET OPTIONS & REINFORCEMENT LEARNING TRADER ***")
     print("=" * 80)
 
-    # 1. Initialize Alpaca Options Broker & Reinforcement Learner
+    # 1. Initialize Alpaca Options Broker, Reinforcement Learner & Trailing Ratchet
     broker = AlpacaOptionsBroker()
     learner = TFDMGAReinforcementLearner(learning_rate=0.05)
+    ratchet = OptionsTrailingRatchet(trailing_pct=0.10, activation_gain_pct=0.15)
     weights = learner.get_adaptive_modality_weights()
 
     summary = broker.get_account_summary()
@@ -36,8 +38,8 @@ def main():
     print(f"  Cash Balance   : ${summary.get('cash', 1000.0):,.2f} USD")
     print(f"  Buying Power   : ${summary.get('buying_power', 1000.0):,.2f} USD")
     print(f"  Options Level  : Level {summary.get('options_level', 3)} Approved")
+    print(f"  Trailing Mode  : Active (10% Dynamic Trailing Ratchet | 15% Activation)")
     print(f"  RL Win Rate    : {learner.ledger.get('win_rate', 0.50)*100:.1f}% ({learner.ledger.get('total_trades_learned', 0)} Trades Learned)")
-    print(f"  Adaptive Weights: Tech {weights['w_tech']:.3f} | Fund {weights['w_fund']:.3f} | Sent {weights['w_sent']:.3f}")
     print("-" * 80)
 
     # 2. Fetch Live Market Data & Compute 53-Feature Signals
@@ -104,6 +106,7 @@ def main():
             res = broker.submit_option_order(contract_sym, qty=1, side="buy", limit_price=ask_price)
             if res.get('status') == 'SUBMITTED':
                 orders_submitted.append(('CALL', ticker, contract_sym, res.get('order_id')))
+                ratchet.register_contract(res.get('order_id'), contract_sym, "call", entry_premium=ask_price, qty=1)
                 submitted = True
 
         if not submitted:
