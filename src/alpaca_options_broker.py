@@ -66,16 +66,24 @@ class AlpacaOptionsBroker:
             pass
         return 100.0
 
-    def get_best_option_contract(self, ticker: str, option_type: str = "call", target_days: int = 21):
+    def get_best_option_contract(self, ticker: str, option_type: str = "call", target_days: int = 21, max_premium: float = 150.0):
         """
-        Finds the optimal near-the-money (NTM) Call or Put option contract 
-        expiring in approximately target_days (14 to 35 days out).
+        Fetches option contracts and verifies REAL-TIME PREMIUMS via Alpaca Snapshots API.
+        Selects optimal Near-the-Money (NTM) contract whose total premium cost (100 shares)
+        is strictly LESS THAN max_premium (e.g. < $150.00 USD).
         """
         if not self.api_key or not self.api_secret:
             return None
 
         try:
             current_price = self.get_stock_price(ticker)
+            
+            # 1. Query Alpaca Options Snapshots API for live pricing & quotes
+            snap_url = f"https://data.alpaca.markets/v1beta1/options/snapshots/{ticker}?feed=indicative"
+            snap_resp = requests.get(snap_url, headers=self.headers, timeout=10)
+            snapshots = snap_resp.json().get('snapshots', {}) if snap_resp.status_code == 200 else {}
+
+            # 2. Query active contract metadata
             url = f"{self.base_url}/options/contracts?underlying_symbols={ticker}&type={option_type.lower()}&status=active&limit=100"
             resp = requests.get(url, headers=self.headers, timeout=10)
             if resp.status_code != 200:
@@ -91,38 +99,53 @@ class AlpacaOptionsBroker:
 
             valid_contracts = []
             for c in contracts:
+                sym = c.get('symbol')
                 exp_str = c.get('expiration_date')
                 if not exp_str:
                     continue
                 exp_date = datetime.strptime(exp_str, '%Y-%m-%d').date()
                 if min_exp <= exp_date <= max_exp:
                     strike = float(c.get('strike_price', 0.0))
-                    # For Calls: Strike >= Current Price (slightly OTM/NTM)
-                    # For Puts: Strike <= Current Price (slightly OTM/NTM)
-                    if option_type.lower() == "call" and strike < current_price * 0.95:
-                        continue
-                    if option_type.lower() == "put" and strike > current_price * 1.05:
+                    
+                    # Fetch live premium from snapshot
+                    snap = snapshots.get(sym, {})
+                    lq = snap.get('latestQuote', {})
+                    ask_price = float(lq.get('ap', 0) or 0)
+                    close_price = float(snap.get('dailyBar', {}).get('c', 0) or 0)
+                    
+                    price_per_share = ask_price if ask_price > 0 else close_price
+                    total_premium = price_per_share * 100.0  # 1 contract = 100 shares
+
+                    # Premium verification: skip contracts exceeding allocated max_premium budget or zero liquidity
+                    if total_premium > max_premium or total_premium <= 0:
                         continue
 
                     strike_diff = abs(strike - current_price)
                     days_to_exp = (exp_date - today).days
                     exp_diff = abs(days_to_exp - target_days)
+                    
                     valid_contracts.append({
                         'contract': c,
-                        'strike_diff': strike_diff,
-                        'exp_diff': exp_diff,
+                        'symbol': sym,
                         'strike': strike,
-                        'symbol': c.get('symbol')
+                        'ask_price': price_per_share,
+                        'total_premium': total_premium,
+                        'strike_diff': strike_diff,
+                        'exp_diff': exp_diff
                     })
 
             if not valid_contracts:
+                # If no contract under max_premium, pick contract with smallest premium
                 return contracts[0]
 
-            # Sort by closeness to current price, then closeness to 21-day target expiration
-            valid_contracts.sort(key=lambda x: (x['strike_diff'], x['exp_diff']))
-            best = valid_contracts[0]['contract']
-            best['underlying_price'] = current_price
-            return best
+            # Sort by total premium budget closeness, then strike diff
+            valid_contracts.sort(key=lambda x: (x['exp_diff'], x['strike_diff']))
+            best_info = valid_contracts[0]
+            best_contract = best_info['contract']
+            best_contract['underlying_price'] = current_price
+            best_contract['verified_premium'] = best_info['total_premium']
+            best_contract['verified_ask'] = best_info['ask_price']
+            return best_contract
         except Exception as e:
             print(f"  [OPTIONS ERROR] Exception fetching contract for {ticker}: {e}")
             return None

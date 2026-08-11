@@ -15,15 +15,19 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 from src.alpaca_options_broker import AlpacaOptionsBroker
+from src.tfdmga_reinforcement_learner import TFDMGAReinforcementLearner
 from scripts.live_paper_trader import LivePaperTrader
 
 def main():
     print("=" * 80)
-    print("  *** TFDMGA LIVE ALPACA OPTIONS & SHORT AUTOMATED ORDER EXECUTION ENGINE ***")
+    print("  *** TFDMGA AGGRESSIVE LIVE OPTIONS & SHORT REINFORCEMENT LEARNING TRADER ***")
     print("=" * 80)
 
-    # 1. Initialize Alpaca Options Broker
+    # 1. Initialize Alpaca Options Broker & Reinforcement Learner
     broker = AlpacaOptionsBroker()
+    learner = TFDMGAReinforcementLearner(learning_rate=0.05)
+    weights = learner.get_adaptive_modality_weights()
+
     summary = broker.get_account_summary()
     
     print(f"  Account Mode   : {summary.get('mode', 'Alpaca Options Paper Account')}")
@@ -32,9 +36,11 @@ def main():
     print(f"  Cash Balance   : ${summary.get('cash', 1000.0):,.2f} USD")
     print(f"  Buying Power   : ${summary.get('buying_power', 1000.0):,.2f} USD")
     print(f"  Options Level  : Level {summary.get('options_level', 3)} Approved")
+    print(f"  RL Win Rate    : {learner.ledger.get('win_rate', 0.50)*100:.1f}% ({learner.ledger.get('total_trades_learned', 0)} Trades Learned)")
+    print(f"  Adaptive Weights: Tech {weights['w_tech']:.3f} | Fund {weights['w_fund']:.3f} | Sent {weights['w_sent']:.3f}")
     print("-" * 80)
 
-    # 2. Fetch Live Market Data (All 53 Features) & Generate Model Signals
+    # 2. Fetch Live Market Data & Compute 53-Feature Signals
     trader_data_engine = LivePaperTrader()
     data = trader_data_engine.fetch_live_market_data()
     if not data:
@@ -43,11 +49,11 @@ def main():
         
     df_signals = trader_data_engine.compute_live_signals(data)
     
-    # Sort signals: Top scores = Bullish (Q5 Long Call), Bottom scores = Bearish (Q1 Put/Short)
+    # Sort signals: Top 4 Bullish (Q5 Calls), Bottom 4 Bearish (Q1 Puts/Shorts)
     df_signals = df_signals.sort_values(by='tfdmga_score', ascending=False).reset_index(drop=True)
     
-    top_bullish = df_signals.head(3).copy()
-    top_bearish = df_signals.tail(3).copy()
+    top_bullish = df_signals.head(4).copy()
+    top_bearish = df_signals.tail(4).copy()
 
     print("\n" + "=" * 80)
     print("  [TFDMGA BULLISH PICKS (Top Q5 Long Call Candidates)]")
@@ -84,16 +90,18 @@ def main():
         ticker = row['ticker'].replace('-', '.')
         price = row['price']
         
-        # Try fetching Near-The-Money Call Option Contract
-        contract = broker.get_best_option_contract(ticker, option_type="call", target_days=21)
+        # Fetch Near-The-Money Call Option Contract with Premium Verification (< alloc_per_trade)
+        contract = broker.get_best_option_contract(ticker, option_type="call", target_days=21, max_premium=alloc_per_trade)
         submitted = False
         if contract and 'symbol' in contract:
             contract_sym = contract['symbol']
             strike = contract.get('strike_price')
             exp = contract.get('expiration_date')
-            print(f"  [BULLISH CALL] {ticker} (${price:.2f}) -> Option Contract: {contract_sym} (Strike ${strike}, Exp {exp})")
+            premium = contract.get('verified_premium', 120.0)
+            ask_price = contract.get('verified_ask', 1.20)
+            print(f"  [BULLISH CALL] {ticker} (${price:.2f}) -> Contract: {contract_sym} (Strike ${strike}, Exp {exp}) | Verified Premium: ${premium:.2f} USD (${ask_price:.2f}/sh)")
             
-            res = broker.submit_option_order(contract_sym, qty=1, side="buy")
+            res = broker.submit_option_order(contract_sym, qty=1, side="buy", limit_price=ask_price)
             if res.get('status') == 'SUBMITTED':
                 orders_submitted.append(('CALL', ticker, contract_sym, res.get('order_id')))
                 submitted = True
@@ -112,16 +120,18 @@ def main():
         ticker = row['ticker'].replace('-', '.')
         price = row['price']
         
-        # Try fetching Near-The-Money Put Option Contract
-        contract = broker.get_best_option_contract(ticker, option_type="put", target_days=21)
+        # Fetch Near-The-Money Put Option Contract with Premium Verification (< alloc_per_trade)
+        contract = broker.get_best_option_contract(ticker, option_type="put", target_days=21, max_premium=alloc_per_trade)
         submitted = False
         if contract and 'symbol' in contract:
             contract_sym = contract['symbol']
             strike = contract.get('strike_price')
             exp = contract.get('expiration_date')
-            print(f"  [BEARISH PUT] {ticker} (${price:.2f}) -> Option Contract: {contract_sym} (Strike ${strike}, Exp {exp})")
+            premium = contract.get('verified_premium', 120.0)
+            ask_price = contract.get('verified_ask', 1.20)
+            print(f"  [BEARISH PUT] {ticker} (${price:.2f}) -> Contract: {contract_sym} (Strike ${strike}, Exp {exp}) | Verified Premium: ${premium:.2f} USD (${ask_price:.2f}/sh)")
             
-            res = broker.submit_option_order(contract_sym, qty=1, side="buy")
+            res = broker.submit_option_order(contract_sym, qty=1, side="buy", limit_price=ask_price)
             if res.get('status') == 'SUBMITTED':
                 orders_submitted.append(('PUT', ticker, contract_sym, res.get('order_id')))
                 submitted = True
