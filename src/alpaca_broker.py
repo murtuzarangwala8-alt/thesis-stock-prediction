@@ -53,6 +53,28 @@ class AlpacaBroker:
         except Exception as e:
             return {'error': str(e), 'status': 'ERROR'}
 
+    def get_positions(self):
+        """Fetches active open portfolio positions via REST API."""
+        if not self.api_key or not self.api_secret:
+            return []
+        try:
+            url = f"{self.base_url}/positions"
+            resp = requests.get(url, headers=self.headers, timeout=10)
+            return resp.json() if resp.status_code == 200 else []
+        except Exception:
+            return []
+
+    def get_orders(self, status: str = 'all', limit: int = 10):
+        """Fetches recent order history via REST API."""
+        if not self.api_key or not self.api_secret:
+            return []
+        try:
+            url = f"{self.base_url}/orders?status={status}&limit={limit}"
+            resp = requests.get(url, headers=self.headers, timeout=10)
+            return resp.json() if resp.status_code == 200 else []
+        except Exception:
+            return []
+
     def submit_bracket_order(self, ticker: str, qty: float, take_profit_pct: float = 0.04, stop_loss_pct: float = 0.02):
         """
         Submits a bracket market order to Alpaca with automatic 2:1 Take-Profit and Stop-Loss.

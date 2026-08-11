@@ -24,9 +24,16 @@ jobs:
         python -m pip install --upgrade pip
         pip install yfinance requests pandas numpy pypdf
 
-    - name: Run TFDMGA Live Trading & Submit Alpaca Orders
+    - name: Run TFDMGA Live Equity Trading ($100k Account)
       env:
         ALPACA_API_KEY: ${{ secrets.ALPACA_API_KEY }}
         ALPACA_SECRET_KEY: ${{ secrets.ALPACA_SECRET_KEY }}
       run: |
         python run_alpaca_trader.py
+
+    - name: Run TFDMGA Live Options & Short Trading ($1k Account)
+      env:
+        ALPACA_API_KEY: ${{ secrets.ALPACA_OPTIONS_API_KEY || 'PK7X2RYJWOOKMABTWTKZERCJW5' }}
+        ALPACA_SECRET_KEY: ${{ secrets.ALPACA_OPTIONS_SECRET_KEY || '43nw7E4w4Eo4TxHyf2w1DbDPS4HBtFVYKhiMoBXz6WKU' }}
+      run: |
+        python run_alpaca_options_trader.py
