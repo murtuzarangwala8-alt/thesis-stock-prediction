@@ -51,11 +51,11 @@ def main():
         
     df_signals = trader_data_engine.compute_live_signals(data)
     
-    # Sort signals: Top 4 Bullish (Q5 Calls), Bottom 4 Bearish (Q1 Puts/Shorts)
+    # Sort signals: Top 2 Bullish (Q5 Calls), Bottom 1 Bearish (Q1 Put)
     df_signals = df_signals.sort_values(by='tfdmga_score', ascending=False).reset_index(drop=True)
     
-    top_bullish = df_signals.head(4).copy()
-    top_bearish = df_signals.tail(4).copy()
+    top_bullish = df_signals.head(2).copy()
+    top_bearish = df_signals.tail(1).copy()
 
     print("\n" + "=" * 80)
     print("  [TFDMGA BULLISH PICKS (Top Q5 Long Call Candidates)]")

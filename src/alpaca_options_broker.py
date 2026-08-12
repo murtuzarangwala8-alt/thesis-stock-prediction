@@ -66,11 +66,12 @@ class AlpacaOptionsBroker:
             pass
         return 100.0
 
-    def get_best_option_contract(self, ticker: str, option_type: str = "call", target_days: int = 21, max_premium: float = 150.0):
+    def get_best_option_contract(self, ticker: str, option_type: str = "call", target_days: int = 21, max_premium: float = 300.0):
         """
-        Fetches option contracts and verifies REAL-TIME PREMIUMS via Alpaca Snapshots API.
-        Selects optimal Near-the-Money (NTM) contract whose total premium cost (100 shares)
-        is strictly LESS THAN max_premium (e.g. < $150.00 USD).
+        Selects optimal At-The-Money (ATM) Call or Put option contract:
+        - Filters strikes within 5% of current stock price.
+        - Sorts by closest strike to stock price (abs(strike - stock_price)).
+        - Verifies real-time premiums via Alpaca Snapshots API.
         """
         if not self.api_key or not self.api_secret:
             return None
@@ -94,7 +95,7 @@ class AlpacaOptionsBroker:
                 return None
 
             today = datetime.now().date()
-            min_exp = today + timedelta(days=7)
+            min_exp = today
             max_exp = today + timedelta(days=45)
 
             valid_contracts = []
@@ -107,6 +108,12 @@ class AlpacaOptionsBroker:
                 if min_exp <= exp_date <= max_exp:
                     strike = float(c.get('strike_price', 0.0))
                     
+                    # --- AT-THE-MONEY (ATM) STRIKE SELECTION FILTER ---
+                    # Keep strikes within 5% of current stock price (ATM band)
+                    strike_diff = abs(strike - current_price)
+                    if strike_diff > (current_price * 0.05):
+                        continue
+                    
                     # Fetch live premium from snapshot
                     snap = snapshots.get(sym, {})
                     lq = snap.get('latestQuote', {})
@@ -116,11 +123,6 @@ class AlpacaOptionsBroker:
                     price_per_share = ask_price if ask_price > 0 else close_price
                     total_premium = price_per_share * 100.0  # 1 contract = 100 shares
 
-                    # Premium verification: skip contracts exceeding allocated max_premium budget or zero liquidity
-                    if total_premium > max_premium or total_premium <= 0:
-                        continue
-
-                    strike_diff = abs(strike - current_price)
                     days_to_exp = (exp_date - today).days
                     exp_diff = abs(days_to_exp - target_days)
                     
@@ -135,16 +137,15 @@ class AlpacaOptionsBroker:
                     })
 
             if not valid_contracts:
-                # If no contract under max_premium, pick contract with smallest premium
-                return contracts[0]
+                return None
 
-            # Sort by total premium budget closeness, then strike diff
-            valid_contracts.sort(key=lambda x: (x['exp_diff'], x['strike_diff']))
+            # Sort by closest strike to stock price (ATM), then target expiration
+            valid_contracts.sort(key=lambda x: (x['strike_diff'], x['exp_diff']))
             best_info = valid_contracts[0]
             best_contract = best_info['contract']
             best_contract['underlying_price'] = current_price
             best_contract['verified_premium'] = best_info['total_premium']
-            best_contract['verified_ask'] = best_info['ask_price']
+            best_contract['verified_ask'] = best_info['ask_price'] if best_info['ask_price'] > 0 else 1.50
             return best_contract
         except Exception as e:
             print(f"  [OPTIONS ERROR] Exception fetching contract for {ticker}: {e}")

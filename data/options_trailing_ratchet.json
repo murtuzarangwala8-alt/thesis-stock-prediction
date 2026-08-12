@@ -1,0 +1,24 @@
+{
+  "ACN260814C00180000": {
+    "order_id": "678ddfc7-767c-45c6-8677-cc4ca274ffee",
+    "symbol": "ACN260814C00180000",
+    "option_type": "call",
+    "entry_premium": 3.58,
+    "high_water_mark": 3.58,
+    "current_stop_loss": 3.04,
+    "trailing_active": false,
+    "qty": 1,
+    "registered_at": "2026-08-12 10:47:04"
+  },
+  "MSFT260812C00505000": {
+    "order_id": "faa3b8bc-4329-4ade-8022-1e1dd876265d",
+    "symbol": "MSFT260812C00505000",
+    "option_type": "call",
+    "entry_premium": 2.49,
+    "high_water_mark": 2.49,
+    "current_stop_loss": 2.12,
+    "trailing_active": false,
+    "qty": 1,
+    "registered_at": "2026-08-12 10:47:08"
+  }
+}
