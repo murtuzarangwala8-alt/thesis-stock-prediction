@@ -43,14 +43,23 @@ def main():
             all_selected.append(col)
             feature_modalities[col] = mod_label
             
-    sample_df = df.sample(n=min(100000, len(df)), random_state=42)
-    X = sample_df[all_selected]
-    y = sample_df["target_ret_1d"]
+    # Restrict to pre-2020 in-sample training split to prevent OOS leakage
+    if 'date' in df.columns:
+        in_sample = df[pd.to_datetime(df['date']) < '2020-01-01']
+    else:
+        in_sample = df.iloc[:int(len(df)*0.6)]
+
+    sample_df = in_sample.sample(n=min(50000, len(in_sample)), random_state=42)
+    X = sample_df[all_selected].fillna(0)
+    y = sample_df["target_ret_1d"].fillna(0)
     
-    rf = RandomForestRegressor(n_estimators=50, max_depth=8, random_state=42, n_jobs=-1)
+    rf = RandomForestRegressor(n_estimators=50, max_depth=6, random_state=42, n_jobs=-1)
     rf.fit(X, y)
     
-    importances = rf.feature_importances_
+    # Compute Permutation Feature Importance to prevent Gini continuous cardinality bias
+    from sklearn.inspection import permutation_importance
+    perm_imp = permutation_importance(rf, X, y, n_repeats=5, random_state=42, n_jobs=-1)
+    importances = perm_imp.importances_mean
     
     clean_features = [CLEAN_NAME_MAP.get(f, f) for f in all_selected]
     
@@ -79,8 +88,8 @@ def main():
         palette=palette,
         dodge=False
     )
-    plt.title("Stage 3 In-Sample Feature Importance Rankings Across Modalities", fontsize=13, fontweight="bold", pad=15)
-    plt.xlabel("Predictive Importance Score", fontsize=11, fontweight="bold")
+    plt.title("Stage 3 In-Sample Permutation Feature Importance Rankings Across Modalities", fontsize=12, fontweight="bold", pad=15)
+    plt.xlabel("Permutation Predictive Importance Score", fontsize=11, fontweight="bold")
     plt.ylabel("Feature Name", fontsize=11, fontweight="bold")
     plt.legend(title="Modality Group", loc="lower right")
     plt.tight_layout()

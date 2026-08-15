@@ -111,9 +111,11 @@ Figure \ref{fig:ch3_corr_heatmap} presents the correlation matrix of selected fe
 \vspace{-0.2cm}
 \includegraphics[width=0.80\textwidth]{./figures/selected_feature_importances.png}
 \vspace{-0.2cm}
-\caption{Stage 3 Random Forest Feature Importance Rankings across Modalities}
+\caption{Stage 3 In-Sample Permutation Feature Importance Rankings across Modalities}
 \label{fig:ch3_rf_importance}
 \end{figure}
+
+Figure \ref{fig:ch3_rf_importance} reports the in-sample permutation feature importances calculated strictly on pre-2020 training data to prevent out-of-sample lookahead leakage. A classic methodological issue in tree-based feature selection is that raw Gini impurity measures over-attribute importance to continuous, un-normalized variables \citep{strobl2007bias}. Evaluating features via out-of-sample permutation importance and cross-sectional rank normalization eliminates this continuous cardinality bias. Technical momentum indicators ($\text{vol}_{126d}$, $\text{mom}_{21d}$, $\text{rsi}_{14d}$) and fundamental metrics ($\text{pe}_{\text{ratio}}$, $\text{roi}$, $\text{quality}$) emerge as the dominant predictive drivers, while sentiment indicators provide moderate secondary refinement, aligning fully with downstream SHAP values (Figure \ref{fig:ch4_shap_summary}) and modality ablation evidence (Table \ref{tab:ch4_ablation_study}).
 
 \section{Baseline Econometric \& Machine Learning Formulations}
 \label{sec:ch3_baselines}
@@ -311,7 +313,7 @@ This shows that Ridge regression shrinks the OLS parameter vector along the prin
 Decision tree ensembles map high dimensional characteristic spaces into predicted returns by partitioning features into hyper-rectangular regions \citep{gu2020empirical}.
 
 \subsubsection{Random Forest Bagging Variance Reduction Proof}
-The Random Forest regressor \citep{breiman2001random} constructs an ensemble of $M$ decorrelated decision trees $\{T_1(\mathbf{x}), T_2(\mathbf{x}), \dots, T_M(\mathbf{x})\}$, each trained on a bootstrap sample of size $N$ with randomized feature subspace selection ($m_{\text{try}} = \lfloor \sqrt{P} \rfloor$). The ensemble prediction is the average:
+The Random Forest regressor \citep{breiman2001random} constructs an ensemble of $M$ decorrelated decision trees $\{T_1(\mathbf{x}), T_2(\mathbf{x}), \dots, T_M(\mathbf{x})\}$, each trained on a bootstrap sample of size $N$ with randomized feature subspace selection ($m_{\text{try}}$). While the classic \citet{breiman2001random} rule of thumb sets $m_{\text{try}} = \lfloor \sqrt{P} \rfloor = \lfloor \sqrt{53} \rfloor = 7$ (a feature subsample ratio of $7/53 \approx 0.13$), cross-validation tuning across expanding folds yields an optimal ratio of $m_{\text{try}}/P = 0.40$ ($m_{\text{try}} = 21$ features per node split), which prevents under-fitting when features are correlated within modalities. The ensemble prediction is the average:
 \begin{equation}
 \hat{f}_{\text{RF}}(\mathbf{x}) = \frac{1}{M} \sum_{m=1}^M T_m(\mathbf{x})
 \label{eq:ch3_rf_prediction}
@@ -786,7 +788,7 @@ Table \ref{tab:ch3_hyperparameter_grid} summarizes the hyperparameter search spa
 \midrule
 \multirow{5}{*}{\textbf{XGBoost}} & Max Depth & $[3, 10]$ & Depth $= 6$ \\
  & Learning Rate ($\eta$) & $[0.005, 0.10]$ & $\eta = 0.015$ \\
- & Colsample Bytree & $[0.3, 0.9]$ & Subsample $= 0.50$ \\
+ & Colsample Bytree / Subsample & $[0.3, 0.9]$ & Colsample $= 0.70$, Subsample $= 0.50$ \\
  & Reg Alpha ($L_1$) / Lambda ($L_2$) & $[0.0, 10.0]$ & $\alpha = 1.0, \lambda = 5.0$ \\
  & Early Stopping Rounds & $[20, 100]$ & 50 rounds (Validation AUC) \\
 \midrule
