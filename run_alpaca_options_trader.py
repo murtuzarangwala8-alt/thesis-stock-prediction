@@ -110,22 +110,16 @@ def main():
                 submitted = True
 
         if not submitted:
-            # Fallback to Equity Market Bracket Buy Order
-            qty = max(1, alloc_per_trade / price)
-            print(f"  [BULLISH EQUITY BRACKET] {ticker} (${price:.2f}) -> Market Buy ({qty:.1f} shares)")
-            res = broker.submit_short_equity_bracket(ticker, qty=qty, take_profit_pct=0.04, stop_loss_pct=0.02, is_short=False)
-            if res.get('status') == 'SUBMITTED':
-                orders_submitted.append(('EQUITY_BUY', ticker, ticker, res.get('order_id')))
+            print(f"  [SKIPPED] Option order failed or no ATM Call contract found for {ticker}")
 
-    # 5. Execute Bearish Trades (Long Put Options or Short Equity)
-    print("\n  --- EXECUTING BEARISH PUT OPTION / SHORT TRADES ---")
+    # 5. Execute Bearish Trades (Long Put Options)
+    print("\n  --- EXECUTING BEARISH PUT OPTION TRADES ---")
     for _, row in top_bearish.iterrows():
         ticker = row['ticker'].replace('-', '.')
         price = row['price']
         
-        # Fetch Near-The-Money Put Option Contract with Premium Verification (< alloc_per_trade)
+        # Fetch Near-The-Money Put Option Contract
         contract = broker.get_best_option_contract(ticker, option_type="put", target_days=21, max_premium=alloc_per_trade)
-        submitted = False
         if contract and 'symbol' in contract:
             contract_sym = contract['symbol']
             strike = contract.get('strike_price')
@@ -137,21 +131,15 @@ def main():
             res = broker.submit_option_order(contract_sym, qty=1, side="buy", limit_price=ask_price)
             if res.get('status') == 'SUBMITTED':
                 orders_submitted.append(('PUT', ticker, contract_sym, res.get('order_id')))
-                submitted = True
-
-        if not submitted:
-            # Fallback to Short Equity Bracket Order (sell)
-            qty = max(1, alloc_per_trade / price)
-            print(f"  [BEARISH SHORT BRACKET] {ticker} (${price:.2f}) -> Short Equity Order ({qty:.1f} shares)")
-            res = broker.submit_short_equity_bracket(ticker, qty=qty, take_profit_pct=0.04, stop_loss_pct=0.02, is_short=True)
-            if res.get('status') == 'SUBMITTED':
-                orders_submitted.append(('SHORT_EQUITY', ticker, ticker, res.get('order_id')))
+                ratchet.register_contract(res.get('order_id'), contract_sym, "put", entry_premium=ask_price, qty=1)
+        else:
+            print(f"  [SKIPPED] Option order failed or no ATM Put contract found for {ticker}")
 
     # 6. Execution Summary
     print("\n" + "=" * 80)
-    print("  *** LIVE OPTIONS & SHORT EXECUTION COMPLETE ***")
+    print("  *** LIVE OPTIONS EXECUTION COMPLETE ***")
     print(f"  Total Orders Processed : {len(orders_submitted)}")
-    print("  Risk Protocols Attached: Calls/Puts Options + 2:1 Short Equity TP/SL")
+    print("  Risk Protocols Attached: Dynamic Trailing Stop-Loss & Take-Profit Ratchet")
     print("=" * 80)
 
 if __name__ == "__main__":
