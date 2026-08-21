@@ -15,27 +15,28 @@ In this thesis, I evaluate machine learning models for cross-sectional return pr
 \section{Research Questions and Core Hypotheses}
 To evaluate the statistical predictability and economic viability of machine learning models, I frame my investigation around four central research questions:
 
-\begin{description}
-    \item[\textbf{Research Question 1 (Statistical Predictability)}:] Do nonlinear machine learning models (Random Forest, XGBoost, LSTM, TFDMGA) achieve statistically significant out-of-sample return predictability compared to linear econometric baselines (Fama-MacBeth OLS, LASSO, ElasticNet)?
-    \begin{quote}
-    \textit{Hypothesis 1}: Nonlinear models, especially sequence-aware deep neural networks \citep{bai2018empirical, chen2023deep}, outperform linear baselines in out-of-sample Information Coefficient ($IC$), Information Ratio ($ICIR$), and Directional Accuracy by capturing nonparametric characteristic interactions and temporal dependencies.
-    \end{quote}
+\noindent \textbf{Research Question 1 (Statistical Predictability)}: Do nonlinear machine learning models (Random Forest, XGBoost, LSTM, TFDMGA) achieve statistically significant out-of-sample return predictability compared to linear econometric baselines (Fama-MacBeth OLS, LASSO, ElasticNet)?
+\begin{quote}
+\textit{Hypothesis 1}: Nonlinear models, especially sequence-aware deep neural networks \citep{bai2018empirical, chen2023deep}, outperform linear baselines in out-of-sample Information Coefficient ($IC$), Information Ratio ($ICIR$), and Directional Accuracy by capturing nonparametric characteristic interactions and temporal dependencies.
+\end{quote}
 
-    \item[\textbf{Research Question 2 (Multi-Modal Information Integration)}:] Does integrating technical indicators, quarterly Bloomberg accounting ratios, macroeconomic state variables, and news/social sentiment within a dynamic gating architecture improve prediction accuracy over single-modality models?
-    \begin{quote}
-    \textit{Hypothesis 2}: Multimodal feature integration \citep{cong2021textual, lim2021temporal} allows dynamic attention mechanisms to reweight feature modalities as macroeconomic regimes shift, yielding higher out-of-sample correlation and signal stability.
-    \end{quote}
+\vspace{0.2cm}
+\noindent \textbf{Research Question 2 (Multi-Modal Information Integration)}: Does integrating technical indicators, quarterly Bloomberg accounting ratios, macroeconomic state variables, and news/social sentiment within a dynamic gating architecture improve prediction accuracy over single-modality models?
+\begin{quote}
+\textit{Hypothesis 2}: Multimodal feature integration \citep{cong2021textual, lim2021temporal} allows dynamic attention mechanisms to reweight feature modalities as macroeconomic regimes shift, yielding higher out-of-sample correlation and signal stability.
+\end{quote}
 
-    \item[\textbf{Research Question 3 (Economic Significance \& Transaction Friction)}:] Can out-of-sample return forecasts generate profitable trading strategies after accounting for transaction frictions (10 bps round-trip fees, execution delays, turnover, and stop-loss risk management)?
-    \begin{quote}
-    \textit{Hypothesis 3}: While daily portfolio rebalancing incurs cost drag under 10 bps transaction fees \citep{novy2016taxonomy, avramov2023machine}, deep sequence models paired with dynamic take-profit/stop-loss overlays help control drawdowns and compound capital over time.
-    \end{quote}
+\vspace{0.2cm}
+\noindent \textbf{Research Question 3 (Economic Significance \& Transaction Friction)}: Can out-of-sample return forecasts generate profitable trading strategies after accounting for transaction frictions (10 bps round-trip fees, execution delays, turnover, and stop-loss risk management)?
+\begin{quote}
+\textit{Hypothesis 3}: While daily portfolio rebalancing incurs cost drag under 10 bps transaction fees \citep{novy2016taxonomy, avramov2023machine}, deep sequence models paired with dynamic take-profit/stop-loss overlays help control drawdowns and compound capital over time.
+\end{quote}
 
-    \item[\textbf{Research Question 4 (Econometric Factor Spanning \& Market Efficiency)}:] Are out-of-sample returns produced by deep learning models indicative of unpriced market alpha ($\alpha > 0$), or are they fully spanned by systematic risk factors ($\alpha = 0$) within the Fama-French 5-Factor framework?
-    \begin{quote}
-    \textit{Hypothesis 4}: Out-of-sample strategy returns are explained by systematic factor risk exposures ($Mkt-RF, SMB, HML, RMW, CMA$) \citep{fama2015five, kelly2019characteristics}, indicating that machine learning models act as dynamic factor allocation engines rather than discoverers of unpriced arbitrage.
-    \end{quote}
-\end{description}
+\vspace{0.2cm}
+\noindent \textbf{Research Question 4 (Econometric Factor Spanning \& Market Efficiency)}: Are out-of-sample returns produced by deep learning models indicative of unpriced market alpha ($\alpha > 0$), or are they fully spanned by systematic risk factors ($\alpha = 0$) within the Fama-French 5-Factor framework?
+\begin{quote}
+\textit{Hypothesis 4}: Out-of-sample strategy returns are explained by systematic factor risk exposures ($Mkt-RF, SMB, HML, RMW, CMA$) \citep{fama2015five, kelly2019characteristics}, indicating that machine learning models act as dynamic factor allocation engines rather than discoverers of unpriced arbitrage.
+\end{quote}
 
 \section{Summary of Key Empirical Findings}
 Using a 5-fold expanding-window walk-forward validation scheme over the 2020--2024 out-of-sample period (detailed in Chapter \ref{ch:data_and_methodology} and Chapter \ref{ch:empirical_results}), my main findings are:

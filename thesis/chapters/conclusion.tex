@@ -33,12 +33,13 @@ While this thesis adheres to standard backtesting protocols \citep{lopez2018adva
 \section{Future Research Extensions}
 The empirical baseline established in this thesis provides several avenues for future research extensions:
 
-\begin{description}
-    \item[\textbf{Extension 1:}] \textbf{Spatio-Temporal Graph Neural Networks} -- Extending the stock sequence encoders in TFDMGA to a Spatio-Temporal Graph Attention Network (GAT), modeling stocks as graph nodes with dynamic edge weights $A_{ij,t}$ to capture cross-sectional supply chain linkages, industry spillovers, and dynamic return correlations \citep{vaswani2017attention, chen2023deep}.
+\noindent \textbf{Extension 1: Spatio-Temporal Graph Neural Networks} -- Extending the stock sequence encoders in TFDMGA to a Spatio-Temporal Graph Attention Network (GAT), modeling stocks as graph nodes with dynamic edge weights $A_{ij,t}$ to capture cross-sectional supply chain linkages, industry spillovers, and dynamic return correlations \citep{vaswani2017attention, chen2023deep}.
 
-    \item[\textbf{Extension 2:}] \textbf{Macro-Conditioned Hyper-LoRA Attention} -- Conditioning Transformer attention projections ($W_Q, W_K, W_V$) on macroeconomic regimes using Hypernetworks and Low-Rank Adaptation (LoRA) to allow dynamic adjustment to changing macroeconomic environments \citep{lim2021temporal}.
+\vspace{0.2cm}
+\noindent \textbf{Extension 2: Macro-Conditioned Hyper-LoRA Attention} -- Conditioning Transformer attention projections ($W_Q, W_K, W_V$) on macroeconomic regimes using Hypernetworks and Low-Rank Adaptation (LoRA) to allow dynamic adjustment to changing macroeconomic environments \citep{lim2021temporal}.
 
-    \item[\textbf{Extension 3:}] \textbf{Continuous Deep Reinforcement Learning with Differentiable QP Layers} -- Replacing decile portfolio sorting with a continuous Deep Reinforcement Learning (DRL) agent (PPO) coupled with a differentiable Quadratic Programming solver layer (\path{cvxpylayers}) to optimize continuous portfolio weights directly against nonlinear Sharpe ratio rewards \citep{lopez2020machine, novy2016taxonomy}.
+\vspace{0.2cm}
+\noindent \textbf{Extension 3: Continuous Deep Reinforcement Learning with Differentiable QP Layers} -- Replacing decile portfolio sorting with a continuous Deep Reinforcement Learning (DRL) agent (PPO) coupled with a differentiable Quadratic Programming solver layer (\texttt{cvxpylayers}) to optimize continuous portfolio weights directly against nonlinear Sharpe ratio rewards \citep{lopez2020machine, novy2016taxonomy}.
 
-    \item[\textbf{Extension 4:}] \textbf{Conditional Variational Autoencoder Factor Extraction} -- Developing a probabilistic Conditional Variational Autoencoder (CVAE) to extract nonlinear latent factor spaces from high dimensional characteristics \citep{gu2021autoencoder, kelly2019characteristics, chen2023deep}.
-\end{description}
+\vspace{0.2cm}
+\noindent \textbf{Extension 4: Conditional Variational Autoencoder Factor Extraction} -- Developing a probabilistic Conditional Variational Autoencoder (CVAE) to extract nonlinear latent factor spaces from high dimensional characteristics \citep{gu2021autoencoder, kelly2019characteristics, chen2023deep}.

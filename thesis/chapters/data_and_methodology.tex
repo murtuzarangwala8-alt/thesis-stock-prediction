@@ -9,7 +9,7 @@ Daily closing prices, dividend payments, stock splits, and trading volumes are i
 \subsection{Point-in-Time Bloomberg Filing Date Alignment}
 A common issue in empirical finance studies is lookahead bias caused by indexing corporate accounting metrics to fiscal period end-dates. In practice, financial statements for a fiscal quarter ending on December 31 ($t_{\text{fiscal}}$) are published weeks or months later during the 10-K or 10-Q SEC filing process \citep{lopez2018advances}.
 
-To eliminate lookahead contamination, my data pipeline (\path{src/data_pipeline.py}) ingests official Bloomberg publication timestamps (\path{earnings_announcement_date} / \path{filing_date}). On any given trading date $t$, a quarterly fundamental feature vector $\mathbf{x}_{i,t}^{\text{fund}}$ is updated to the newly reported accounting state $Q_{\tau}$ if and only if:
+To eliminate lookahead contamination, my data pipeline (\texttt{data\_}\allowbreak\texttt{pipeline.py} in \texttt{src/}) ingests official Bloomberg publication timestamps (\texttt{earnings\_}\allowbreak\texttt{announcement\_}\allowbreak\texttt{date} and \texttt{filing\_}\allowbreak\texttt{date}). On any given trading date $t$, a quarterly fundamental feature vector $\mathbf{x}_{i,t}^{\text{fund}}$ is updated to the newly reported accounting state $Q_{\tau}$ if and only if:
 \begin{equation}
 t \ge \text{Announcement Date}(Q_{\tau})
 \end{equation}
@@ -93,7 +93,7 @@ Importantly, cross-sectional rank normalization in Equation (\ref{eq:ch3_rank}) 
 
 To guarantee zero lookahead leakage and zero overnight gap contamination, return targets $y_{i,t+1}$ in training and evaluation are strictly computed from $P_{i, t+1, \text{open}}$ to $P_{i, t+2, \text{open}}$ (or $P_{i, t+1, \text{close}}$ to $P_{i, t+2, \text{close}}$ following execution at $t+1$), matching the 1-day execution buffer delay ($\text{shift}(-2)$).
 
-To avoid data leakage, I perform feature selection (\path{scripts/select_features.py}) using a \textbf{three-stage protocol applied exclusively to pre-2020 training data} (146,959 observations) \citep{lopez2018advances}. The first stage removes features with missing rates above 10\%. The second stage prunes redundant variables exhibiting pairwise Spearman correlations $|\rho_{j,k}| > 0.85$. In the third stage, an in-sample Random Forest regressor \citep{breiman2001random} ranks remaining candidate variables, selecting the top 53 predictive features.
+To avoid data leakage, I perform feature selection (\texttt{select\_features.py} in \texttt{scripts/}) using a \textbf{three-stage protocol applied exclusively to pre-2020 training data} (146,959 observations) \citep{lopez2018advances}. The first stage removes features with missing rates above 10\%. The second stage prunes redundant variables exhibiting pairwise Spearman correlations $|\rho_{j,k}| > 0.85$. In the third stage, an in-sample Random Forest regressor \citep{breiman2001random} ranks remaining candidate variables, selecting the top 53 predictive features.
 
 Figure \ref{fig:ch3_corr_heatmap} presents the correlation matrix of selected features, and Figure \ref{fig:ch3_rf_importance} shows the Random Forest importance rankings.
 
@@ -516,25 +516,19 @@ Let $\mathbf{x}_m(t) \in \mathbb{R}^{C_{\text{in}}}$ denote the input vector for
 Causality is enforced by zero-padding the sequence leftward by $(K-1) \cdot d$ steps, ensuring that output $(y *_{d} f)(t)$ depends solely on historical entries $\mathbf{x}_m(t - d \cdot k)$ for $k \ge 0$, eliminating lookahead leakage.
 
 \subsubsection{Derivation of Receptive Field Expansion}
-For a stacked TCN network consisting of $L$ dilated convolutional layers with fixed kernel size $K$ and layer-specific dilation factors $d_l$ for $l \in \{0, 1, \dots, L-1\}$:
-
-At layer $l=0$, a single convolutional filter covers $K$ temporal steps. Each additional layer $l$ expands the effective receptive field by $(K-1) d_l$ steps.
+For a stacked TCN network consisting of $L$ dilated convolutional layers with fixed kernel size $K$ and layer-specific dilation factors $d_l$ for $l \in \{0, 1, \dots, L-1\}$, at layer $l=0$, a single convolutional filter covers $K$ temporal steps. Each additional layer $l$ expands the effective receptive field by $(K-1) d_l$ steps.
 
 \begin{proof}[Step-by-Step Summation Proof of Total Receptive Field]
-The cumulative temporal receptive field $R$ across $L$ stacked layers is:
-\begin{align}
-R &= 1 + \sum_{l=0}^{L-1} (K - 1) d_l
+The cumulative temporal receptive field $R$ across $L$ stacked layers with exponential dilation factors $d_l = 2^l$ is derived by summing layer-wise expansions:
+\begin{equation}
+R = 1 + \sum_{l=0}^{L-1} (K - 1) d_l
 \label{eq:ch3_receptive_field_general}
-\end{align}
-In my architecture, dilation factors grow exponentially with base 2: $d_l = 2^l$ for $l \in \{0, 1, \dots, L-1\}$. Substituting $d_l = 2^l$:
-\begin{align}
-R &= 1 + (K - 1) \sum_{l=0}^{L-1} 2^l
-\end{align}
-Applying the geometric series summation formula $\sum_{l=0}^{L-1} 2^l = 2^L - 1$:
-\begin{align}
-R &= 1 + (K - 1)(2^L - 1)
+\end{equation}
+In my architecture, dilation factors grow exponentially with base 2 ($d_l = 2^l$ for $l \in \{0, 1, \dots, L-1\}$). Substituting $d_l = 2^l$ and applying the geometric series summation formula $\sum_{l=0}^{L-1} 2^l = 2^L - 1$:
+\begin{equation}
+R = 1 + (K - 1) \sum_{l=0}^{L-1} 2^l = 1 + (K - 1)(2^L - 1)
 \label{eq:ch3_receptive_field_proof}
-\end{align}
+\end{equation}
 \end{proof}
 
 For my model configuration with kernel size $K = 3$ and $L = 3$ layers with dilations $d \in \{1, 2, 4\}$:
