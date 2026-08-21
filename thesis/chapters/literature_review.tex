@@ -230,19 +230,14 @@ In financial machine learning, standard statistical cross-validation techniques 
 To ensure backtesting integrity, \citet{lopez2018advances} established validation protocols:
 \begin{itemize}
     \item \textbf{Expanding Walk-Forward Validation}: Models are trained on historical data $t \in [1, T_{\text{train}}]$ and evaluated on subsequent out-of-sample periods $t \in [T_{\text{train}}+1, T_{\text{test}}]$. The training window expands iteratively over time.
-    \item \textbf{Combinatorial Purged Cross-Validation (CPCV)}: When non-sequential cross-validation is conducted, training folds adjacent to test folds are \emph{purged} by removing samples whose label windows overlap with test windows. Furthermore, an \emph{embargo} period is appended after test sets to eliminate serial correlation leakage.
+    \item \textbf{Combinatorial Purged Cross-Validation (CPCV)}: When non-sequential cross-validation is conducted, training folds adjacent to test folds are \emph{purged} by removing samples whose label windows overlap with test windows. In addition, an \emph{embargo} period is appended after test sets to eliminate serial correlation leakage.
     \item \textbf{Point-in-Time Data Alignment}: Financial fundamentals and accounting metrics are indexed by their actual public SEC disclosure dates (such as 10-K/10-Q filing dates) rather than fiscal period end dates.
 \end{itemize}
 
-\subsection{Microstructural Frictions and Execution Drag}
-A gap between academic backtests and practical trading is execution friction. \citet{novy2016taxonomy} developed a transaction cost framework for cross-sectional anomalies. Novy-Marx and Velikov showed that trading costs depend heavily on portfolio turnover:
-\begin{equation}
-\text{Net Return}_{i,t+1} = R_{i,t+1} - \tau_i \cdot \text{Turnover}_{i,t}
-\label{eq:ch2_novy_marx_cost}
-\end{equation}
-where $\tau_i$ represents effective bid-ask spreads and market impact costs. High-turnover strategies (such as short term reversal or high-frequency anomaly signals) incur transaction costs that can exceed 50--100 basis points per trade, reducing gross alphas.
+\subsection{Microstructure Frictions \& Transaction Cost Taxonomy}
+High-frequency predictive signals can decay rapidly once realistic transaction costs and market microstructure frictions are accounted for \citep{novy2016taxonomy, frazzini2014betting}. \citet{novy2016taxonomy} show that many published anomaly strategies disappear after deducting effective bid-ask spreads, market impact costs, and turnover frictions.
 
-Furthermore, execution realism mandates an execution delay: trading signals generated at market close on day $t$ cannot be executed until day $t+1$ close or open. In addition, leverage constraints and margin costs \citep{frazzini2014betting} restrict short-selling capacity on distressed equities, reinforcing the necessity of evaluating long-only and cost-adjusted long-short performance.
+Second, execution realism mandates an execution delay: trading signals generated at market close on day $t$ cannot be executed until day $t+1$ close or open. In addition, leverage constraints and margin costs \citep{frazzini2014betting} restrict short-selling capacity on distressed equities, reinforcing the necessity of evaluating long-only and cost-adjusted long-short performance.
 
 \section{Synthesis of Core Literature Benchmarks}
 Table \ref{tab:ch2_lit_synthesis_comprehensive} provides a synthesis of the literature that anchors the theoretical framing, model architecture, feature engineering, econometric estimation, and validation of this thesis.
