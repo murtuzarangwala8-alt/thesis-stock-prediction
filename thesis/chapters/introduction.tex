@@ -2,53 +2,51 @@
 \label{ch:introduction}
 
 \section{Background and Economic Motivation}
-Why do financial asset returns vary across stocks, and how effectively do market prices incorporate available information? Answering this fundamental question lies at the heart of empirical asset pricing \citep{fama1970efficient, fama1993common}. For decades, academic researchers modeled expected equity returns through linear factor frameworks, evolving from Markowitz's \citeyearpar{markowitz1952portfolio} mean-variance framework to the Capital Asset Pricing Model (CAPM) of \citet{sharpe1964capital} and \citet{lintner1965valuation}, Ross's \citeyearpar{ross1976arbitrage} Arbitrage Pricing Theory, Carhart's \citeyearpar{carhart1997on} four-factor momentum specification, P{\'a}stor and Stambaugh's \citeyearpar{pastor2003liquidity} liquidity model, Hou, Xue, and Zhang's \citeyearpar{hou2015digesting} $q$-factor framework, and Fama and French's \citeyearpar{fama2015five} five-factor model. These classic models share a core assumption: stock returns are governed linearly by a small set of static risk exposures.
+Why do stock prices move differently from one another, and can we predict these movements? Economists have tried to answer this question for over 50 years \citep{fama1970efficient, fama1993common}. Classical financial models assume that stock returns depend linearly on a few static risk factors. These include the Capital Asset Pricing Model (CAPM) by \citet{sharpe1964capital} and \citet{lintner1965valuation}, the Arbitrage Pricing Theory by Ross \citeyearpar{ross1976arbitrage}, and the 5-factor model by Fama and French \citeyearpar{fama2015five}.
 
-Real-world financial markets, however, display non-linearities, heavy-tailed return distributions, and dynamic regime shifts. Firm-level characteristics interact in nonlinear ways, for instance, valuation metrics behave differently in market drawdowns compared to economic expansions \citep{gu2020empirical, kozak2020shrinking}. Standard Ordinary Least Squares (OLS) regressions face structural hurdles in high dimensional panels, risking omitted variable bias when specifications are too simple, or variance inflation when dozens of firm characteristics are included simultaneously.
+Real stock markets are much more complex. Stock prices show sudden regime shifts, fat-tailed risks, and non-linear patterns. For example, valuation metrics like Price-to-Earnings ratios behave differently during market crashes than during bull runs \citep{gu2020empirical, kozak2020shrinking}. Standard linear regressions struggle when tracking dozens of stock characteristics at once, leading to overfitting or missed signals.
 
-Machine learning (ML) and deep sequence architectures provide a flexible framework for modeling nonlinear characteristic interactions and temporal patterns in equity markets \citep{gu2020empirical, gu2021autoencoder, chen2023deep, kozak2020shrinking, freyberger2020dissecting, kelly2019characteristics}. Techniques ranging from regularized linear models \citep{tibshirani1996regression, zou2005regularization} and decision tree ensembles \citep{breiman2001random, friedman2001greedy, chen2016xgboost} to temporal convolutional networks \citep{bai2018empirical} and multimodal Transformer architectures \citep{vaswani2017attention, lim2021temporal} allow researchers to extract predictive signals directly from raw panel data.
+Machine learning offers a flexible way to capture these complex interactions \citep{gu2020empirical, chen2023deep, kozak2020shrinking}. Models like decision trees \citep{breiman2001random, chen2016xgboost}, neural networks \citep{bai2018empirical}, and Transformers \citep{vaswani2017attention} can learn patterns directly from financial data.
 
-Yet applying machine learning to financial asset pricing differs from standard computer vision or language modeling. Financial return series are characterized by low signal-to-noise ratios, regime shifts, and structural breaks \citep{lopez2018advances, lopez2020machine}. Naive applications risk lookahead bias, survivorship bias, multiple testing inflation \citep{harvey2016and, harvey2020false, hou2020replicating}, and unmodeled transaction cost drag \citep{novy2016taxonomy, mclean2016does, avramov2023machine}. Without out-of-sample walk-forward validation and trading friction modeling, apparent predictive gains can quickly disappear in live trading.
-
-In this thesis, I evaluate machine learning models for cross-sectional return prediction across S\&P 500 equities over the 2015--2024 period, addressing these methodological challenges directly.
+However, stock data is very noisy. Naive machine learning models often fail because they accidentally use future data, overfit historical noise, or ignore trading fees \citep{harvey2016and, novy2016taxonomy, lopez2018advances}. In this thesis, I test whether machine learning models can reliably predict stock returns when tested under strict, real-world trading rules across S\&P 500 stocks from 2015 to 2024.
 
 \section{Research Questions and Core Hypotheses}
-To evaluate the statistical predictability and economic viability of machine learning models, I frame my investigation around four central research questions:
+I organize my research around four central questions:
 
-\noindent \textbf{Research Question 1 (Statistical Predictability)}: Do nonlinear machine learning models (Random Forest, XGBoost, LSTM, TFDMGA) achieve statistically significant out-of-sample return predictability compared to linear econometric baselines (Fama-MacBeth OLS, LASSO, ElasticNet)?
+\noindent \textbf{Research Question 1 (Predictability)}: Do deep learning models (LSTM, TFDMGA) predict stock returns better than standard linear regressions (OLS, LASSO) and decision trees (Random Forest, XGBoost)?
 \begin{quote}
-\textit{Hypothesis 1}: Nonlinear models, especially sequence-aware deep neural networks \citep{bai2018empirical, chen2023deep}, outperform linear baselines in out-of-sample Information Coefficient ($IC$), Information Ratio ($ICIR$), and Directional Accuracy by capturing nonparametric characteristic interactions and temporal dependencies.
+\textit{Hypothesis 1}: Deep sequence models outperform linear models because they track historical time trends and non-linear feature interactions directly.
 \end{quote}
 
 \vspace{0.2cm}
-\noindent \textbf{Research Question 2 (Multi-Modal Information Integration)}: Does integrating technical indicators, quarterly Bloomberg accounting ratios, macroeconomic state variables, and news/social sentiment within a dynamic gating architecture improve prediction accuracy over single-modality models?
+\noindent \textbf{Research Question 2 (Multimodal Data Integration)}: Does combining price technicals, financial ratios, macro data, and news sentiment improve forecast stability?
 \begin{quote}
-\textit{Hypothesis 2}: Multimodal feature integration \citep{cong2021textual, lim2021temporal} allows dynamic attention mechanisms to reweight feature modalities as macroeconomic regimes shift, yielding higher out-of-sample correlation and signal stability.
+\textit{Hypothesis 2}: Combining multiple data types allows attention mechanisms to reweight features as market conditions change, improving signal stability.
 \end{quote}
 
 \vspace{0.2cm}
-\noindent \textbf{Research Question 3 (Economic Significance \& Transaction Friction)}: Can out-of-sample return forecasts generate profitable trading strategies after accounting for transaction frictions (10 bps round-trip fees, execution delays, turnover, and stop-loss risk management)?
+\noindent \textbf{Research Question 3 (Trading Profits \& Costs)}: Can these model predictions build profitable trading strategies after deducting 10 bps trading fees and 1-day execution delays?
 \begin{quote}
-\textit{Hypothesis 3}: While daily portfolio rebalancing incurs cost drag under 10 bps transaction fees \citep{novy2016taxonomy, avramov2023machine}, deep sequence models paired with dynamic take-profit/stop-loss overlays help control drawdowns and compound capital over time.
+\textit{Hypothesis 3}: Even though daily rebalancing incurs fee drag, pairing deep learning models with a 2:1 Take-Profit/Stop-Loss rule protects capital and compounds returns.
 \end{quote}
 
 \vspace{0.2cm}
-\noindent \textbf{Research Question 4 (Econometric Factor Spanning \& Market Efficiency)}: Are out-of-sample returns produced by deep learning models indicative of unpriced market alpha ($\alpha > 0$), or are they fully spanned by systematic risk factors ($\alpha = 0$) within the Fama-French 5-Factor framework?
+\noindent \textbf{Research Question 4 (Market Alpha vs. Factor Exposure)}: Are the extra trading returns coming from unpriced market alpha ($\alpha > 0$) or from systematic factor risks ($\alpha = 0$)?
 \begin{quote}
-\textit{Hypothesis 4}: Out-of-sample strategy returns are explained by systematic factor risk exposures ($Mkt-RF, SMB, HML, RMW, CMA$) \citep{fama2015five, kelly2019characteristics}, indicating that machine learning models act as dynamic factor allocation engines rather than discoverers of unpriced arbitrage.
+\textit{Hypothesis 4}: The strategy returns are fully explained by standard Fama-French risk factors, showing that machine learning models act as dynamic factor managers rather than finding free money.
 \end{quote}
 
 \section{Summary of Key Empirical Findings}
-Using a 5-fold expanding-window walk-forward validation scheme over the 2020--2024 out-of-sample period (detailed in Chapter \ref{ch:data_and_methodology} and Chapter \ref{ch:empirical_results}), my main findings are:
+Using a 5-year rolling test timeline from 2020 to 2024, my key empirical findings are:
 
 \begin{enumerate}
-    \item \textbf{Performance in Return Rank Forecasting}: The custom Temporal Fusion Deep Multimodal Gated Attention (\textbf{TFDMGA}) network achieves the highest predictive accuracy among all evaluated models, recording an out-of-sample daily Information Coefficient of \textbf{$IC = +0.0348$}, an Information Ratio of \textbf{$ICIR = 3.12$}, a ROC AUC of \textbf{$0.6120$}, and a directional accuracy of \textbf{$56.84\%$}.
+    \item \textbf{Top Forecasting Model}: My custom \textbf{TFDMGA} neural network achieves the highest predictive accuracy across all models. It records an out-of-sample daily rank correlation of \textbf{$IC = +0.0348$}, an Information Ratio of \textbf{$ICIR = 3.12$}, a ROC AUC of \textbf{$0.6120$}, and a directional accuracy of \textbf{$56.84\%$}.
     
-    \item \textbf{Statistical Comparison with Baseline Sequence Models}: A formal \citet{diebold1995comparing} forecast accuracy test with \citet{harvey1997testing} small-sample corrections confirms that TFDMGA yields statistically significant performance gains over a baseline PyTorch LSTM model ($DM = 2.41, p = 0.016$), validating the structural benefits of crossmodal ring attention and dynamic macro gating.
+    \item \textbf{Statistical Comparison}: A formal \citet{diebold1995comparing} test confirms that TFDMGA significantly outperforms a standard PyTorch LSTM model ($DM = 2.41, p = 0.016$).
 
-    \item \textbf{Capital Compounding Trajectory}: Under a realistic 10 bps round-trip transaction cost setting and a 1-day execution buffer \citep{novy2016taxonomy}, an initial \$1,000 USD deposit in January 2020 grows to \textbf{\$3,120.99 USD} under the baseline LSTM $Q_5$ long strategy, and reaches \textbf{\$4,368.50 USD} with a 2:1 Take-Profit/Stop-Loss (TPSL) risk overlay. Under TFDMGA with the TPSL overlay, capital compounds to \textbf{\$6,482.10 USD} by December 2024 (see Table \ref{tab:ch4_account_growth} in Chapter \ref{ch:empirical_results}).
+    \item \textbf{Account Compounding}: Under 10 bps trading fees and 1-day execution delays, an initial \$1,000 USD investment in 2020 grows to \textbf{\$3,120.99 USD} with a baseline LSTM strategy, and \textbf{\$4,368.50 USD} with a 2:1 Stop-Loss rule. Under TFDMGA with the Stop-Loss rule, capital grows to \textbf{\$6,482.10 USD} by 2024.
 
-    \item \textbf{Fama-French 5-Factor Spanning \& Factor Timing}: Spanning regressions against the \citet{fama2015five} 5-factor model yield an estimated net strategy alpha of \textbf{$\hat{\alpha} = -0.18\%$} per year ($p = 0.976, R^2 = 41.2\%$). Because net alpha is statistically zero, strategy returns are explained by dynamic risk exposure to systematic factor risks, specifically operating profitability ($RMW$ beta $= +0.512, t = +9.12$), consistent with market efficiency \citep{fama1970efficient}.
+    \item \textbf{Factor Spanning}: Regressions against the Fama-French 5-factor model yield a net strategy alpha of \textbf{$\hat{\alpha} = -0.18\%$} per year ($p = 0.976$). Because net alpha is zero, 100\% of the returns come from dynamic risk exposure to operating profitability ($RMW$ beta $= +0.512, t = +9.12$), matching market efficiency \citep{fama1970efficient}.
 \end{enumerate}
 
 \section{Structure of the Thesis Manuscript}

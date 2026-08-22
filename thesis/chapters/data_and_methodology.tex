@@ -2,23 +2,23 @@
 \label{ch:data_and_methodology}
 
 \section{Data Pipeline and Sample Construction}
-My empirical sample comprises daily stock prices, trading volumes, and quarterly financial accounting metrics for active and historical S\&P 500 constituent equities from December 31, 2014, through December 31, 2024. The active evaluation window spans January 1, 2015, to December 31, 2024, yielding 2,516 trading days and over 1.25 million stock-day observations \citep{gu2020empirical}.
+My dataset covers daily stock prices, trading volume, and quarterly financial accounting ratios for S\&P 500 stocks over a 10-year period from December 31, 2014 to December 31, 2024. The active test timeline runs from January 1, 2015 to December 31, 2024, providing 2,516 trading days and over 1.25 million stock-day observations \citep{gu2020empirical}.
 
-Daily closing prices, dividend payments, stock splits, and trading volumes are ingested from Yahoo Finance and cross-verified against Bloomberg Terminal records. Daily risk-free rates ($R_{f,t}$) along with daily Fama-French 5-Factor returns ($Mkt-RF_t, SMB_t, HML_t, RMW_t, CMA_t$) and Carhart Momentum ($MOM_t$) are retrieved directly from the Ken French Data Library \citep{fama1993common, fama2015five, carhart1997on}.
+Daily stock prices, split factors, and trading volumes are pulled from Yahoo Finance and verified against Bloomberg Terminal records. Daily risk-free rates ($R_{f,t}$) and Fama-French 5-factor returns ($Mkt-RF_t, SMB_t, HML_t, RMW_t, CMA_t$) come directly from Ken French's data library \citep{fama1993common, fama2015five, carhart1997on}.
 
 \subsection{Point-in-Time Bloomberg Filing Date Alignment}
-A common issue in empirical finance studies is lookahead bias caused by indexing corporate accounting metrics to fiscal period end-dates. In practice, financial statements for a fiscal quarter ending on December 31 ($t_{\text{fiscal}}$) are published weeks or months later during the 10-K or 10-Q SEC filing process \citep{lopez2018advances}.
+A common mistake in financial studies is using fiscal end dates instead of actual publication dates. A company ending its fiscal quarter on December 31 ($t_{\text{fiscal}}$) does not release its quarterly earnings report until weeks later during SEC 10-K or 10-Q filings \citep{lopez2018advances}.
 
-To eliminate lookahead contamination, my data pipeline (\texttt{data\_}\allowbreak\texttt{pipeline.py} in \texttt{src/}) ingests official Bloomberg publication timestamps (\texttt{earnings\_}\allowbreak\texttt{announcement\_}\allowbreak\texttt{date} and \texttt{filing\_}\allowbreak\texttt{date}). On any given trading date $t$, a quarterly fundamental feature vector $\mathbf{x}_{i,t}^{\text{fund}}$ is updated to the newly reported accounting state $Q_{\tau}$ if and only if:
+To prevent using future information, my code (\texttt{data\_}\allowbreak\texttt{pipeline.py} in \texttt{src/}) indexes quarterly fundamental features strictly to official Bloomberg announcement dates (\texttt{earnings\_}\allowbreak\texttt{announcement\_}\allowbreak\texttt{date}). On any trading date $t$, fundamental feature vector $\mathbf{x}_{i,t}^{\text{fund}}$ updates to new quarter $Q_{\tau}$ only if:
 \begin{equation}
 t \ge \text{Announcement Date}(Q_{\tau})
 \end{equation}
-Prior to $t = \text{Announcement Date}(Q_{\tau})$, the model is strictly limited to using the previously announced fundamental vector $Q_{\tau-1}$.
+Before the announcement date, the model only uses the previous quarter's financial report $Q_{\tau-1}$.
 
-In addition, I enforce a \textbf{Staleness Truncation Rule}: a fundamental observation remains active for at most 90 trading days ($\approx 1$ calendar quarter). If a firm fails to publish a new statement within 120 calendar days ($\approx 90$ trading days), the forward-fill is truncated and the corresponding fundamental fields are set to missing (\texttt{NaN}), preventing outdated accounting ratios from skewing cross-sectional ranks \citep{novy2016taxonomy}.
+I also apply a \textbf{Staleness Truncation Rule}: a financial observation stays active for at most 90 trading days ($\approx 1$ quarter). If a firm fails to report new numbers within 120 calendar days, the data expires to missing (\texttt{NaN}) to prevent outdated financial ratios from skewing stock rankings \citep{novy2016taxonomy}.
 
 \subsection{Survivorship-Bias-Free Dynamic Panel}
-To guard against survivorship bias, my asset universe tracks historical point-in-time S\&P 500 constituent rosters obtained from Bloomberg. Companies removed from the index, acquired, or delisted due to bankruptcy between 2015 and 2024 remain in the daily cross-section up to their final active trading date $T_{\text{exit}}$ \citep{mclean2016does, hou2020replicating}.
+To prevent survivorship bias, my asset universe tracks historical point-in-time S\&P 500 index rosters. Companies removed from the index or delisted due to bankruptcy between 2015 and 2024 remain in my dataset until their final active trading date $T_{\text{exit}}$ \citep{mclean2016does, hou2020replicating}.
 
 Figure \ref{fig:ch3_pipeline} shows my point-in-time data alignment pipeline and staleness truncation flowchart.
 
