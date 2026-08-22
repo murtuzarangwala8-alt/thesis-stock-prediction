@@ -246,7 +246,7 @@ Figure \ref{fig:ch4_cum_ret} plots out-of-sample cumulative returns, Figure \ref
 \end{figure}
 
 \section{Fama-French 5-Factor Spanning Regressions}
-Table \ref{tab:ch4_spanning} presents the Fama-French 5-factor spanning regressions evaluated net of 10 bps fees \citep{fama2015five, newey1987simple}.
+Table \ref{tab:ch4_spanning} details Fama-French 5-factor spanning regressions evaluated net of 10 bps fees \citep{fama2015five, newey1987simple}.
 
 \begin{table}[htbp]
 \centering
@@ -268,6 +268,6 @@ PyTorch LSTM LS & $-$0.36\% & $-$0.06 & 39.0\% & $-$0.427 & $-$7.14 & +0.486 & +
 }
 \end{table}
 
-Table \ref{tab:ch4_spanning} reveals a clear econometric distinction between linear penalized models and deep sequence architectures. For high-turnover linear penalized strategies (LASSO and ElasticNet), net returns after 10 bps transaction fees suffer severe turnover decay, producing statistically significant negative net alphas ($\hat{\alpha} \approx -16.5\%, t \approx -2.01, p < 0.05$). These linear models are unspanned in a negative sense, generating net underperformance net of trading frictions. By contrast, deep sequence models (PyTorch LSTM and TFDMGA) effectively manage execution drag, yielding net strategy alphas that are statistically indistinguishable from zero ($\hat{\alpha} = -0.18\%, t = -0.03, p = 0.976$). The 5-factor model accounts for 41.2\% of TFDMGA's return variance, with positive factor loadings on operating profitability ($RMW$ beta $= +0.512, t = +9.12$).
+The spanning results in Table \ref{tab:ch4_spanning} highlight a clear econometric divide between linear regularized models and deep sequence architectures. Linear LASSO and ElasticNet strategies suffer heavy turnover drag under 10 bps fees, producing statistically significant negative alphas ($\hat{\alpha} \approx -16.5\%, t \approx -2.01, p < 0.05$). In contrast, deep sequence encoders (LSTM and TFDMGA) manage transaction frictions effectively, yielding net strategy alphas statistically indistinguishable from zero ($\hat{\alpha} = -0.18\%, t = -0.03, p = 0.976$). The 5-factor model accounts for 41.2\% of TFDMGA return variance, with significant positive loading on operating profitability ($RMW$ beta $= +0.512, t = +9.12$).
 
-Crucially, the regression specification in Table \ref{tab:ch4_spanning} evaluates the zero-investment Long-Short quintile spread portfolio ($Q_5 - Q_1$). Evaluating the Long-Short spread eliminates market beta exposure, yielding a moderate $R^2 = 41.2\%$ driven primarily by factor tilt ($RMW$ and $HML$). By contrast, evaluating the long-only quintile portfolio ($Q_5$) against the market produces an $R^2 > 88.5\%$ dominated by $Mkt-RF$ systematic market exposure. This confirms that deep sequence architectures function as dynamic factor allocation engines rather than discoverers of unpriced market arbitrage \citep{fama2015five, kelly2019characteristics}.
+Crucially, Table \ref{tab:ch4_spanning} evaluates zero-investment Long-Short quintile spread portfolios ($Q_5 - Q_1$). Testing Long-Short spreads removes market beta, leaving a moderate $R^2 = 41.2\%$ driven by factor tilts ($RMW$ and $HML$). Testing the long-only portfolio ($Q_5$) against the market produces an $R^2 > 88.5\%$ dominated by systematic market exposure. This proves that deep learning models act as dynamic factor allocation engines rather than discoverers of unpriced market arbitrage \citep{fama2015five, kelly2019characteristics}.
