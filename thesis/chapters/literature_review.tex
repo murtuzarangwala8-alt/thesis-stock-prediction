@@ -19,81 +19,81 @@ In this chapter, I synthesize the asset pricing literature around six key themat
 \section{Theoretical Asset Pricing Foundations}
 
 \subsection{Equilibrium Foundations: The CAPM and Arbitrage Pricing Theory}
-Modern quantitative finance originates with the mean-variance portfolio theory of \citet{markowitz1952portfolio} and the Capital Asset Pricing Model (CAPM) developed by \citet{sharpe1964capital} and \citet{lintner1965valuation}. Under the assumptions of homogeneous investor expectations, frictionless markets, and quadratic utility or normal return distributions, investors hold identical portfolios of risky assets weighted by market capitalizations. As a result, the market portfolio $R_m$ is mean-variance efficient, and an asset's expected return is linearly related to its covariance with the aggregate market portfolio:
+Modern quantitative finance begins with Markowitz's \citeyearpar{markowitz1952portfolio} mean-variance framework and the Capital Asset Pricing Model (CAPM) of \citet{sharpe1964capital} and \citet{lintner1965valuation}. CAPM assumes homogeneous investor expectations, frictionless markets, and quadratic utility. Under these ideal conditions, every investor holds the market portfolio $R_m$, making it mean-variance efficient. An asset's expected excess return is governed strictly by its market beta:
 \begin{equation}
 \mathbb{E}[R_{i,t}] - R_{f,t} = \beta_{i,m} \left( \mathbb{E}[R_{m,t}] - R_{f,t} \right)
 \label{eq:ch2_capm}
 \end{equation}
-where the market beta $\beta_{i,m} = \frac{\operatorname{Cov}(R_{i,t}, R_{m,t})}{\operatorname{Var}(R_{m,t})}$ measures systemic market risk. \citet{black1972capital} relaxed the assumption of risk-free borrowing, introducing the zero-beta CAPM and showing that the security market line remains linear but exhibits a higher intercept and flatter slope when borrowing constraints bind.
+where $\beta_{i,m} = \frac{\operatorname{Cov}(R_{i,t}, R_{m,t})}{\operatorname{Var}(R_{m,t})}$ captures systemic market risk. \citet{black1972capital} relaxed risk-free borrowing assumptions, introducing the zero-beta CAPM. Black showed that borrowing constraints flatten the Security Market Line while raising its intercept.
 
-Recognizing the strict equilibrium assumptions of the CAPM, \citet{ross1976arbitrage} formulated the Arbitrage Pricing Theory (APT). Based on the absence of asymptotic arbitrage rather than general equilibrium, APT posits that asset returns follow a $K$-factor linear generative structure:
+To address CAPM's equilibrium restrictions, \citet{ross1976arbitrage} proposed Arbitrage Pricing Theory (APT). Grounded in asymptotic arbitrage-free pricing rather than market equilibrium, APT specifies a linear $K$-factor generative return structure:
 \begin{align}
 \label{eq:ch2_apt}
 R_{i,t} &= \mathbb{E}[R_{i,t}] + \sum_{k=1}^{K} \beta_{i,k}\, f_{k,t} + \epsilon_{i,t}
 \end{align}
-where $f_{k,t}$ represent mean-zero common macroeconomic risk factors, $\beta_{i,k}$ are factor loadings, and $\epsilon_{i,t}$ is an idiosyncratic error satisfying $\operatorname{Cov}(\epsilon_{i,t},\,\epsilon_{j,t})=0$ for all $i \neq j$. By applying linear pricing space arguments in infinite-dimensional Hilbert spaces, Ross showed that expected returns are linearly spanned by factor risk premia $\lambda_k$:
+where $f_{k,t}$ represent mean-zero common macroeconomic risk factors, $\beta_{i,k}$ are factor loadings, and $\epsilon_{i,t}$ is idiosyncratic noise with $\operatorname{Cov}(\epsilon_{i,t},\,\epsilon_{j,t})=0$ for $i \neq j$. Applying linear pricing space arguments in Hilbert spaces, Ross established that expected returns are linearly spanned by factor risk premia $\lambda_k$:
 \begin{equation}
 \mathbb{E}[R_{i,t}] - R_{f,t} = \sum_{k=1}^{K} \beta_{i,k} \lambda_k
 \label{eq:ch2_apt_premia}
 \end{equation}
 
 \subsection{The Fama-MacBeth Two-Pass Regression Framework}
-To empirically test whether factor loadings explain the cross-section of expected returns, \citet{fama1973risk} established the classic two-pass regression methodology. In the first pass, time series regressions are conducted for each asset $i$ over an estimation window $T_1$ to estimate factor loadings $\hat{\beta}_{i,k}$:
+To test whether factor loadings explain cross-sectional stock returns, \citet{fama1973risk} introduced a two-pass regression methodology. In Pass 1, I run time-series regressions asset by asset over a rolling historical lookback window $T_1$ to estimate factor betas $\hat{\beta}_{i,k}$:
 \begin{equation}
 R_{i,t} - R_{f,t} = \alpha_i + \sum_{k=1}^{K} \beta_{i,k} f_{k,t} + \epsilon_{i,t}, \quad t = 1, \dots, T_1
 \label{eq:ch2_fm_first_pass}
 \end{equation}
-In the second pass, cross-sectional regressions are executed at each time step $t$ over an evaluation window $T_2$ using the estimated factor loadings as explanatory variables:
+In Pass 2, I run daily cross-sectional regressions across all available equities $i=1,\dots,N$ using estimated factor betas as explanatory variables:
 \begin{equation}
 R_{i,t} - R_{f,t} = \gamma_{0,t} + \sum_{k=1}^{K} \hat{\beta}_{i,k} \gamma_{k,t} + u_{i,t}, \quad i = 1, \dots, N
 \label{eq:ch2_fm_second_pass}
 \end{equation}
-The point estimates of factor risk premia $\bar{\gamma}_k$ and their standard errors are obtained by averaging the cross-sectional slope coefficients across time:
+The point estimates of factor risk premia $\bar{\gamma}_k$ and their standard errors are obtained by averaging cross-sectional slope coefficients over time:
 \begin{equation}
 \bar{\gamma}_k = \frac{1}{T_2} \sum_{t=1}^{T_2} \hat{\gamma}_{k,t}, \quad \text{SE}(\bar{\gamma}_k) = \sqrt{\frac{1}{T_2(T_2-1)} \sum_{t=1}^{T_2} \left( \hat{\gamma}_{k,t} - \bar{\gamma}_k \right)^2}
 \label{eq:ch2_fm_se}
 \end{equation}
-While standard Fama-MacBeth standard errors assume cross-sectional independence and zero serial correlation, modern implementations incorporate Heteroskedasticity and Autocorrelation Consistent (HAC) corrections \citep{newey1987simple} and \citet{shanken1992on} corrections for generated regressor error in $\hat{\beta}_{i,k}$.
+Because standard Fama-MacBeth standard errors ignore serial correlation and generated-regressor error, modern applications apply Heteroskedasticity and Autocorrelation Consistent (HAC) corrections \citep{newey1987simple} and \citet{shanken1992on} beta-uncertainty adjustments.
 
 \subsection{Multi-Factor Models: Fama-French, Carhart, and Pastor-Stambaugh}
-Empirical challenges to the single factor CAPM increased during the late 1980s and early 1990s as cross-sectional anomalies emerged. \citet{fama1992cross} showed that firm size (market capitalization) and book-to-market equity ratio ($B/M$) absorbed much of the cross-sectional explanatory power of market beta. To formalize these empirical findings, \citet{fama1993common} introduced the Fama-French Three-Factor Model:
+Single-factor CAPM faced empirical challenges in the 1980s as market anomalies accumulated. \citet{fama1992cross} documented that size (market capitalization) and book-to-market ($B/M$) ratios absorbed much of market beta's explanatory power. To capture these anomalies, \citet{fama1993common} formulated the Fama-French Three-Factor Model:
 \begin{equation}
 R_{i,t} - R_{f,t} = \alpha_i + \beta_{i,1} (R_{m,t} - R_{f,t}) + \beta_{i,2} SMB_t + \beta_{i,3} HML_t + e_{i,t}
 \label{eq:ch2_ff3}
 \end{equation}
-where $SMB_t$ (Small Minus Big) captures the size effect, and $HML_t$ (High Minus Low) captures the value effect.
+where $SMB_t$ (Small Minus Big) isolates the size premium, and $HML_t$ (High Minus Low) isolates the value premium.
 
-Observing that the three-factor model failed to price the cross-sectional price momentum phenomenon identified by \citet{jegadeesh1993returns}, \citet{carhart1997on} expanded the framework into a Four-Factor Model by adding a momentum factor ($WML_t$, Winners Minus Losers):
+To address the price momentum anomaly \citep{jegadeesh1993returns}, \citet{carhart1997on} added a momentum factor ($WML_t$, Winners Minus Losers):
 \begin{equation}
 R_{i,t} - R_{f,t} = \alpha_i + \beta_{i,1} (R_{m,t} - R_{f,t}) + \beta_{i,2} SMB_t + \beta_{i,3} HML_t + \beta_{i,4} WML_t + e_{i,t}
 \label{eq:ch2_carhart4}
 \end{equation}
-In parallel, \citet{pastor2003liquidity} showed that market-wide liquidity is an un-diversifiable risk factor. Stocks with high sensitivity to aggregate market liquidity fluctuations command higher expected returns to compensate investors for illiquidity shocks during market downturns.
+Concurrently, \citet{pastor2003liquidity} demonstrated that aggregate market liquidity represents an un-diversifiable risk factor. Stocks with high liquidity sensitivity command higher expected returns to compensate for illiquidity during market drawdowns.
 
-To address profitability and investment anomalies, \citet{fama2015five} extended their three-factor model to a Five-Factor Asset Pricing Model:
+To incorporate operating profitability and investment intensity, \citet{fama2015five} introduced their Five-Factor Asset Pricing Model:
 \begin{align}
 \label{eq:ch2_ff5_model}
 R_{i,t} - R_{f,t} &= \alpha_i + \beta_{i,1} (R_{m,t} - R_{f,t}) + \beta_{i,2}\, SMB_t + \beta_{i,3}\, HML_t \nonumber \\
 &\quad + \beta_{i,4}\, RMW_t + \beta_{i,5}\, CMA_t + e_{i,t}
 \end{align}
-where $RMW_t$ (Robust Minus Weak) measures the profit margin return differential, and $CMA_t$ (Conservative Minus Aggressive) captures investment intensity differentials. Grounded theoretically in the dividend discount model, \citet{fama2015five} showed that holding book-to-market fixed, higher expected earnings imply higher expected returns, while higher expected investment rates lower expected returns. Concurrently, \citet{hou2015digesting} established the $q$-factor model ($Mkt, ME, I/A, ROE$), showing that investment and profitability factors derived from q-theory span a wide range of cross-sectional anomalies.
+where $RMW_t$ (Robust Minus Weak) measures profitability differentials, and $CMA_t$ (Conservative Minus Aggressive) measures investment intensity. Grounded in the dividend discount model, \citet{fama2015five} showed that holding book-to-market constant, higher profitability implies higher expected returns, while higher investment lowers expected returns. In parallel, \citet{hou2015digesting} introduced the $q$-factor model ($Mkt, ME, I/A, ROE$), establishing that investment and profitability factors derived from $q$-theory span a broad set of anomalies.
 
 \section{The Factor Zoo Controversy, Multiple Testing, and Shrinkage}
 
 \subsection{The Proliferation of Anomalies and Cochrane's "Factor Zoo"}
-By the early 2010s, academic literature had documented over 300 firm characteristics claiming to predict stock returns. In his American Finance Association presidential address, \citet{cochrane2011discount} famously diagnosed this proliferation as the ``factor zoo.'' Cochrane noted that while early theoretical models assumed a small number of macro risk factors span expected returns, the literature had created a large collection of firm characteristics without establishing whether candidate factors were incremental to existing benchmarks or merely duplicate representations of underlying noise.
+By 2011, academic papers claimed over 300 firm characteristics predicted stock returns. In his AFA presidential address, \citet{cochrane2011discount} dubbed this proliferation the ``factor zoo.'' Cochrane noted that while theoretical models assume a small set of macro factors span returns, empirical literature created dozens of redundant predictors without verifying if candidate factors were incremental to existing benchmarks.
 
-This issue was compounded by post-publication return decay. \citet{mclean2016does} examined 97 published cross-sectional anomalies and documented that out-of-sample anomaly portfolio returns decline by an average of 26\% after academic publication and up to 58\% after original sample periods. This decay stems from a combination of market learning (arbitrage capital exploiting newly disclosed anomalies) and data-mining biases in published literature.
+This problem was worsened by post-publication return decay. \citet{mclean2016does} examined 97 published anomalies and showed that out-of-sample portfolio returns fall by 26\% after publication and up to 58\% post-sample. This decay reflects arbitrage capital exploiting published signals alongside data-mining bias in original studies.
 
 \subsection{Multiple Testing Inflation and False Discovery Rates}
-The main statistical cause of factor zoo inflation was analyzed by \citet{harvey2016and}. Traditional empirical asset pricing evaluated candidate factors using single-hypothesis Student's $t$-tests with standard significance thresholds ($|t| > 1.96$, corresponding to $\alpha = 0.05$). However, when hundreds of candidate signals are evaluated on the same datasets, standard significance cutoffs produce high false discovery rates due to multiple hypothesis testing.
+\citet{harvey2016and} analyzed the statistical cause of factor zoo inflation. Standard empirical studies tested candidate factors using single-hypothesis $t$-tests ($|t| > 1.96, \alpha = 0.05$). Evaluating hundreds of candidate signals on identical datasets creates high false discovery rates.
 
-\citet{harvey2016and} evaluated over 300 published anomaly factors under multiple testing adjustments (including Bonferroni corrections and Holm-Bonferroni procedures). They showed that to maintain a true False Discovery Rate (FDR) below 5\%, the minimum t-statistic cutoff for newly proposed asset pricing factors should be elevated to at least:
+\citet{harvey2016and} evaluated 300+ anomaly factors under multiple-testing adjustments (Bonferroni, Holm-Bonferroni). They established that keeping the False Discovery Rate (FDR) below 5\% requires raising the minimum $t$-statistic threshold to:
 \begin{equation}
 |t| > 3.0 \quad (p \text{-value} < 0.0027)
 \label{eq:ch2_harvey_threshold}
 \end{equation}
-Extending this framework, \citet{harvey2020false} introduced Bayesian FDR frameworks that account for prior belief distributions on true alpha. In a large replication audit, \citet{hou2020replicating} re-examined 452 cross-sectional anomalies under microcap exclusions and value-weighted portfolio rules. They showed that 65\% of published anomalies fail to achieve statistical significance at standard $|t| > 1.96$ thresholds, and over 85\% fail under the $|t| > 3.0$ threshold proposed by \citet{harvey2016and}.
+\citet{harvey2020false} extended this via Bayesian FDR frameworks. In a large replication audit, \citet{hou2020replicating} re-evaluated 452 cross-sectional anomalies under microcap exclusions and value-weighting. They found that 65\% of published anomalies fail at $|t| > 1.96$, and over 85\% fail under $|t| > 3.0$.
 
 \subsection{High-Dimensional Regularized SDF Estimation}
 To address the factor zoo problem structurally, econometricians re-framed asset pricing as a high dimensional regularized Stochastic Discount Factor (SDF) estimation problem. In a stochastic discount factor framework, an asset pricing model specifies a scalar pricing kernel $M_{t+1}$ such that for all excess returns $R_{i,t+1}$:
@@ -133,88 +133,88 @@ Expanding structural factor selection, \citet{feng2020taming} and \citet{giglio2
 \section{Machine Learning and Deep Learning Paradigms}
 
 \subsection{Empirical Asset Pricing Benchmark: Gu, Kelly, and Xiu (2020)}
-The landmark study by \citet{gu2020empirical} established a primary theoretical and empirical benchmark for financial machine learning. Analyzing a panel of over 30,000 U.S. equities over 60 years (1957--2016) with 94 firm-level characteristics and 8 macroeconomic indicators, Gu, Kelly, and Xiu evaluated a range of machine learning architectures: Linear OLS, LASSO, ElasticNet, Principal Component Regression (PCR), Partial Least Squares (PLS), Random Forests, Gradient Boosted Decision Trees (GBDT), and multilayer Feedforward Neural Networks (MLP).
+\citet{gu2020empirical} established the primary empirical benchmark for financial machine learning. Evaluating a 60-year panel of over 30,000 U.S. equities (1957--2016) with 94 firm characteristics and 8 macroeconomic indicators, Gu, Kelly, and Xiu tested linear OLS, LASSO, ElasticNet, PCR, PLS, Random Forests, Gradient Boosted Trees (GBDT), and Feedforward Neural Networks (MLP).
 
-The nonlinear forecasting panel model is defined as:
+The non-linear forecasting panel model takes the form:
 \begin{equation}
 R_{i,t+1} = g^*(\mathbf{x}_{i,t}) + \epsilon_{i,t+1}, \quad \mathbf{x}_{i,t} = \mathbf{c}_{i,t} \otimes \mathbf{d}_t
 \label{eq:ch2_gk_model}
 \end{equation}
 where $\mathbf{c}_{i,t}$ is a $p$-dimensional vector of firm characteristics, $\mathbf{d}_t$ is an $m$-dimensional vector of macro variables, and $\otimes$ denotes the Kronecker product creating interactive feature conditioning.
 
-\citet{gu2020empirical} highlighted three main empirical findings:
+\citet{gu2020empirical} established three key empirical results:
 \begin{enumerate}
-    \item \textbf{Non-Linear Model Performance}: Nonlinear models (GBDT, Neural Networks) outperform linear models in out-of-sample predictive $R_{\text{oos}}^2$, doubling the annualized Sharpe ratios of long-short hedge portfolios.
-    \item \textbf{Importance of Interaction Terms}: A main source of machine learning gain comes from automatically capturing nonlinear characteristic interactions (such as the interaction of size with short term momentum and liquidity).
-    \item \textbf{Neural Network Architecture}: Shallow neural architectures with 1 to 3 hidden layers achieve better performance compared to deeper networks, as excessive depth can lead to overfitting on low signal-to-noise equity return data.
+    \item \textbf{Nonlinear Model Advantage}: Tree ensembles and neural networks outperform linear specifications in out-of-sample $R_{\text{oos}}^2$, effectively doubling long-short portfolio Sharpe ratios.
+    \item \textbf{Characteristic Interaction Gains}: Most predictive gain stems from non-linear interaction terms (such as size interacted with momentum and liquidity).
+    \item \textbf{Optimal Network Depth}: Shallow networks (1--3 hidden layers) outperform deeper architectures, as deeper networks overfit on low signal-to-noise equity return data.
 \end{enumerate}
 
 \subsection{Characteristics as Dynamic Risk Exposures: IPCA}
-Theoretical motivation for why machine learning return forecasts succeed was provided by \citet{kelly2019characteristics}. Introducing Instrumented Principal Component Analysis (IPCA), Kelly, Pruitt, and Su modeled asset returns as:
+\citet{kelly2019characteristics} provided theoretical backing for why machine learning forecasts succeed. Introducing Instrumented Principal Component Analysis (IPCA), Kelly, Pruitt, and Su modeled asset returns as:
 \begin{equation}
 R_{i,t+1} = \mathbf{z}_{i,t}^T \mathbf{\Gamma}_{\beta} \mathbf{f}_{t+1} + \epsilon_{i,t+1}
 \label{eq:ch2_ipca}
 \end{equation}
 where $\mathbf{z}_{i,t}$ is a vector of observable firm characteristics, $\mathbf{\Gamma}_{\beta}$ is a mapping matrix connecting characteristics to dynamic factor loadings ($\boldsymbol{\beta}_{i,t} = \mathbf{\Gamma}_{\beta}^T \mathbf{z}_{i,t}$), and $\mathbf{f}_{t+1}$ represents unobservable latent factor returns.
 
-\citet{kelly2019characteristics} showed that firm characteristics serve as proxies for time-varying factor risk exposures. Consequently, machine learning return predictors predicting $R_{i,t+1} = g(\mathbf{z}_{i,t})$ are implicitly estimating dynamic latent factor models with time-varying risk loadings.
+\citet{kelly2019characteristics} showed that firm characteristics proxy for time-varying factor risk exposures. Machine learning return predictors $R_{i,t+1} = g(\mathbf{z}_{i,t})$ are thus implicitly estimating dynamic latent factor models with time-varying risk loadings.
 
 \subsection{Deep Learning and Non-Parametric SDF Estimation}
-Extending ML to advanced deep architectures, \citet{chen2023deep} developed deep neural network models that estimate nonparametric asset pricing SDFs directly from high dimensional equity panels. By parameterizing factor loadings $\beta(\mathbf{c}_{i,t})$ as nonlinear functions of firm characteristics using Deep Neural Networks (DNNs) combined with Generative Adversarial Networks (GANs), Chen, Pelger, and Zhu showed that deep learning captures macroeconomic regime shifts and structural non-linearities that linear factor models may miss.
+\citet{chen2023deep} extended machine learning to deep architectures, estimating non-parametric asset pricing SDFs directly from high-dimensional equity panels. Parameterizing factor loadings $\beta(\mathbf{c}_{i,t})$ via Deep Neural Networks (DNNs) combined with Generative Adversarial Networks (GANs), Chen, Pelger, and Zhu showed that deep learning captures macro regime shifts and structural non-linearities missed by linear factor models.
 
-Similarly, \citet{cong2021textual} incorporated multimodal deep learning architectures to process accounting signals alongside high dimensional textual information. To help explain the predictions of deep neural networks, \citet{lundberg2017unified} introduced SHapley Additive exPlanations (SHAP), based on cooperative game theory. SHAP decomposes a model prediction $f(\mathbf{x})$ into additive feature contributions:
+Similarly, \citet{cong2021textual} built multimodal deep learning models to process accounting signals alongside high-dimensional financial news text. To interpret deep neural network predictions, \citet{lundberg2017unified} introduced SHapley Additive exPlanations (SHAP), based on cooperative game theory:
 \begin{equation}
 f(\mathbf{x}) = \phi_0 + \sum_{j=1}^{M} \phi_j \mathbf{x}_j
 \label{eq:ch2_shap}
 \end{equation}
-providing transparent economic interpretation of nonlinear asset pricing models.
+allowing transparent feature attribution in non-linear models.
 
 \subsection{Economic Frictions and Limits to Arbitrage}
-While machine learning models achieve notable statistical $R_{\text{oos}}^2$, \citet{avramov2023machine} investigated whether these return forecast gains survive real-world economic frictions. Avramov, Cheng, and Metzker showed that machine learning return predictability is heavily concentrated in illiquid, microcap stocks with high distress risk, high transaction costs, and borrowing constraints. When portfolios exclude microcaps or account for realistic execution costs, out-of-sample profits decline significantly. This highlights the importance of integrating microstructural frictions into financial machine learning evaluation.
+\citet{avramov2023machine} examined whether machine learning forecast gains survive real-world market frictions. Avramov, Cheng, and Metzker demonstrated that machine learning predictability is concentrated in illiquid, microcap stocks with high distress risk and short-sale constraints. Excluding microcaps or deducting realistic execution fees significantly reduces out-of-sample strategy profits. This highlights the necessity of incorporating transaction cost frictions into financial machine learning evaluation.
 
 \section{Financial Time-Series Econometrics \& Inference}
 
 \subsection{Heteroskedasticity and Autocorrelation Consistent (HAC) Inference}
-Financial return time series exhibit conditional heteroskedasticity, volatility clustering, and serial dependence. Standard Ordinary Least Squares (OLS) covariance estimators understate parameter variances, yielding artificially inflated $t$-statistics. To provide valid statistical inference, \citet{newey1987simple} developed the Heteroskedasticity and Autocorrelation Consistent (HAC) covariance matrix estimator.
+Financial return series exhibit volatility clustering, heavy tails, and serial correlation. Standard OLS covariance matrices underestimate parameter variances, producing inflated $t$-statistics. To ensure valid statistical inference, \citet{newey1987simple} developed the Heteroskedasticity and Autocorrelation Consistent (HAC) covariance matrix estimator.
 
-For a time series of regression residuals $e_t$ and regressors $\mathbf{X}_t$, defining $\mathbf{u}_t = \mathbf{X}_t e_t$, the Newey-West estimator computes the sample covariance matrix $\widehat{\Omega}_{\text{NW}}$ as:
+For regression residuals $e_t$ and regressors $\mathbf{X}_t$, defining $\mathbf{u}_t = \mathbf{X}_t e_t$, the Newey-West sample covariance matrix $\widehat{\Omega}_{\text{NW}}$ is:
 \begin{equation}
 \widehat{\Omega}_{\text{NW}} = \widehat{\Gamma}_0 + \sum_{j=1}^{L} w(j, L) \left( \widehat{\Gamma}_j + \widehat{\Gamma}_j^T \right)
 \label{eq:ch2_newey_west_eq}
 \end{equation}
-where $\widehat{\Gamma}_j = \frac{1}{T} \sum_{t=j+1}^{T} \mathbf{u}_t \mathbf{u}_{t-j}^T$ is the sample autocovariance matrix at lag $j$, and $w(j, L) = 1 - \frac{j}{L+1}$ represents the Bartlett kernel weighting function over a maximum lag length $L$. The Bartlett kernel ensures that $\widehat{\Omega}_{\text{NW}}$ is positive semi-definite in finite samples.
+where $\widehat{\Gamma}_j = \frac{1}{T} \sum_{t=j+1}^{T} \mathbf{u}_t \mathbf{u}_{t-j}^T$ is the sample autocovariance at lag $j$, and $w(j, L) = 1 - \frac{j}{L+1}$ is the Bartlett kernel weighting function over lag length $L$. The Bartlett kernel guarantees that $\widehat{\Omega}_{\text{NW}}$ remains positive semi-definite in finite samples.
 
 \subsection{Out-of-Sample Predictive Accuracy: Diebold-Mariano and HLN Corrections}
-When comparing out-of-sample forecast accuracy between two competing forecasting models (such as a deep sequence network versus a baseline linear factor model), standard independent sample $t$-tests are invalid due to forecast error autocorrelation. \citet{diebold1995comparing} introduced a distribution-free statistic for testing the null hypothesis of equal predictive accuracy.
+When comparing out-of-sample forecast accuracy between competing models (e.g. TFDMGA versus PyTorch LSTM), standard independent sample $t$-tests fail due to forecast error serial dependence. \citet{diebold1995comparing} introduced a distribution-free statistic for testing equal predictive accuracy.
 
-Let $e_{1,t}$ and $e_{2,t}$ denote forecast errors from Model 1 and Model 2 at time $t$. The loss differential sequence is defined under a loss function $L(\cdot)$ (such as Mean Squared Error):
+Let $e_{1,t}$ and $e_{2,t}$ denote forecast errors from Model 1 and Model 2 at time $t$. The loss differential sequence under Mean Squared Error is:
 \begin{equation}
 d_t = L(e_{1,t}) - L(e_{2,t})
 \label{eq:ch2_loss_diff}
 \end{equation}
-The null hypothesis of equal forecast accuracy is $H_0: \mathbb{E}[d_t] = 0$. The Diebold-Mariano (DM) test statistic is given by:
+Under the null hypothesis $H_0: \mathbb{E}[d_t] = 0$, the Diebold-Mariano statistic is:
 \begin{equation}
 DM = \frac{\bar{d}}{\sqrt{\frac{\widehat{V}(\bar{d})}{T}}} \xrightarrow{d} \mathcal{N}(0, 1)
 \label{eq:ch2_dm_stat}
 \end{equation}
-where $\bar{d} = \frac{1}{T}\sum_{t=1}^T d_t$, and $\widehat{V}(\bar{d})$ is the HAC-adjusted asymptotic variance of the loss differential sequence using the Newey-West estimator.
+where $\bar{d} = \frac{1}{T}\sum_{t=1}^T d_t$, and $\widehat{V}(\bar{d})$ is the Newey-West HAC-adjusted asymptotic variance.
 
-To correct for small-sample size distortion in modest evaluation panels, \citet{harvey1997testing} introduced the Harvey-Leybourne-Newbold (HLN) small-sample correction. For a forecast horizon $h$, the HLN-adjusted statistic is:
+To correct for small-sample size distortion, \citet{harvey1997testing} introduced the Harvey-Leybourne-Newbold (HLN) correction. For forecast horizon $h$, the HLN-adjusted statistic is:
 \begin{equation}
 DM^* = DM \times \left[ \frac{T + 1 - 2h + T^{-1}h(h-1)}{T} \right]^{1/2}
 \label{eq:ch2_hln_stat}
 \end{equation}
-Critical values for $DM^*$ are drawn from the Student's $t$-distribution with $(T-1)$ degrees of freedom, providing robust inference in empirical financial panels.
+Critical values for $DM^*$ are evaluated against the Student's $t$-distribution with $(T-1)$ degrees of freedom.
 
 \subsection{Data Mining Diagnostics: Reality Check and Superior Predictive Ability}
-When searching across multiple model hyperparameter configurations or architecture variants, researchers risk selecting a model that performs well out-of-sample purely by chance. To control for data mining, \citet{white2000reality} introduced the Reality Check for Data Mining. White formulated a bootstrap procedure over the joint distribution of benchmark and candidate model forecasts to test whether the best performing candidate model genuinely outperforms the benchmark.
+When tuning multiple model architectures across hyperparameters, researchers risk selecting a model that performs well purely by chance. To control for data-mining bias, \citet{white2000reality} developed the Reality Check for Data Mining using a bootstrap procedure over candidate model forecasts.
 
-Recognizing that White's Reality Check can be conservative when poor candidate models are included, \citet{hansen2005superior} refined the framework into the Superior Predictive Ability (SPA) test. Hansen introduced a studentized test statistic with sample-dependent variance adjustments:
+\citet{hansen2005superior} refined this framework into the Superior Predictive Ability (SPA) test, introducing a studentized test statistic with sample-dependent variance adjustments:
 \begin{equation}
 T_k^{\text{SPA}} = \max_{k=1, \dots, K} \frac{\sqrt{T} \bar{d}_k}{\hat{\omega}_k}
 \label{eq:ch2_hansen_spa}
 \end{equation}
-where $\hat{\omega}_k^2$ is a consistent estimator of the asymptotic variance of $\sqrt{T}\bar{d}_k$. Hansen showed that the SPA test exhibits higher power and robustness against uninformative candidate models, serving as a useful diagnostic for quantitative model comparison.
+where $\hat{\omega}_k^2$ estimates the asymptotic variance of $\sqrt{T}\bar{d}_k$. Hansen showed that SPA provides higher power and robustness against uninformative candidate models.
 
 \section{Financial ML Protocols \& Overfitting Mitigation}
 
