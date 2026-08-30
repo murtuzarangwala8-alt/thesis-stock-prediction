@@ -246,7 +246,7 @@ def create_presentation():
     p_u.font.color.rgb = COLOR_GOLD
 
     p_msc = tf_univ.add_paragraph()
-    p_msc.text = "Master's Degree Thesis Defence in Economics and Data Analysis"
+    p_msc.text = "Master's Degree Thesis Defence in Economics and Data Analysis | Academic Year 2025/2026"
     p_msc.font.name = FONT_BODY
     p_msc.font.size = Pt(11)
     p_msc.font.color.rgb = RGBColor(203, 213, 225)
