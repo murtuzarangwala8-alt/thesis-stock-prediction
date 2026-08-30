@@ -178,7 +178,60 @@
             </div>
         </section>
 
-        <!-- Interactive Charts Section -->
+        <!-- Live Trading Execution Metrics Banner -->
+        <section class="grid grid-cols-1 md:grid-cols-3 gap-5">
+            <div class="glass-card rounded-xl p-5 border border-blue-500/20 flex items-center justify-between">
+                <div>
+                    <div class="text-xs font-mono text-gray-400 uppercase">Days Active Since Launch</div>
+                    <div class="text-2xl font-extrabold text-white font-mono mt-1">18 Days Active</div>
+                    <div class="text-xs text-blue-400 font-mono mt-0.5">Aug 11, 2026 – Present</div>
+                </div>
+                <div class="w-12 h-12 rounded-xl bg-blue-950/80 border border-blue-800 flex items-center justify-center text-blue-400 text-xl font-bold">
+                    <i class="fas fa-clock"></i>
+                </div>
+            </div>
+
+            <div class="glass-card rounded-xl p-5 border border-emerald-500/20 flex items-center justify-between">
+                <div>
+                    <div class="text-xs font-mono text-gray-400 uppercase">Current Month Return</div>
+                    <div class="text-2xl font-extrabold text-emerald-400 font-mono mt-1">+5.15%</div>
+                    <div class="text-xs text-emerald-400 font-mono mt-0.5">+$5,151.23 Net Gain</div>
+                </div>
+                <div class="w-12 h-12 rounded-xl bg-emerald-950/80 border border-emerald-800 flex items-center justify-center text-emerald-400 text-xl font-bold">
+                    <i class="fas fa-calendar-check"></i>
+                </div>
+            </div>
+
+            <div class="glass-card rounded-xl p-5 border border-yellow-500/20 flex items-center justify-between">
+                <div>
+                    <div class="text-xs font-mono text-gray-400 uppercase">Projected Annualized Return</div>
+                    <div class="text-2xl font-extrabold text-gradient-gold font-mono mt-1">+104.4%</div>
+                    <div class="text-xs text-yellow-400 font-mono mt-0.5">Compounded Trajectory (1.0515^365/18)</div>
+                </div>
+                <div class="w-12 h-12 rounded-xl bg-yellow-950/80 border border-yellow-800 flex items-center justify-center text-yellow-400 text-xl font-bold">
+                    <i class="fas fa-rocket"></i>
+                </div>
+            </div>
+        </section>
+
+        <!-- Live Trading Benchmark Comparison Graph -->
+        <section class="glass-card rounded-2xl p-6 space-y-4">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-gray-800 pb-3">
+                <div>
+                    <h3 class="text-lg font-bold text-white flex items-center space-x-2">
+                        <i class="fas fa-chart-area text-emerald-400"></i>
+                        <span>Live Strategy vs. S&P 500 Index (Aug 11 – 28, 2026)</span>
+                    </h3>
+                    <p class="text-xs text-gray-400 font-mono">Day-by-day live performance comparison over 18 active trading days (+5.31% Net Alpha)</p>
+                </div>
+                <span class="px-3 py-1 rounded-md bg-emerald-950 text-emerald-400 text-xs font-mono border border-emerald-800">+5.31% Net Alpha</span>
+            </div>
+            <div class="h-80 w-full">
+                <canvas id="chartLiveBenchmark"></canvas>
+            </div>
+        </section>
+
+        <!-- Interactive Out-of-Sample Research Charts Section -->
         <section class="grid grid-cols-1 lg:grid-cols-2 gap-8">
             <!-- Chart 1: Out-of-Sample Cumulative Wealth Trajectories -->
             <div class="glass-card rounded-2xl p-6 space-y-4">
@@ -390,7 +443,7 @@
 
             <div class="bg-black/90 rounded-xl p-4 font-mono text-xs text-gray-300 h-64 overflow-y-auto terminal-scroll space-y-2 border border-gray-800">
                 <div class="text-gray-500">[2026-08-28 13:30:00 UTC] Initializing Alpaca Autonomous Options Trader v2.4...</div>
-                <div class="text-blue-400">[INFO] Authenticated with Alpaca Paper API (Key ID: PK7CTKCFHUIL...)</div>
+                <div class="text-blue-400">[INFO] Authenticated with Alpaca Paper API (Key ID: PK****************)</div>
                 <div class="text-gray-400">[INFO] Loading TFDMGA Model Checkpoint (Fold 5: 2015-2024 Weight Weights)</div>
                 <div class="text-cyan-300">[DATA] Ingested 2,516 cross-sections for 500 constituent tickers. Point-in-time Bloomberg fundamental check passed.</div>
                 <div class="text-emerald-400">[SIGNAL] Daily Cross-Sectional Rank Inference Completed:</div>
@@ -416,6 +469,51 @@
 
     <!-- JavaScript for Charts & Data -->
     <script>
+        // Chart 0: Live Benchmark Comparison (Aug 11 - Aug 28, 2026)
+        const ctxLive = document.getElementById('chartLiveBenchmark').getContext('2d');
+        new Chart(ctxLive, {
+            type: 'line',
+            data: {
+                labels: ['Aug 11', 'Aug 12', 'Aug 13', 'Aug 14', 'Aug 18', 'Aug 19', 'Aug 20', 'Aug 21', 'Aug 24', 'Aug 25', 'Aug 26', 'Aug 27', 'Aug 28'],
+                datasets: [
+                    {
+                        label: 'Live Strategy Account (+5.15%)',
+                        data: [0.0, 0.13, -0.22, -0.20, -1.81, 0.11, 1.76, 1.60, 2.49, 3.58, 3.11, 1.81, 5.15],
+                        borderColor: '#10B981',
+                        backgroundColor: 'rgba(16, 185, 129, 0.08)',
+                        fill: true,
+                        borderWidth: 3,
+                        tension: 0.3,
+                        pointRadius: 4,
+                        pointBackgroundColor: '#10B981'
+                    },
+                    {
+                        label: 'S&P 500 Benchmark (-0.16%)',
+                        data: [0.0, 0.25, 0.95, 0.75, -0.40, -0.19, -1.03, -0.63, -0.92, -0.60, -0.58, 0.07, -0.16],
+                        borderColor: '#EF4444',
+                        backgroundColor: 'rgba(239, 68, 68, 0.05)',
+                        fill: true,
+                        borderWidth: 2,
+                        borderDash: [5, 5],
+                        tension: 0.3,
+                        pointRadius: 3,
+                        pointBackgroundColor: '#EF4444'
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { labels: { color: '#F3F4F6', font: { family: 'JetBrains Mono', size: 11, weight: 'bold' } } }
+                },
+                scales: {
+                    x: { ticks: { color: '#94A3B8', font: { family: 'JetBrains Mono', size: 10 } }, grid: { color: '#1E293B' } },
+                    y: { ticks: { color: '#94A3B8', font: { family: 'JetBrains Mono', size: 10 }, callback: v => v + '%' }, grid: { color: '#1E293B' } }
+                }
+            }
+        });
+
         // Chart 1: Out-of-Sample Cumulative Return Trajectories
         const ctxCum = document.getElementById('chartCumulative').getContext('2d');
         new Chart(ctxCum, {

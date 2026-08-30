@@ -3,10 +3,15 @@ import json
 import datetime
 from pathlib import Path
 
+import os
+
 def fetch_live_data():
+    api_key = os.getenv('ALPACA_API_KEY', 'PK7CTKCFHUILHXNFV2Q3JXQRIF')
+    api_secret = os.getenv('ALPACA_SECRET_KEY', '4KZpTxcaJyDzGDEzpnM2xbHEEqZfyWq6B86PEvT6vm5j')
+    
     headers = {
-        'APCA-API-KEY-ID': 'PK7CTKCFHUILHXNFV2Q3JXQRIF',
-        'APCA-API-SECRET-KEY': '4KZpTxcaJyDzGDEzpnM2xbHEEqZfyWq6B86PEvT6vm5j'
+        'APCA-API-KEY-ID': api_key,
+        'APCA-API-SECRET-KEY': api_secret
     }
     base_url = 'https://paper-api.alpaca.markets/v2'
 
