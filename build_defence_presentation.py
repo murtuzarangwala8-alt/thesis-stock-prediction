@@ -290,7 +290,7 @@ def create_presentation():
     p_c.font.color.rgb = COLOR_WHITE
 
     p_sup = tf_meta.add_paragraph()
-    p_sup.text = "Supervisor: Prof. Giuseppina Chesini"
+    p_sup.text = "Relatrice: Prof.ssa Giuseppina Chesini   •   Correlatrice: Prof.ssa Laura Chiaramonte"
     p_sup.font.name = FONT_HEADING
     p_sup.font.size = Pt(14)
     p_sup.font.bold = True
