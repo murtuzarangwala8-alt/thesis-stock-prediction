@@ -129,40 +129,38 @@
 
         <!-- Live Financial Metric Cards -->
         <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-            <!-- Metric 1: Peak Equity -->
+            <!-- Metric 1: Current Equity -->
             <div class="glass-card glass-card-hover rounded-xl p-6 space-y-2">
                 <div class="flex items-center justify-between text-xs font-mono text-gray-400">
-                    <span>PORTFOLIO EQUITY (PEAK)</span>
+                    <span>CURRENT PORTFOLIO EQUITY</span>
                     <i class="fas fa-wallet text-blue-400 text-base"></i>
                 </div>
-                <div class="text-2xl sm:text-3xl font-extrabold text-white font-mono" id="val-equity">$105,151.23</div>
-                <div class="text-xs text-gray-400 flex items-center space-x-1">
-                    <span class="text-emerald-400 font-semibold flex items-center"><i class="fas fa-arrow-up text-xs mr-1"></i>+$5,151.23</span>
-                    <span>vs $100k Base</span>
+                <div class="text-2xl sm:text-3xl font-extrabold text-white font-mono" id="val-equity">$84,290.52</div>
+                <div class="text-xs text-cyan-400 font-semibold">
+                    <span>Buying Power: $222,196.32</span>
                 </div>
             </div>
 
-            <!-- Metric 2: Cumulative Strategy Return -->
+            <!-- Metric 2: Alpaca Account Return -->
             <div class="glass-card glass-card-hover rounded-xl p-6 space-y-2">
                 <div class="flex items-center justify-between text-xs font-mono text-gray-400">
-                    <span>STRATEGY CUMULATIVE RETURN</span>
-                    <i class="fas fa-chart-line text-emerald-400 text-base"></i>
+                    <span>ALPACA ACCOUNT RETURN</span>
+                    <i class="fas fa-chart-line text-red-400 text-base"></i>
                 </div>
-                <div class="text-2xl sm:text-3xl font-extrabold text-emerald-400 font-mono" id="val-return">+5.15%</div>
+                <div class="text-2xl sm:text-3xl font-extrabold text-red-400 font-mono" id="val-return">-19.84%</div>
                 <div class="text-xs text-gray-400 flex items-center justify-between">
-                    <span>S&P 500 Index: <strong class="text-red-400">-0.16%</strong></span>
-                    <span class="text-xs text-emerald-400 font-mono">Net 10 bps</span>
+                    <span>Peak High-Water Mark: <strong class="text-emerald-400">$105,151.23</strong></span>
                 </div>
             </div>
 
-            <!-- Metric 3: Excess Alpha over S&P 500 -->
+            <!-- Metric 3: Long Portfolio Value -->
             <div class="glass-card glass-card-hover rounded-xl p-6 space-y-2">
                 <div class="flex items-center justify-between text-xs font-mono text-gray-400">
-                    <span>NET ALPHA OVER S&P 500</span>
-                    <i class="fas fa-crown text-yellow-400 text-base"></i>
+                    <span>LONG PORTFOLIO VALUE</span>
+                    <i class="fas fa-layer-group text-yellow-400 text-base"></i>
                 </div>
-                <div class="text-2xl sm:text-3xl font-extrabold text-gradient-gold font-mono" id="val-alpha">+5.31%</div>
-                <div class="text-xs text-gray-400">Outperforming market benchmark</div>
+                <div class="text-2xl sm:text-3xl font-extrabold text-gradient-gold font-mono" id="val-alpha">$95,804.80</div>
+                <div class="text-xs text-gray-400">7 Active Long Stock Holdings</div>
             </div>
 
             <!-- Metric 4: Unrealized Open Positions P&L -->
