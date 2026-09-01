@@ -602,11 +602,80 @@
                     legend: { labels: { color: '#94A3B8', font: { family: 'JetBrains Mono', size: 10 } } }
                 },
                 scales: {
-                    x: { ticks: { color: '#64748B', font: { family: 'JetBrains Mono', size: 9 } }, grid: { color: '#1E293B' } },
-                    y: { ticks: { color: '#64748B', font: { family: 'JetBrains Mono', size: 9 } }, grid: { color: '#1E293B' } }
                 }
             }
         });
+
+        // Live Client-Side Alpaca API Streaming Polling (Every 8 seconds)
+        async function fetchLiveAlpacaFeed() {
+            const apiKey = 'PK7CTKCFHUILHXNFV2Q3JXQRIF';
+            const apiSecret = '4KZpTxcaJyDzGDEzpnM2xbHEEqZfyWq6B86PEvT6vm5j';
+            const headers = {
+                'APCA-API-KEY-ID': apiKey,
+                'APCA-API-SECRET-KEY': apiSecret
+            };
+
+            try {
+                // 1. Account Details
+                const rAcc = await fetch('https://paper-api.alpaca.markets/v2/account', { headers });
+                if (rAcc.ok) {
+                    const acc = await rAcc.json();
+                    const eq = parseFloat(acc.equity);
+                    const lmv = parseFloat(acc.long_market_value);
+                    const peak = 105151.23;
+                    const retPct = (((eq - peak) / peak) * 100).toFixed(2);
+
+                    const elEq = document.getElementById('val-equity');
+                    const elRet = document.getElementById('val-return');
+                    if (elEq) elEq.innerText = '$' + eq.toLocaleString('en-US', { minimumFractionDigits: 2 });
+                    if (elRet) elRet.innerText = (parseFloat(retPct) >= 0 ? '+' : '') + retPct + '%';
+                }
+
+                // 2. Open Positions
+                const rPos = await fetch('https://paper-api.alpaca.markets/v2/positions', { headers });
+                if (rPos.ok) {
+                    const positions = await rPos.json();
+                    const elPnl = document.getElementById('val-pnl');
+                    const tbody = document.getElementById('positions-tbody');
+
+                    if (Array.isArray(positions) && positions.length > 0) {
+                        let totalPnl = 0;
+                        let rows = '';
+                        positions.forEach(p => {
+                            const qty = parseFloat(p.qty);
+                            const entry = parseFloat(p.avg_entry_price);
+                            const val = parseFloat(p.market_value);
+                            const pnl = parseFloat(p.unrealized_pl);
+                            const pnlPct = parseFloat(p.unrealized_plpc) * 100;
+                            totalPnl += pnl;
+                            const isGain = pnl >= 0;
+
+                            rows += `
+                                <tr class="border-b border-gray-800/50 hover:bg-gray-800/30 transition-colors">
+                                    <td class="py-3 px-4 font-mono font-bold text-blue-400">${p.symbol}</td>
+                                    <td class="py-3 px-4 text-gray-300 text-xs">${p.symbol} Holdings</td>
+                                    <td class="py-3 px-4 text-right font-mono text-gray-300">${qty}</td>
+                                    <td class="py-3 px-4 text-right font-mono text-gray-400">$${entry.toFixed(2)}</td>
+                                    <td class="py-3 px-4 text-right font-mono text-gray-200">$${val.toLocaleString('en-US', {minimumFractionDigits: 2})}</td>
+                                    <td class="py-3 px-4 text-right font-mono font-bold ${isGain ? 'text-emerald-400' : 'text-red-400'}">${isGain ? '+' : ''}$${pnl.toLocaleString('en-US', {minimumFractionDigits: 2})}</td>
+                                    <td class="py-3 px-4 text-right font-mono text-xs font-bold ${isGain ? 'text-emerald-400' : 'text-red-400'}">${isGain ? '+' : ''}${pnlPct.toFixed(2)}%</td>
+                                </tr>
+                            `;
+                        });
+                        if (tbody) tbody.innerHTML = rows;
+                        if (elPnl) elPnl.innerText = (totalPnl >= 0 ? '+' : '') + '$' + totalPnl.toLocaleString('en-US', { minimumFractionDigits: 2 });
+                    } else {
+                        if (tbody) tbody.innerHTML = '<tr><td colspan="7" class="py-6 text-center text-gray-500 font-mono text-xs">All positions closed. Waiting for next TFDMGA market open signal batch.</td></tr>';
+                        if (elPnl) elPnl.innerText = '$0.00';
+                    }
+                }
+            } catch (err) {
+                console.log('Alpaca Live Feed Stream Error:', err);
+            }
+        }
+
+        fetchLiveAlpacaFeed();
+        setInterval(fetchLiveAlpacaFeed, 8000);
     </script>
 </body>
 </html>
